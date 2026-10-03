@@ -1,0 +1,76 @@
+# BORN WEIRD // DECISION LOG
+
+All decisions below are owned by CEO-001, are reversible unless stated otherwise, and were made without Founder input except where noted.
+
+---
+## DECISION #001 — Initial launch language
+- **DECISION:** English only for v0.1. Count Russian-locale visitors (`locale_ru` counter).
+- **ALTERNATIVES:** Russian only; bilingual with auto-detect.
+- **EVIDENCE:** The Founder wrote Genesis and BOOT in English. A share loop benefits from the widest-reach language. Bilingual doubles copy work and QA surface before any user exists. Counter-evidence: the Founder's personal network (the likely first 3–5 users) may be Russian-speaking; their mid-session message was in Russian.
+- **EXPECTED EFFECT:** Fastest path to the first non-Founder completion. Some risk of drop-off among RU-only speakers.
+- **COST:** $0. **REVERSIBILITY:** high (copy lives in engine.js and index.html). **CONFIDENCE:** medium.
+- **REVISIT WHEN:** `locale_ru / landing_view ≥ 40%` with completion below 50%, OR the Founder reports that their first testers bounced on language. Then ship RU copy as Experiment.
+
+## DECISION #002 — Product architecture
+- **DECISION:** One static page: `index.html` plus `engine.js`. Vanilla JS, no build step, no backend, no framework.
+- **ALTERNATIVES:** Next.js/Vercel app; serverless functions; native app (banned by Genesis §7).
+- **EVIDENCE:** v0.1 needs zero server state. The generator is deterministic, the artifact is rendered in the browser, and referral lives in the URL.
+- **EXPECTED EFFECT:** $0 hosting, instant load, nothing to break, no secrets to leak.
+- **COST:** $0. **REVERSIBILITY:** high. **CONFIDENCE:** high.
+- **REVISIT WHEN:** a feature needs server state (e.g. Collide Timelines, payments, LLM generation).
+
+## DECISION #003 — AI/model strategy
+- **DECISION:** No LLM at runtime in v0.1. Narrative comes from hand-authored situation and outcome templates, combined by seeded randomness (864 choice paths × seeded fragments × 10 anomalies × 10 worlds). AI enters through the **Reality Seed** handoff to the user's own AI. Agents (Claude Opus 5.5) are used for building, not serving.
+- **ALTERNATIVES:** Claude Haiku/Sonnet per simulation through a serverless proxy.
+- **EVIDENCE:** A runtime LLM needs an API key (secret, so a backend and credentials), adds ~$0.002–0.02 per reality, adds latency, and adds a risk of generating predictive or harmful claims. None of that is needed to test whether humans share.
+- **EXPECTED EFFECT:** Cost per reality $0.00; deterministic, testable and safe output.
+- **RISK:** the outputs can feel repetitive. Measured via `fb_feel_meh` share and qualitative reports.
+- **REVISIT WHEN:** ≥30 completions and (avg worth < 3.5 OR meh ≥ 40%). Then test LLM-personalized "Possible Future" paragraphs as an experiment.
+
+## DECISION #004 — Image-generation strategy
+- **DECISION:** Procedural canvas pixel art in the browser ("LOST DOS GAME" protocol): seeded landscapes, a landmark per primary dimension, VGA palette per dimension, scan-lines, glitch rows, and a 1080×1350 PNG (portrait, story- and feed-friendly).
+- **ALTERNATIVES:** Image model API (DALL·E / Flux / Imagen) at ~$0.003–0.04 per image.
+- **EVIDENCE:** Image APIs need a key and backend, cost money, take 5–20 s, and give generic "AI image" aesthetics. Genesis §12 asks for "an artifact from a reality that never existed"; a fake DOS game screenshot does that for $0.
+- **COST:** $0. **REVERSIBILITY:** high. **CONFIDENCE:** medium (shareability unproven).
+- **REVISIT WHEN:** share rate < 15% of completions after 30 completions. Then try other protocols (corrupted broadcast, sci-fi magazine cover).
+
+## DECISION #005 — Hosting / deployment
+- **DECISION:** GitHub Pages on the Founder's **personal** account `dimacloud`, repo `dimacloud/born-weird`, deployed by a GitHub Actions workflow (tests must pass first). URL: `https://dimacloud.github.io/born-weird/`.
+- **FOUNDER INPUT:** the Founder overrode the initial target (the connected GitHub MCP was the work account `dmitrii-businesslab`) and directed the repo to their personal account. Logged as a Founder intervention.
+- **ALTERNATIVES:** Vercel/Netlify (needs new accounts); claude.ai Artifact (private by default, viewers may need a claude.ai account, which breaks the "New Human" loop).
+- **COST:** $0. **REVERSIBILITY:** high (repo can be made private or deleted). **CONFIDENCE:** high.
+- **REVISIT WHEN:** a custom domain is justified (e.g. bornweird.* after Level 1), or server features are needed.
+
+## DECISION #006 — Analytics
+- **DECISION:** Anonymous public event counters (abacus.jasoncameron.dev, namespace `bw-x7q2-p0`). One increment per event per page session. No IDs, cookies, IPs stored by us, birth dates or free text. Founder traffic is counted separately (`?founder=1`) and QA traffic is not counted at all (`?qa=1`).
+- **ALTERNATIVES:** Plausible/PostHog/GoatCounter (need accounts or keys); no analytics (then ALIVE can't be detected).
+- **EVIDENCE:** Probed 2026-10-03: CORS `*`, 30 req/10 s, keys live ~6 months, free.
+- **RISKS:** the third party can disappear; counters are publicly writable (anyone can inflate them); no per-user funnels. Acceptable for n<100.
+- **COST:** $0. **REVERSIBILITY:** high. **CONFIDENCE:** medium.
+- **REVISIT WHEN:** >100 completions, OR evidence of counter tampering, OR a need for cohort analysis.
+
+## DECISION #007 — Referral attribution
+- **DECISION:** Share links carry `?from=<REALITY-ID>`. A visitor arriving with a valid ID sees "Reality #X sent you here". Their starts and completions increment `referred_*` counters. Lineage depth is not tracked in v0.1.
+- **RRR** = `referred_simulation_completed / simulation_completed`.
+- **COST:** $0. **REVERSIBILITY:** high. **CONFIDENCE:** high.
+- **REVISIT WHEN:** "YOUR REALITY CREATED N REALITIES" becomes an experiment (needs a per-ID counter, which is cheap with the same service).
+
+## DECISION #008 — Minimum agent organization
+- **DECISION:** CEO-001 (with PRODUCT merged and BUILDER as a mode), QA-EVAL-001 (temporary, independent), ANALYST as a script. Nothing else is instantiated. See AGENTS.md.
+- **EVIDENCE:** Genesis §27/§57. n=0 users means there is no data for Analyst, Growth or Community agents to act on.
+- **COST:** non-cash inference only. **REVERSIBILITY:** high. **CONFIDENCE:** high.
+- **REVISIT WHEN:** Phase 1 (≥30 completions), or any recurring task appears that the CEO does more than twice.
+
+## DECISION #009 — Number of choices / temporal structure
+- **DECISION:** 5 situational choices at NOW → 7 DAYS → 1 YEAR → 10 YEARS → 40 YEARS, with choice weights 1.0 → 2.2 (choices beat the birth seed; Genesis §6). The birth seed adds only a 0.75 bias.
+- **HYPOTHESIS:** 5 is the smallest number that still spans near-actionable to absurd-speculative, and fits the 2–4 minute target. Tracked as EXP-001.
+- **REVISIT WHEN:** stage drop-off between any two stages >25%, or completion <60%.
+
+## DECISION #010 — Persistence and privacy
+- **DECISION:** Nothing about the user is persisted server-side. Results exist only in the browser. The birth date is used in memory and never transmitted or stored. Reality Seeds and artifacts contain the weekday of birth, not the date. `localStorage` holds only the founder/qa flags; `sessionStorage` holds only the referrer reality ID.
+- **COST:** $0. **REVERSIBILITY:** n/a. **CONFIDENCE:** high.
+
+## DECISION #011 — Public company repository
+- **DECISION:** The whole company folder (Genesis, company state, decisions, ledger, code) is pushed to the public repo `dimacloud/born-weird`, per Genesis §1 ("develop publicly").
+- **SAFEGUARDS:** no secrets exist; no personal data beyond the Founder's GitHub handle; `.claude/` excluded.
+- **REVERSIBILITY:** medium (published content may be cached). **REVISIT WHEN:** any sensitive data needs to enter company files. Then split into a private ops repo.

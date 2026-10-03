@@ -1,0 +1,151 @@
+{
+  "states": [
+    "DISCOVERED",
+    "TRIAGED",
+    "PROPOSED",
+    "APPROVED",
+    "IN_PROGRESS",
+    "REVIEW",
+    "DEPLOYED",
+    "MEASURING",
+    "DONE",
+    "REJECTED"
+  ],
+  "items": [
+    {
+      "id": "W-001",
+      "title": "Instantiate company: registry, state, ledger, logs",
+      "owner": "CEO-001",
+      "why": "Genesis §69 BOOT",
+      "bottleneck": "B-000",
+      "expected_value": "operating system for all later work",
+      "cost": "$0",
+      "risk": "low",
+      "metric": "files exist and are truthful",
+      "status": "DONE",
+      "dependencies": []
+    },
+    {
+      "id": "W-002",
+      "title": "Build Product v0.1 vertical slice (engine + UI + artifact + seed + share)",
+      "owner": "BUILDER-001",
+      "why": "Phase 0 requires a usable loop",
+      "bottleneck": "B-001",
+      "expected_value": "enables EXP-001",
+      "cost": "$0",
+      "risk": "low",
+      "metric": "loop completes in preview",
+      "status": "DONE",
+      "dependencies": [
+        "W-001"
+      ]
+    },
+    {
+      "id": "W-003",
+      "title": "Independent QA evaluation + automated tests",
+      "owner": "QA-EVAL-001",
+      "why": "Genesis §30, §35",
+      "bottleneck": "B-001",
+      "expected_value": "no blocking defects reach humans",
+      "cost": "non-cash inference",
+      "risk": "low",
+      "metric": "PASS verdict, tests green",
+      "status": "DONE",
+      "dependencies": [
+        "W-002"
+      ],
+      "result": "FAIL (2 blockers: birth-date recoverable from shared output; double-click race) -> fixed -> re-verify PASS, 15/15 tests"
+    },
+    {
+      "id": "W-004",
+      "title": "Create dimacloud/born-weird, push, enable Pages (workflow)",
+      "owner": "CEO-001",
+      "why": "product must be reachable",
+      "bottleneck": "B-001",
+      "expected_value": "public URL",
+      "cost": "$0",
+      "risk": "low",
+      "metric": "URL returns 200",
+      "status": "APPROVED",
+      "dependencies": [
+        "W-003",
+        "HR-001"
+      ]
+    },
+    {
+      "id": "W-005",
+      "title": "Founder smoke test via ?founder=1",
+      "owner": "Founder",
+      "why": "Genesis §59 step 11",
+      "bottleneck": "B-001",
+      "expected_value": "catch device-specific issues",
+      "cost": "~3 Founder minutes",
+      "risk": "low",
+      "metric": "founder_simulation_completed >= 1",
+      "status": "PROPOSED",
+      "dependencies": [
+        "W-004"
+      ]
+    },
+    {
+      "id": "W-006",
+      "title": "Expose to 3-5 non-Founder humans (Founder sends link personally)",
+      "owner": "Founder",
+      "why": "Agents may not send unsolicited messages (Genesis §4); first humans come from the Founder's network",
+      "bottleneck": "B-002",
+      "expected_value": "first external completion",
+      "cost": "~5 Founder minutes",
+      "risk": "low",
+      "metric": "simulation_completed >= 3",
+      "status": "PROPOSED",
+      "dependencies": [
+        "W-004"
+      ]
+    },
+    {
+      "id": "W-007",
+      "title": "Run metrics.mjs daily; detect ALIVE; write cycle report",
+      "owner": "CEO-001",
+      "why": "observe → learn",
+      "bottleneck": "B-002",
+      "expected_value": "truthful state",
+      "cost": "$0",
+      "risk": "low",
+      "metric": "metrics.json fresh <24h",
+      "status": "APPROVED",
+      "dependencies": [
+        "W-004"
+      ]
+    },
+    {
+      "id": "W-008",
+      "title": "Russian copy variant",
+      "owner": "CEO-001",
+      "why": "possible RU-speaking first cohort",
+      "bottleneck": "B-002",
+      "expected_value": "higher completion for RU users",
+      "cost": "$0",
+      "risk": "low",
+      "metric": "completion among RU",
+      "status": "DISCOVERED",
+      "dependencies": [
+        "DECISION-001 revisit trigger"
+      ]
+    },
+    {
+      "id": "W-009",
+      "title": "'Your reality created N realities' per-ID counter",
+      "owner": "CEO-001",
+      "why": "Genesis §15 referral language",
+      "bottleneck": "B-003 (Phase 2)",
+      "expected_value": "share motivation",
+      "cost": "$0",
+      "risk": "low",
+      "metric": "RRR",
+      "status": "DISCOVERED",
+      "dependencies": [
+        "ALIVE"
+      ]
+    }
+  ]
+}

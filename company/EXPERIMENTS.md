@@ -1,0 +1,15 @@
+# BORN WEIRD // EXPERIMENT LOG
+
+## EXP-001 — Does the v0.1 loop make a human share?
+- **BOTTLENECK:** No evidence that any human completes and shares (Phase 0 / ALIVE).
+- **OWNER:** CEO-001 · **EVALUATION:** ANALYST-SCRIPT-001 (`operations/metrics.mjs`)
+- **HYPOTHESIS:** A ~2-minute, 5-choice deterministic simulation that ends in a pixel "lost DOS game" artifact, a useful 7-day experiment and a Reality Seed will make ≥1 of the first 5 non-Founder completers share it with a specific person.
+- **CONTROL:** none (first version).
+- **VARIANT:** Product v0.1 (5 choices, LOST DOS GAME artifact, English).
+- **PRIMARY METRIC:** `share_completed + link_copied` per completion; ALIVE = `referred_simulation_completed ≥ 1` confirmed as a non-Founder.
+- **SECONDARY:** completion rate, per-stage drop-off, worth (1–5), feel (MEH/WEIRD/WTF), seed copy/download.
+- **GUARDRAILS:** artifact_generation_failed = 0; no complaints of deception or prediction claims; $0 spend.
+- **START:** on deploy · **END:** 14 days after deploy or 30 completions, whichever is first.
+- **SAMPLE:** target 5–30 non-Founder completions.
+- **RESULT / UNCERTAINTY / DECISION / LEARNING:** pending.
+- **STOP CONDITION:** 0 shares after 10 completions. Then the artifact or the share prompt is the bottleneck; iterate on the artifact protocol first.

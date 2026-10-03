@@ -1,0 +1,86 @@
+{
+  "updated_at": "2026-10-03T06:45:00Z",
+  "phase": "PHASE_0_BECOME_ALIVE",
+  "level": 0,
+  "status": "QA_PASSED_AWAITING_DEPLOY_CREDENTIALS",
+  "primary_bottleneck": {
+    "id": "B-001",
+    "statement": "Product cannot reach a non-Founder human: deploy blocked on personal GitHub credentials (HUMAN REQUEST #001).",
+    "next_bottleneck": "B-002: first 3-5 non-Founder humans must receive the link (distribution)"
+  },
+  "current_experiment": "EXP-001",
+  "product": {
+    "version": "0.1",
+    "url": "https://dimacloud.github.io/born-weird/",
+    "deployed": false,
+    "language": "en",
+    "loop": [
+      "birth_date",
+      "5_choices",
+      "possible_future",
+      "pixel_artifact_png",
+      "reality_seed_md",
+      "share_link_with_from_param"
+    ]
+  },
+  "agents": [
+    {
+      "id": "CEO-001",
+      "status": "ACTIVE",
+      "kind": "primary session",
+      "merged_roles": [
+        "PRODUCT"
+      ]
+    },
+    {
+      "id": "BUILDER-001",
+      "status": "ACTIVE",
+      "kind": "mode of primary session"
+    },
+    {
+      "id": "QA-EVAL-001",
+      "status": "TEMPORARY",
+      "kind": "independent subagent"
+    },
+    {
+      "id": "ANALYST-SCRIPT-001",
+      "status": "ACTIVE",
+      "kind": "deterministic script",
+      "path": "operations/metrics.mjs"
+    }
+  ],
+  "treasury": {
+    "ceiling_usd": 25.0,
+    "drawn_usd": 0.0,
+    "revenue_usd": 0.0,
+    "spent_usd": 0.0,
+    "remaining_usd": 25.0
+  },
+  "metrics": {
+    "source": "company/metrics.json",
+    "users": 0,
+    "completions": 0,
+    "artifacts": 0,
+    "shares": 0,
+    "referred_completions": 0,
+    "rrr": null,
+    "satisfaction": null
+  },
+  "founder": {
+    "minutes": 3,
+    "approvals": 0,
+    "overrides": 1,
+    "credential_actions_pending": 1
+  },
+  "autonomy_ratio": 0.87,
+  "ocpl": "n/a (0 validated learnings yet)",
+  "open_human_requests": [
+    "HR-001"
+  ],
+  "alive": false,
+  "qa": {
+    "verdict": "PASS",
+    "tests": "15/15",
+    "blockers_caught_pre_deploy": 2
+  }
+}
