@@ -73,7 +73,7 @@
         NOW: [
           ['A free evening, everything already paid for. Where to?', 'Somewhere you have never been — it might be boring', 'A familiar ritual with trusted people — nothing new', 'A closed meetup with people who decide your growth — you have to be "on"', 'Helping a friend move house — your back will thank you later. Much later'],
           ['You are offered a new project. Your workload will grow.', 'I take it if I can do it my way, no approvals', 'I decline: what exists must keep running smoothly', 'I take it and ask for a title — otherwise why bother', 'I take it if it helps the team, even if not me'],
-          ['You find a wallet on the street with cash and a business card.', 'I return it in person — I want to know who this is', 'I hand it to the police, by the book', 'I return it — and casually make a useful contact', 'I return it and ask for nothing: let them have a good day'],
+          ['Someone gives you a sum of money with one condition: spend it within a week.', 'A sudden trip, wherever the cheapest ticket goes', 'Pay off debts and top up the safety cushion', 'A course or a tool that speeds up my growth', 'A feast for people who are having a tough time'],
           ['You can take any course for free. Three months.', 'Something totally unlike my life: blacksmithing, Japanese, improv', 'Personal finance — to sleep better', 'Negotiation and leadership — to grow faster', 'First aid or psychology — to be more useful to my people'],
           ['A friend asks for an honest opinion on their business idea. It is weak.', 'I suggest flipping it completely — let\'s invent a stranger one', 'I gently suggest not quitting their stable job', 'I say it straight: this won\'t win — and show how to win', 'I first ask what they actually need — the idea is secondary'],
           ['You get one whole free day that nobody knows about.', 'Leave town in a random direction, no plan', 'Finally sort out the things that have been hanging for months', 'Quietly push my own project while nobody distracts me', 'Spend it with someone who is having a hard time'],
@@ -108,7 +108,7 @@
           ['You, 40 years older, send yourself one piece of advice on a sticky note.', '"Go further than seems reasonable."', '"Back it up."', '"Ask for more."', '"Call them. Today."'],
           ['In 40 years someone makes a short film about you. Its title:', '"The One Who Always Left in Time"', '"The One You Could Count On"', '"The One Who Changed the Rules"', '"The One Who Left No One Behind"'],
           ['At the end you can keep one object. Which?', 'An old one-way ticket', 'The key to the house where it all began', 'An award nobody expected you to win', 'A stack of letters that say "thank you"'],
-          ['You are asked what you regret least.', 'That life did not follow someone else\'s script', 'That everything important was safe', 'That the impossible thing got done', 'That there were always people around'],
+          ['In 40 years you leave one line of advice on your grandchildren\'s fridge.', '"Don\'t live by someone else\'s plan."', '"Always keep a spare key."', '"Take more than you are offered."', '"Call each other more often."'],
         ],
       },
       reactions: {
@@ -132,13 +132,18 @@
           quest: '7 days: every day, one small "new" inside safe limits (a new route, dish, conversation) — and one action that strengthens your foundation. On day 7, write down which gave you more energy.' },
         E: { short: 'WEIGHT ↔ CARE', text: 'Both achieving and caring matter to you. It gets hardest when success means leaving someone behind: missed evenings, tough calls. That is not weakness — two real values are pulling in different directions.',
           quest: '7 days: every morning pick one thing for your own growth and one for a specific person. In the evening, note which of the two stayed undone.' },
-        clear: {
-          FREEDOM: { short: 'clear priority: FREEDOM (cost: ANCHOR)', text: 'Freedom wins almost without a fight. The price of that clarity is the anchor: plans, savings and predictability can quietly sag.', quest: '7 days: pick one area where you lack an anchor (money, sleep, order) and do one boring 10-minute action in it every day.' },
-          ANCHOR: { short: 'clear priority: ANCHOR (cost: FREEDOM)', text: 'The anchor wins almost without a fight. The price of that clarity is freedom: new things may pass you by because "it\'s fine as it is".', quest: '7 days: one small "first time" every day — a route, a dish, a person, a question. Write down what felt most alive.' },
-          WEIGHT: { short: 'clear priority: WEIGHT (cost: CARE)', text: 'Weight wins almost without a fight. The price of that clarity is care: people near you may start to feel like resources.', quest: '7 days: every day do one thing for one person with zero expected return. Write down how they reacted.' },
-          CARE: { short: 'clear priority: CARE (cost: WEIGHT)', text: 'Care wins almost without a fight. The price of that clarity is weight: your own goals may wait in line forever.', quest: '7 days: 30 minutes a day on your own goal — before answering anyone else\'s requests.' },
-        },
       },
+      clearShort: (top, low) => 'clear priority: ' + top + ' (cost: ' + low + ')',
+      clearText: (top, low, cost) => top + ' wins most of the time, almost without a fight. The price of that clarity is ' + low + ': ' + cost + '.',
+      cost: { FREEDOM: 'new things may pass you by because "it\'s fine as it is"', ANCHOR: 'plans, savings and predictability can quietly sag', WEIGHT: 'your own goals and voice may wait in line forever', CARE: 'people near you may start to feel like resources' },
+      questLow: {
+        FREEDOM: '7 days: one small "first time" every day — a route, a dish, a person, a question. Write down what felt most alive.',
+        ANCHOR: '7 days: pick one area where you lack an anchor (money, sleep, order) and do one boring 10-minute action in it every day.',
+        WEIGHT: '7 days: 30 minutes a day on your own goal — before answering anyone else\'s requests.',
+        CARE: '7 days: every day do one thing for one person with zero expected return. Write down how they reacted.',
+      },
+      mixed: { short: 'no clear leader', text: 'No single value wins: the votes split almost evenly. That can be flexibility — or decision fatigue. Look at your "definitely not" picks: they say more about you than the "I\'d choose" ones.',
+        quest: '7 days: every evening write down one decision of the day and which value won it. On day 7, count who won most often.' },
       blind: {
         FREEDOM: 'Blind spot — FREEDOM. It can feel like there is no choice when there is one. Where are you living by someone else\'s script?',
         ANCHOR: 'Blind spot — ANCHOR. Without a plan B every storm becomes personal. What breaks first if tomorrow goes wrong?',
@@ -209,26 +214,26 @@
       bridge: { label: 'МОСТ', meaning: 'насколько ты-через-10-лет ощущается как ты' },
       situations: {
         NOW: [
-          ['Свободный вечер, всё уже оплачено. Куда?', 'Туда, где ещё ни разу не бывало, — может оказаться скучно', 'Привычный ритуал с проверенными людьми — ничего нового', 'Закрытая встреча с теми, от кого зависит рост, — придётся быть «в форме»', 'Помочь другу с переездом — спина скажет спасибо не сразу'],
-          ['Тебе предлагают новый проект. Нагрузка вырастет.', 'Беру, если можно сделать по-своему, без согласований', 'Отказываюсь: текущее должно работать без сбоев', 'Беру и прошу должность с названием — иначе зачем', 'Беру, если это поможет команде, пусть и не мне'],
-          ['На улице лежит кошелёк с деньгами и визиткой.', 'Верну лично — интересно, кто этот человек', 'Сдам в полицию, всё по правилам', 'Верну — и между делом заведу полезное знакомство', 'Верну и ничего не попрошу — пусть у человека будет хороший день'],
+          ['Свободный вечер, всё уже оплачено. Куда?', 'Туда, где ещё не доводилось бывать, — вдруг окажется скучно', 'Привычный ритуал с проверенными людьми — ничего нового', 'Закрытая встреча с теми, от кого зависит рост, — придётся быть «в форме»', 'Помочь другу с переездом — спина спасибо не скажет'],
+          ['Тебе предлагают новый проект. Нагрузка вырастет.', 'Беру, если можно сделать по-своему, без согласований', 'Отказываюсь: текущее должно работать без сбоев', 'Беру — но с громкой должностью, иначе зачем', 'Беру, если это поможет команде, пусть и не мне'],
+          ['Тебе дарят сумму денег с одним условием: потратить её за неделю.', 'Внезапная поездка — куда угодно, куда дешевле билет', 'Закрыть долги и пополнить подушку', 'Курс или инструмент, который ускорит мой рост', 'Праздник для тех, кому сейчас туго'],
           ['Можно бесплатно пройти любой курс. Три месяца.', 'Что-то совсем не из моей жизни: кузнечное дело, японский, импровизация', 'Финансовую грамотность — чтобы спать спокойнее', 'Переговоры и лидерство — чтобы расти быстрее', 'Первую помощь или психологию — чтобы быть опорой для своих'],
           ['Друг просит честно оценить его бизнес-идею. Идея слабая.', 'Предлагаю перевернуть её целиком — придумаем что-то страннее', 'Мягко советую не бросать стабильную работу', 'Говорю прямо: так не выиграть — и показываю, как надо', 'Сначала спрашиваю, что ему на самом деле нужно: идея вторична'],
           ['У тебя появляется целый свободный день, о котором никто не знает.', 'Уехать куда глаза глядят, без плана', 'Наконец разобрать дела, которые висят месяцами', 'Тихо продвинуть свой проект, пока никто не отвлекает', 'Провести его с тем, кому сейчас тяжело'],
         ],
         D7: [
           ['Через неделю можно переехать в другой город на полгода. Всё оплачено. Решать сейчас.', 'Еду: новый город — новая версия меня', 'Остаюсь: здесь всё, что меня держит', 'Еду — но только если это даст рост и связи', 'Сначала спрашиваю своих — им с этим жить'],
-          ['Неделю подряд приходят анонимные записки с одним словом: «решайся».', 'Делаю то, что давно откладываю, — неважно, кто пишет', 'Сначала выясняю, кто отправитель', 'Берусь за самое амбициозное из своего списка', 'Наконец говорю важное человеку, которому давно стоило это сказать'],
-          ['Команде нужен человек, который неделю будет публичным лицом проекта.', 'Соглашаюсь, но говорю своими словами, без пресс-релиза', 'Отказываюсь: лучше обеспечу, чтобы всё работало за кулисами', 'Соглашаюсь — это шанс, чтобы меня заметили', 'Предлагаю того, кому это нужнее для роста'],
-          ['Друзья берут на слабо: неделя без телефона. Приз — ужин за их счёт.', 'Да — интересно, кто я без ленты', 'Нет — слишком многое держится на том, что я на связи', 'Да — и выиграю, это вопрос характера', 'Да, если делаем это все вместе'],
+          ['Неделю подряд приходят анонимные записки с одним словом: «решайся».', 'Делаю то, что давно откладываю, — неважно, кто пишет', 'Сначала выясняю, кто отправитель', 'Берусь за самое амбициозное из своего списка', 'Наконец говорю важное тому, кому давно пора было это сказать'],
+          ['Команде нужен человек, который неделю будет публичным лицом проекта.', 'Соглашаюсь, но говорю своими словами, без пресс-релиза', 'Отказываюсь: лучше прослежу, чтобы за кулисами всё работало', 'Соглашаюсь — это шанс, что меня заметят', 'Предлагаю того, кому это нужнее для роста'],
+          ['Друзья берут на слабо: неделя без телефона. Приз — ужин за их счёт.', 'Да — интересно, кто я без ленты', 'Нет — слишком многое держится на том, что я на связи', 'Да — и выиграю, это вопрос характера', 'Да — но только если все вместе'],
           ['Сосед затевает ремонт в подъезде и ищет добровольцев на выходные.', 'Иду, если можно расписать стену чем-то странным', 'Скидываюсь деньгами, но выходные — мои', 'Беру организацию на себя — так выйдет лучше', 'Прихожу с инструментами, просто потому что надо'],
-          ['Можно на неделю поменять свою работу на совсем другую.', 'На самую странную: смотритель маяка, сыровар, каскадёр', 'На похожую — чтобы не потерять навык', 'Туда, где больше всего платят и решают', 'Туда, где помогают напрямую: врач, учитель, спасатель'],
+          ['Можно на неделю поменять свою работу на совсем другую.', 'На самую странную: смотритель маяка, сыровар, каскадёр', 'На похожую — чтобы не потерять навык', 'Туда, где больше всего платят и где всё решается', 'Туда, где помогают напрямую: врач, учитель, спасатель'],
         ],
         Y1: [
-          ['Через год тебе предлагают выбор:', 'Годовой бюджет и полная свобода на свой странный эксперимент', 'Бессрочный контракт с понятной зарплатой и графиком', 'Роль, где я — лицо проекта и решаю я', 'Работа, которая ощутимо помогает людям, пусть и скромнее'],
-          ['Тебе достаются деньги, на которые можно не работать три года. Первым делом:', 'Строю то, о чём рассказываю на каждой вечеринке', 'Инвестирую и продолжаю работать. Тихо', 'Запускаю бизнес, чтобы через три года денег стало в десять раз больше', 'Собираю своих и закрываю их проблемы'],
+          ['Через год тебе предлагают выбор:', 'Годовой бюджет и полная свобода на свой странный эксперимент', 'Бессрочный контракт с понятной зарплатой и графиком', 'Роль, где я — лицо проекта и последнее слово за мной', 'Работа, которая ощутимо помогает людям, пусть и скромнее'],
+          ['Тебе достаётся сумма, с которой можно три года не работать. Первым делом:', 'Строю то, о чём рассказываю на каждой вечеринке', 'Инвестирую и продолжаю работать. Тихо', 'Запускаю бизнес, чтобы через три года их стало вдесятеро больше', 'Решаю проблемы близких — пусть и за свой счёт'],
           ['За год можно по-настоящему освоить одно. Что?', 'Новый язык — и уехать его практиковать', 'Порядок в деньгах и здоровье', 'Навык, за который платят втрое больше', 'Умение поддержать человека в самый тяжёлый момент'],
-          ['Старый друг зовёт в общее дело. Хаотичный, но горит.', 'Иду — хаос мне по душе', 'Иду, только с договором и запасным планом', 'Иду, если решения будут за мной', 'Иду, потому что ему нужна опора'],
+          ['Старый друг зовёт в общее дело: хаоса много, но глаза горят.', 'Иду — хаос мне по душе', 'Иду, только с договором и запасным планом', 'Иду, если решения будут за мной', 'Иду, потому что ему нужна опора'],
           ['Через год можно жить в любом из четырёх мест:', 'Город, где меня никто не знает', 'Свой дом там же, где сейчас', 'Столица, где всё решается', 'Рядом с теми, кто без меня не справится'],
           ['Тебе предлагают вести публичный блог целый год. Тема — любая.', 'Эксперименты над собственной жизнью', 'Никакого блога: личное остаётся личным', 'Как добиваться своего — чтобы стать экспертом', 'Люди, которых никто не замечает'],
         ],
@@ -236,17 +241,17 @@
           ['Через 10 лет ты на развилке. Какую жизнь выбираешь?', 'Начать заново в другой стране и профессии', 'Укрепить то, что уже построено', 'Выйти на уровень, где от меня зависят сотни людей', 'Отдавать большую часть времени тем, кому нужна помощь'],
           ['Тем, что ты создаёшь, внезапно пользуется миллион человек — совсем не так, как задумано.', 'Закрываю и начинаю что-то поменьше и страннее', 'Строю защиту, чтобы ничего не сломалось', 'Беру штурвал и масштабирую', 'Ищу тех, кому это правда помогает, и делаю для них'],
           ['Тебя начинают узнавать по одной вещи — и совсем не по той, по которой хотелось.', 'Тихо начинаю заново в другом месте', 'Принимаю: репутация — это опора', 'Делаю из этого бренд', 'Учу других делать это лучше меня'],
-          ['Предложение: всё удвоить — деньги, влияние, нагрузку. Ответ до полуночи.', 'Нет — свобода дороже', 'Нет — не буду раскачивать то, что работает', 'Да', 'Спрашиваю тех, кого люблю, — решать им'],
+          ['Предложение: всё удвоить — деньги, влияние, нагрузку. Ответ до полуночи.', 'Нет — свобода дороже', 'Нет — не буду раскачивать то, что работает', 'Да. Полночь можно не ждать', 'Спрашиваю тех, кого люблю, — решать им'],
           ['Через 10 лет тебе дают оплачиваемый год «творческого отпуска».', 'Год путешествий без маршрута', 'Год для здоровья, дома и порядка', 'Год на книгу, которую будут цитировать', 'Год волонтёрства там, где тяжело'],
           ['Можно передать одно своё умение сотне незнакомых людей.', 'Не бояться начинать с нуля', 'Не терять голову в кризис', 'Добиваться своего', 'Слушать'],
         ],
         Y40: [
-          ['Ребёнок спрашивает: «А что ты на самом деле делаешь всю жизнь?» У тебя одно предложение.', '«Ищу край карты».', '«Держу оборону, пока всё вокруг меняется».', '«Двигаю фигуры, которые больше никто не может сдвинуть».', '«Строю место, где людям есть куда прийти».'],
-          ['Где-то можно навсегда высечь одну фразу. Где и какую?', 'На скамейке на краю города: «Не обязательно».', 'На мосту: «Выдержал».', 'На башне: «Сдвинуто».', 'Над дверью кухни: «Есть будут все».'],
+          ['Ребёнок спрашивает: «А чем ты на самом деле занимаешься всю жизнь?» У тебя одно предложение.', '«Ищу край карты».', '«Держу оборону, пока всё вокруг меняется».', '«Сдвигаю то, что больше никому не сдвинуть».', '«Строю место, где людям есть куда прийти».'],
+          ['Где-то можно навсегда высечь одну фразу. Где и какую?', 'На скамейке на краю города: «Не обязательно».', 'На мосту: «Выдержит».', 'На башне: «Сдвинуто».', 'Над дверью кухни: «Есть будут все».'],
           ['Ты, только на 40 лет старше, присылаешь себе один совет на стикере.', '«Иди дальше, чем кажется разумным».', '«Сделай резервную копию».', '«Проси больше».', '«Позвони им. Сегодня».'],
-          ['Через 40 лет о тебе снимают короткий фильм. Как он называется?', '«Тот, кто всегда уходил вовремя»', '«Тот, на кого можно было положиться»', '«Тот, кто менял правила»', '«Тот, кто никого не бросил»'],
-          ['В самом конце можно сохранить один предмет. Какой?', 'Старый билет в один конец', 'Ключ от дома, где всё началось', 'Награду, которой от тебя никто не ждал', 'Пачку писем со словом «спасибо»'],
-          ['Тебя спрашивают, о чём ты жалеешь меньше всего.', 'О том, что жизнь не прошла по чужому сценарию', 'О том, что всё важное было в безопасности', 'О том, что невозможное всё-таки получилось', 'О том, что рядом всегда были люди'],
+          ['Через 40 лет о тебе снимают короткий фильм. Как он называется?', '«Человек, который вовремя уходил»', '«Человек, на которого можно было положиться»', '«Человек, который менял правила»', '«Человек, который никого не бросил»'],
+          ['В самом конце можно сохранить один предмет. Какой?', 'Старый билет в один конец', 'Ключ от дома, где всё началось', 'Награду, которой от меня никто не ждал', 'Пачку писем со словом «спасибо»'],
+          ['Через 40 лет ты оставляешь внукам один совет на холодильнике.', '«Не живите по чужому плану».', '«Всегда держите запасной ключ».', '«Берите больше, чем предлагают».', '«Звоните друг другу чаще».'],
         ],
       },
       reactions: {
@@ -266,17 +271,22 @@
         'CARE|ANCHOR': { name: 'СТРАЖ', plus: 'никого не бросает', shadow: 'защищает даже от того, что помогло бы вырасти' },
       },
       tension: {
-        O: { short: 'СВОБОДА ↔ ОПОРА', text: 'Тебя тянет и к новому, и к надёжному. Решения даются тяжело, когда свобода стоит стабильности: переезд, смена работы, большой риск. Это не нерешительность — две настоящие ценности тянут в разные стороны.',
+        O: { short: 'СВОБОДА ↔ ОПОРА', text: 'Тебя тянет и к новому, и к надёжному. Решения даются тяжело, когда за свободу платишь стабильностью: переезд, смена работы, большой риск. Это не нерешительность — две настоящие ценности тянут в разные стороны.',
           quest: '7 дней: каждый день одно маленькое «новое» внутри безопасных рамок (маршрут, блюдо, разговор) — и одно действие, которое укрепляет опору. На седьмой день запиши, что дало больше энергии.' },
         E: { short: 'ВЕС ↔ ЗАБОТА', text: 'Тебе важно и добиваться, и заботиться. Тяжелее всего, когда успех требует кого-то оставить позади: пропущенные вечера, жёсткие решения. Это не слабость — две настоящие ценности тянут в разные стороны.',
           quest: '7 дней: каждое утро выбирай одно дело для своего роста и одно — для конкретного человека. Вечером отмечай, какое из двух осталось несделанным.' },
-        clear: {
-          FREEDOM: { short: 'ясный приоритет — СВОБОДА (цена — ОПОРА)', text: 'Свобода побеждает почти без боя. Цена этой ясности — опора: планы, подушка и предсказуемость могут незаметно проседать.', quest: '7 дней: выбери одну область, где не хватает опоры (деньги, сон, порядок), и каждый день делай в ней одно скучное действие на 10 минут.' },
-          ANCHOR: { short: 'ясный приоритет — ОПОРА (цена — СВОБОДА)', text: 'Опора побеждает почти без боя. Цена этой ясности — свобода: новое может проходить мимо, потому что «и так нормально».', quest: '7 дней: каждый день одно маленькое «впервые» — путь, блюдо, человек, вопрос. Записывай, что было самым живым.' },
-          WEIGHT: { short: 'ясный приоритет — ВЕС (цена — ЗАБОТА)', text: 'Вес побеждает почти без боя. Цена этой ясности — забота: людям рядом может начать казаться, что они ресурс.', quest: '7 дней: каждый день делай что-то для одного человека без расчёта на пользу. Записывай, как он реагирует.' },
-          CARE: { short: 'ясный приоритет — ЗАБОТА (цена — ВЕС)', text: 'Забота побеждает почти без боя. Цена этой ясности — вес: свои цели могут вечно ждать очереди.', quest: '7 дней: 30 минут в день на свою цель — до того, как отвечать на чужие просьбы.' },
-        },
       },
+      clearShort: (top, low) => 'ясный приоритет — ' + top + ' (цена — ' + low + ')',
+      clearText: (top, low, cost) => 'Чаще всего побеждает ' + top + ' — и почти без боя. Цена этой ясности — ' + low + ': ' + cost + '.',
+      cost: { FREEDOM: 'новое может проходить мимо, потому что «и так нормально»', ANCHOR: 'планы, подушка и предсказуемость могут незаметно проседать', WEIGHT: 'свои цели и свой голос могут вечно ждать очереди', CARE: 'людям рядом может начать казаться, что они ресурс' },
+      questLow: {
+        FREEDOM: '7 дней: каждый день одно маленькое «впервые» — путь, блюдо, человек, вопрос. Записывай, что было самым живым.',
+        ANCHOR: '7 дней: выбери одну область, где не хватает опоры (деньги, сон, порядок), и каждый день делай в ней одно скучное действие на 10 минут.',
+        WEIGHT: '7 дней: 30 минут в день на свою цель — до того, как отвечать на чужие просьбы.',
+        CARE: '7 дней: каждый день делай что-то для одного человека без расчёта на пользу. Записывай, как он реагирует.',
+      },
+      mixed: { short: 'без явного лидера', text: 'Ни одна ценность не побеждает: голоса делятся почти поровну. Это может быть гибкость — а может быть усталость от выбора. Посмотри на свои «точно нет»: они говорят о тебе больше, чем «выберу».',
+        quest: '7 дней: каждый вечер записывай одно решение дня и какая ценность в нём победила. На седьмой день посчитай, кто выигрывал чаще.' },
       blind: {
         FREEDOM: 'Слепая зона — СВОБОДА. Может казаться, что выбора нет, хотя он есть. Где ты живёшь по чужому сценарию?',
         ANCHOR: 'Слепая зона — ОПОРА. Без запасного плана любая буря становится личной. Что сломается первым, если завтра всё пойдёт не так?',
@@ -284,9 +294,9 @@
         CARE: 'Слепая зона — ЗАБОТА. До цели можно дойти в одиночестве. Кто заметит, если тебе понадобится помощь?',
       },
       bridgeText: [
-        'Ты-через-10-лет — пока незнакомец. Это очень частое состояние. Попробуй разговор с собой из будущего — кнопка ниже.',
+        'Ты-через-10-лет — пока незнакомец. Так бывает очень часто. Попробуй разговор с собой из будущего — кнопка ниже.',
         'Ты-через-10-лет — как дальний родственник: лицо знакомое, но видитесь вы редко. Одно письмо себе через 10 лет заметно сближает.',
-        'Ты сейчас и ты-через-10-лет — почти одно лицо. В исследованиях Хершфилда у таких людей больше сбережений и терпения к долгой игре. Дай этой версии себя одно обещание на этой неделе.',
+        'Ты сейчас и ты-через-10-лет — почти одно лицо. В исследованиях Хершфилда у таких людей больше сбережений и терпения в долгих делах. Дай этой версии себя одно обещание на этой неделе.',
       ],
       bridgeQ: { prompt: 'Насколько ты-через-10-лет ощущается как ты?', low: '1 — два разных человека', high: '7 — один и тот же человек' },
       lifePaths: [null,
@@ -318,7 +328,7 @@
         'недоделанные проекты по закону считаются домашними питомцами', 'почта доставляет письма всем версиям тебя, которые не случились',
       ],
       prompts: {
-        plan: r => 'Я прохожу BORN WEIRD — игру-зеркало ценностей (это игра, не тест и не предсказание). Мой порядок ценностей: ' + r.orderText + '. Главное напряжение: ' + r.tension.short + '. Квест на 7 дней: ' + r.tension.quest +
+        plan: r => 'Я прохожу BORN WEIRD — игру-зеркало ценностей (это игра, не тест и не предсказание). Мой порядок ценностей: ' + r.orderText + '. Главное напряжение: ' + r.tension.short + '. Квест: ' + r.tension.quest +
           ' Преврати его в план на 7 дней: одно конкретное действие на 15–30 минут в день и понятный критерий «сделано». Сначала задай мне один вопрос о моей реальной ситуации, потом дай план. Отвечай по-русски.',
         future: r => 'Ролевая игра: ты — это я через 10 лет. Сейчас моя связь с будущим собой — ' + r.bridge + ' из 7. Мои ценности: ' + r.orderText + '; главное напряжение: ' + r.tension.short +
           '. Поговори с сегодняшней версией меня от лица меня-будущего: коротко, тепло, честно, без предсказаний — это игра. Начни с одного вопроса ко мне. Отвечай по-русски.',
@@ -340,7 +350,7 @@
   CONTENT.ru.seed.ai[3] = 'Начни с вопроса: **«Где в этом результате есть узнавание — а где совсем нет?»**';
 
   // Archetype × tension rarity = share of random play; generated by operations/rarity.mjs.
-  const RARITY = {"ANCHOR|CARE|E":0.02211,"ANCHOR|CARE|O":0.06194,"ANCHOR|CARE|clear":0.04181,"ANCHOR|WEIGHT|E":0.02304,"ANCHOR|WEIGHT|O":0.06132,"ANCHOR|WEIGHT|clear":0.04052,"CARE|ANCHOR|E":0.06162,"CARE|ANCHOR|O":0.02266,"CARE|ANCHOR|clear":0.04109,"CARE|FREEDOM|E":0.06152,"CARE|FREEDOM|O":0.02293,"CARE|FREEDOM|clear":0.04084,"FREEDOM|CARE|E":0.02234,"FREEDOM|CARE|O":0.06223,"FREEDOM|CARE|clear":0.04036,"FREEDOM|WEIGHT|E":0.02221,"FREEDOM|WEIGHT|O":0.06184,"FREEDOM|WEIGHT|clear":0.04026,"WEIGHT|ANCHOR|E":0.06223,"WEIGHT|ANCHOR|O":0.02202,"WEIGHT|ANCHOR|clear":0.04108,"WEIGHT|FREEDOM|E":0.06048,"WEIGHT|FREEDOM|O":0.02234,"WEIGHT|FREEDOM|clear":0.04118};
+  const RARITY = {"ANCHOR|CARE|E":0.02235,"ANCHOR|CARE|O":0.06191,"ANCHOR|CARE|clear":0.028,"ANCHOR|CARE|mixed":0.01302,"ANCHOR|WEIGHT|E":0.02241,"ANCHOR|WEIGHT|O":0.06168,"ANCHOR|WEIGHT|clear":0.02782,"ANCHOR|WEIGHT|mixed":0.01307,"CARE|ANCHOR|E":0.06176,"CARE|ANCHOR|O":0.02288,"CARE|ANCHOR|clear":0.02811,"CARE|ANCHOR|mixed":0.01299,"CARE|FREEDOM|E":0.06136,"CARE|FREEDOM|O":0.02283,"CARE|FREEDOM|clear":0.02737,"CARE|FREEDOM|mixed":0.01283,"FREEDOM|CARE|E":0.0229,"FREEDOM|CARE|O":0.06042,"FREEDOM|CARE|clear":0.02758,"FREEDOM|CARE|mixed":0.01276,"FREEDOM|WEIGHT|E":0.02202,"FREEDOM|WEIGHT|O":0.06103,"FREEDOM|WEIGHT|clear":0.02825,"FREEDOM|WEIGHT|mixed":0.01332,"WEIGHT|ANCHOR|E":0.0615,"WEIGHT|ANCHOR|O":0.02227,"WEIGHT|ANCHOR|clear":0.02835,"WEIGHT|ANCHOR|mixed":0.01297,"WEIGHT|FREEDOM|E":0.06189,"WEIGHT|FREEDOM|O":0.02267,"WEIGHT|FREEDOM|clear":0.02853,"WEIGHT|FREEDOM|mixed":0.01312};
 
   const normLang = lang => (LANGS.indexOf(lang) >= 0 ? lang : 'en');
   const pack = lang => CONTENT[normLang(lang)];
@@ -481,15 +491,25 @@
     const r = rngFor(run.seed, 'tie');
     const jitter = POLES.map(() => r() * 0.001);
     const rank = [0, 1, 2, 3].sort((a, b) => (net[b] - net[a]) || (worst[a] - worst[b]) || (jitter[b] - jitter[a]));
-    // Tension: an axis where BOTH poles were chosen as "I'd choose" at least twice; otherwise a clear priority.
+    // Tension: an axis where BOTH poles were chosen as "I'd choose" at least twice.
+    // Otherwise a clear priority — only if one pole was chosen strictly more often than every other — else "mixed".
     const pull = { O: Math.min(best[0], best[1]), E: Math.min(best[2], best[3]) };
     const top = POLES[rank[0]];
+    const maxBest = Math.max(...best), leaders = best.filter(b => b === maxBest).length;
     let tension;
     if (Math.max(pull.O, pull.E) >= 2) tension = pull.O === pull.E ? AXIS[top] : (pull.O > pull.E ? 'O' : 'E');
-    else tension = 'clear:' + top;
+    else if (leaders === 1 && best[rank[0]] === maxBest) tension = 'clear';
+    else tension = 'mixed';
     const otherAxis = AXIS[top] === 'O' ? [2, 3] : [0, 1];
-    const second = POLES[otherAxis.sort((a, b) => rank.indexOf(a) - rank.indexOf(b))[0]];
-    return { best, worst, net, rank: rank.map(i => POLES[i]), top, second, low: POLES[rank[3]], tension };
+    const second = POLES[otherAxis.slice().sort((a, b) => rank.indexOf(a) - rank.indexOf(b))[0]];
+    const low = POLES[rank[3]];
+    // Blind spot = the weakest pole, but never a pole of the tension axis (that axis is about pull, not neglect).
+    let blind = low;
+    if ((tension === 'O' || tension === 'E') && AXIS[low] === tension) {
+      const other = tension === 'O' ? [2, 3] : [0, 1];
+      blind = POLES[other.slice().sort((a, b) => rank.indexOf(b) - rank.indexOf(a))[0]];
+    }
+    return { best, worst, net, rank: rank.map(i => POLES[i]), top, second, low, blind, tension };
   }
 
   /** Final result. Shared outputs carry only: choices (best/worst poles), bridge, life path — no birth facts. */
@@ -503,13 +523,17 @@
     const hex = () => Math.floor(r() * 0x10000).toString(16).toUpperCase().padStart(4, '0');
     const id = hex() + '-' + hex();
     const worldFact = P.worldFacts[pickIdx(rngFor(run.seed, 'world'), P.worldFacts.length)];
-    const tension = sc.tension.startsWith('clear:') ? Object.assign({ kind: 'clear', pole: sc.top }, P.tension.clear[sc.top]) : Object.assign({ kind: 'axis', axis: sc.tension }, P.tension[sc.tension]);
+    const L = p => P.poles[p].label;
+    let tension;
+    if (sc.tension === 'clear') tension = { kind: 'clear', pole: sc.top, costPole: sc.blind, short: P.clearShort(L(sc.top), L(sc.blind)), text: P.clearText(L(sc.top), L(sc.blind), P.cost[sc.blind]), quest: P.questLow[sc.blind] };
+    else if (sc.tension === 'mixed') tension = Object.assign({ kind: 'mixed' }, P.mixed);
+    else tension = Object.assign({ kind: 'axis', axis: sc.tension }, P.tension[sc.tension]);
     const bars = sc.net.map(n => Math.max(0, Math.min(10, Math.round((n + 8) / 16 * 10))));
     const choices = run.answers.map(([b, w], k) => {
       const s = P.situations[PLAN[k]][run.sits[k]];
       return { horizon: P.horizonLabels[PLAN[k]], prompt: s[0], best: s[1 + b], worst: s[1 + w], bestPole: POLES[b] };
     });
-    const tKey = sc.top + '|' + sc.second + '|' + (tension.kind === 'clear' ? 'clear' : tension.axis);
+    const tKey = sc.top + '|' + sc.second + '|' + (tension.kind === 'axis' ? tension.axis : tension.kind);
     const rare = RARITY[tKey];
     const res = {
       id, version: VERSION, lang: run.lang,
@@ -520,7 +544,7 @@
       meanings: Object.fromEntries(POLES.map(p => [p, P.poles[p].meaning])),
       profile: POLES.map((p, i) => ({ pole: p, label: P.poles[p].label, net: sc.net[i], best: sc.best[i], worst: sc.worst[i], bar: bars[i] })),
       orderText: sc.rank.map(p => P.poles[p].label).join(P.orderSep),
-      tension, blind: P.blind[sc.low],
+      tension, blind: P.blind[sc.blind], blindPole: sc.blind,
       bridge: run.bridge, bridgeLabel: P.bridge.label, bridgeText: P.bridgeText[run.bridge <= 2 ? 0 : run.bridge <= 5 ? 1 : 2],
       lifePath: run.lifePath, lp: P.lifePaths[run.lifePath],
       choices, earth: 'EARTH-' + String(1000 + (run.seed % 9000)), worldFact,
@@ -562,6 +586,7 @@
     const lifePath = take(4), seed = take(53), version = take(3);
     if (version !== KEY_VERSION || n !== 0n || lifePath < 1 || lifePath > 9 || bridge < 1 || bridge > 7) return null;
     if (sits.some(s => s >= POOL_SIZE) || answers.some(([b, w]) => b === w)) return null;
+    if (sits.some((s, k) => sits.some((s2, k2) => k2 < k && PLAN[k2] === PLAN[k] && s2 === s))) return null; // no repeated situation in a horizon
     const run = makeRun(seed, lifePath, lang, null, []);
     run.sits = sits; run.answers = answers; run.bridge = bridge;
     if (checksum(keyFields(run)) !== check) return null;

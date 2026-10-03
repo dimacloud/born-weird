@@ -327,7 +327,7 @@
     },
     ru: {
       tagline: 'Зеркало для жизней, которых у тебя ещё не было.',
-      subline: '3 минуты · 8 ситуаций · узнай, какие ценности тянут тебя в разные стороны, где слепая зона и насколько близок тебе ты-через-10-лет. В конце — квест на 7 дней и пиксельная карточка персонажа.',
+      subline: '3 минуты · 8 ситуаций · узнай, какие ценности тянут тебя в разные стороны, где слепая зона и как далеко тебе до себя-через-10-лет. В конце — квест на 7 дней и пиксельная карточка персонажа.',
       dobLabel: 'ВВЕДИ ДАТУ РОЖДЕНИЯ:', start: 'НАЧАТЬ',
       privacy: 'Дата рождения не покидает это устройство и нигде не хранится. Она даёт реальные факты о твоём времени (их видишь только ты) и одно открыто символическое число. Это не предсказание.',
       birthBar: 'ТВОЁ ВРЕМЯ',
@@ -341,7 +341,7 @@
       symbol: d => 'Дата ' + d.dateShown + ' → ' + d.lifePathSteps.join(' → ') + '\nЧисло пути ' + d.lifePath + ' — ' + d.lp.name + '\n+ ' + d.lp.plus + '\n− ' + d.lp.shadow + '\n? ' + d.lp.q + '\nЗнак: ' + d.zodiac + ' — просто для красоты.',
       motto: 'Цифры — факты. Архетип — метафора. Выбор — твой.',
       toModel: 'ДАЛЬШЕ: ЧТО МЫ ИЗУЧАЕМ →',
-      modelBar: 'ЧТО МЫ ИЗУЧАЕМ', modelHead: 'Какие ценности тянут тебя в разные стороны — и насколько своим ощущается ты-через-10-лет.',
+      modelBar: 'ЧТО МЫ ИЗУЧАЕМ', modelHead: 'Какие ценности тянут тебя в разные стороны — и насколько ты-через-10-лет ощущается как ты.',
       axisO: 'СВОБОДА ↔ ОПОРА', axisE: 'ВЕС ↔ ЗАБОТА',
       howTo: 'В каждой из 8 ситуаций сначала отметь, что ВЫБЕРЕШЬ, потом — что ТОЧНО НЕТ. Правильных ответов нет: у каждого варианта своя цена.',
       caveat: 'Это зеркало сегодняшних выборов — не тест и не диагноз. По мотивам теории базовых ценностей Шварца и исследований Хершфилда о будущем себе; формулировки наши и не валидированы. 8 ситуаций показывают только порядок твоих ценностей, а не сравнение с другими людьми.',
@@ -453,7 +453,7 @@
     pumping = true; hit(sendQ.shift());
     setTimeout(() => { pumping = false; pump(); }, 400);
   }
-  window.addEventListener('pagehide', () => { let n = 0; while (sendQ.length && n++ < 5) hit(sendQ.shift()); });
+  window.addEventListener('pagehide', () => { let n = 0; while (sendQ.length && n++ < 3) hit(sendQ.shift()); });
 
   // ---------- referral: ?k=KEY or legacy ?from=ID ----------
   const ownIds = () => { try { return JSON.parse(store.get('bw_own') || '[]'); } catch (e) { return []; } };
@@ -636,7 +636,6 @@
       b.addEventListener('click', () => tapOption(k, pos, b));
       box.appendChild(b);
     });
-    track('item_presented_' + (k + 1));
   }
   function tapOption(k, pos, btn) {
     if (!run || run.answers.length !== k || itemIdx !== k) return;
@@ -702,7 +701,7 @@
     result = BW.finish(run);
     rememberOwn(result.id); rememberSeen(result.sitIds);
     track('simulation_completed');
-    track('tension_' + (result.tension.kind === 'clear' ? 'clear' : result.tension.axis));
+    track('tension_' + (result.tension.kind === 'axis' ? result.tension.axis : result.tension.kind));
     if (referredBy) {
       track('referred_simulation_completed');
       if (!store.get('bw_ref_sent_' + referredBy, true)) { store.set('bw_ref_sent_' + referredBy, '1', true); track('ref_' + referredBy); }
@@ -755,7 +754,7 @@
     $('resBlind').textContent = result.blind;
     $('resBridgeHead').textContent = t('bridgeHead')(result.bridge); $('resBridge').textContent = result.bridgeText;
     $('resQuest').textContent = result.tension.quest;
-    $('resStart').textContent = run && run.decoded ? t('start2')(run.decoded.milestone) : '';
+    $('resStart').textContent = ''; // the milestone date stays on the private birth screen: next to the life path it would reveal the birth date
     $('retake').textContent = t('retake')(run && run.decoded ? run.decoded.retakeDate : '');
     renderAI();
     const ol = $('resChoices'); ol.innerHTML = '';

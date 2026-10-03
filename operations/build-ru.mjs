@@ -12,9 +12,9 @@ let html = await readFile(join(site, 'index.html'), 'utf8');
 const swaps = [
   ['<html lang="en">', '<html lang="ru" data-lang="ru">'],
   ['<head>\n', '<head>\n<base href="../">\n'],
-  [/<meta name="description" content="[^"]*">/, '<meta name="description" content="Симулятор жизней, которых у тебя ещё не было. 5 выборов. 2 минуты. Артефакт из реальности, которой никогда не было.">'],
-  [/<meta property="og:title" content="[^"]*">/, '<meta property="og:title" content="BORN WEIRD — симулятор жизней, которых у тебя ещё не было">'],
-  [/<meta property="og:description" content="[^"]*">/, '<meta property="og:description" content="5 выборов. 2 минуты. Артефакт из реальности, которой никогда не было.">'],
+  [/<meta name="description" content="[^"]*">/, '<meta name="description" content="Зеркало для жизней, которых у тебя ещё не было. 8 ситуаций, 3 минуты: какие ценности тянут тебя в разные стороны.">'],
+  [/<meta property="og:title" content="[^"]*">/, '<meta property="og:title" content="BORN WEIRD — зеркало для жизней, которых у тебя ещё не было">'],
+  [/<meta property="og:description" content="[^"]*">/, '<meta property="og:description" content="8 ситуаций, 3 минуты: какие ценности тянут тебя в разные стороны. Зеркало, не тест.">'],
   [/<meta property="og:image" content="[^"]*">/, '<meta property="og:image" content="https://dimacloud.github.io/born-weird/og-ru.png">\n<meta property="og:locale" content="ru_RU">'],
 ];
 for (const [a, b] of swaps) {

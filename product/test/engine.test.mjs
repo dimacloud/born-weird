@@ -196,3 +196,49 @@ test('site: generated /ru/ entry (if built)', () => {
   const h = readFileSync(p, 'utf8');
   assert.ok(h.startsWith('<!doctype html>') && h.includes('<base href="../">') && h.includes('og-ru.png') && h.includes('data-lang="ru"'));
 });
+
+// ---------- QA-EVAL-001 (v0.4) ----------
+const playPoles = (seq, salt = 1) => {
+  const run = BW.newRun('1990-05-17', salt, 'en', NOW);
+  seq.forEach(([b, w], k) => { const o = BW.item(run, k).options.map(x => x.pole); BW.answer(run, k, o.indexOf(b), o.indexOf(w)); if (k === BW.BRIDGE_AFTER) BW.setBridge(run, 4); });
+  return BW.finish(run);
+};
+const rep = f => Array.from({ length: 8 }, (_, k) => f(k));
+test('QA: edge cases — same pole best 8×, all ties deterministic per seed', () => {
+  const r = playPoles(rep(() => ['FREEDOM', 'ANCHOR']));
+  assert.equal(r.tension.kind, 'clear'); assert.equal(r.top, 'FREEDOM'); assert.equal(r.low, 'ANCHOR');
+  const P = BW.POLES;
+  for (let s = 1; s < 20; s++) assert.deepEqual(playPoles(rep(k => [P[k % 4], P[(k + 2) % 4]]), s), playPoles(rep(k => [P[k % 4], P[(k + 2) % 4]]), s));
+});
+test('QA: forged key with a repeated situation is rejected', () => {
+  const run = BW.newRun('1990-05-17', 5, 'en', NOW);
+  for (let k = 0; k < 8; k++) { BW.answer(run, k, 0, 1); if (k === 6) BW.setBridge(run, 3); }
+  run.sits[1] = run.sits[0];
+  assert.equal(BW.fromKey(BW.encodeKey(run), 'en'), null);
+});
+test('QA: "clear priority" only when one pole strictly wins; its cost is the blind spot', () => {
+  const tie = playPoles(rep(k => [k % 2 ? 'FREEDOM' : 'WEIGHT', 'ANCHOR'])); // FREEDOM and WEIGHT chosen 4× each
+  assert.notEqual(tie.tension.kind, 'clear');
+  const r = playPoles(rep(() => ['FREEDOM', 'WEIGHT']));
+  assert.equal(r.tension.kind, 'clear'); assert.equal(r.tension.pole, 'FREEDOM');
+  assert.equal(r.tension.costPole, r.blindPole); assert.equal(r.blindPole, 'WEIGHT');
+});
+test('QA: blind spot is never a pole of the main tension axis', () => {
+  const r = playPoles(rep(k => (k < 2 ? ['FREEDOM', 'CARE'] : k < 4 ? ['ANCHOR', 'FREEDOM'] : ['CARE', 'FREEDOM'])));
+  assert.ok(!(r.tension.kind === 'axis' && BW.AXIS[r.blindPole] === r.tension.axis), r.tension.short + ' + blind ' + r.blindPole);
+});
+test('consistency over random play: clear = strict winner, cost = blind spot, blind spot off the tension axis', () => {
+  const r0 = BW.rng(21);
+  const kinds = {};
+  for (let i = 0; i < 5000; i++) {
+    const res = BW.simulate('1990-05-17', randAnswers(r0), { salt: i, now: NOW });
+    kinds[res.tension.kind] = (kinds[res.tension.kind] || 0) + 1;
+    const best = Object.fromEntries(res.profile.map(p => [p.pole, p.best]));
+    if (res.tension.kind === 'clear') {
+      assert.ok(BW.POLES.every(p => p === res.tension.pole || best[p] < best[res.tension.pole]));
+      assert.equal(res.tension.pole, res.top); assert.equal(res.tension.costPole, res.blindPole);
+    }
+    if (res.tension.kind === 'axis') assert.notEqual(BW.AXIS[res.blindPole], res.tension.axis);
+  }
+  assert.ok(kinds.axis && kinds.clear && kinds.mixed, JSON.stringify(kinds));
+});

@@ -112,3 +112,17 @@ All decisions below are owned by CEO-001, are reversible unless stated otherwise
 - **DECISION:** The seed is random per run (never date-derived). The key holds ranking + 0–10 bars + checksum only. Only the life path (+2) affects the result and picks the first question. Sign, eastern year and weekday are shown as lore on the local decode screen, and the copy says plainly that they don't affect the result (Genesis §21: deception = 0).
 - **RESULT:** Residual leakage = life path only (≈2,475 candidate dates in 1950–2010, same as the life path alone).
 - **TRADE-OFF:** The birth date matters less mechanically than the Founder may have hoped. It still visibly picks the start class and the first question. Revisit if users ask for more birth influence. Any added influence must pass the same leakage test.
+
+## DECISION #015 — v0.4 "Mirror": a real model under the game (Founder-approved)
+- **TRIGGER:** Founder smoke test #2: "looks good, but empty — unclear what we study; questions repeat". Research by RESEARCH-002 (science), RESEARCH-003 (birth date and RU market), PROTOTYPE-001 (live AI). Concept: reports/CONCEPT_v0.4.md. Founder: "build v0.4, AI later".
+- **DECISION:**
+  1. **Model.** The 6 invented stats are replaced by 4 value poles on 2 axes after Schwartz (FREEDOM ↔ ANCHOR, WEIGHT ↔ CARE) and BRIDGE (future self-continuity, one 1–7 item after Hershfield).
+  2. **Measurement.** 8 situations per run from a pool of 30. Each has "I'd choose" and "definitely not" (best–worst), and every option has a price. A seen-history prevents repeats across runs in the same browser.
+  3. **Output.** Value order, **main tension** (axis conflict or clear priority with its cost), blind spot, bridge interpretation, a 7-day quest aimed at the tension, an archetype (8) with plus/shadow, and a retake date (stability check).
+  4. **Birth date.**
+     - Private: weeks lived, a 90-year life grid, the next "fresh start" milestone (Dai/Milkman/Riis), Erikson's stage as a question, and the world at birth (population, a tech milestone).
+     - Shared: only the life-path archetype, labelled as lore.
+  5. **Honesty.** "A mirror, not a test" on the model screen and in the result. Theory citations without copied items. Ipsative caveat (order only, not norms).
+- **ALTERNATIVES:** Big Five short forms (weak reliability, no tension to resolve); SDT needs (licensing); runtime LLM first (does not give a model; deferred to v0.5 / HR-003).
+- **COST:** $0. **REVERSIBILITY:** high. **CONFIDENCE:** medium. The model is sound, but 8 items is thin, so we measure perceived accuracy with the new `fb_true_*` question.
+- **SUCCESS SIGNAL:** `fb_true_yes + fb_true_partly` ≥ 70% of feedback, and the share rate higher than v0.3.

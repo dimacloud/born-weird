@@ -94,6 +94,14 @@ CEO-001 ── runs: BUILDER-001 (mode), PRODUCT (merged)
 | AI-ARCH-001 | Cost and architecture of runtime LLM | Haiku 4.5 ≈ $0.011/reality; staged plan; HR-003 draft; guardrails | RETIRED |
 | RU-EDITOR-002 | Russian copy review of v0.3 | ~25 edits; found the future-prompt bug in both languages; 4.5/5 | RETIRED |
 
+### Temporary agents of 2026-10-03 (v0.4 concept)
+| ID | Mission | Output | Status |
+|---|---|---|---|
+| RESEARCH-002 | Evidence-based backbone measurable in ~8 choices | Schwartz higher-order values + Hershfield FSC; best–worst format; caveats | RETIRED |
+| RESEARCH-003 | What a birth date can honestly give; RU numerology market | Life in weeks, fresh-start milestones, Erikson stage; plus/shadow language; avoid karma and fear funnels | RETIRED |
+| PROTOTYPE-001 | Would a live adaptive AI fix "empty/repetitive"? | 3 RU sample sessions; ~$0.025/session; needs an ingredient pool, gender checks, fallback | RETIRED |
+| RU-EDITOR-003 | RU copy review of v0.4 | (pending) | TEMPORARY |
+
 ### PROPOSED (not instantiated)
 | Role | Why not now | Instantiate when |
 |---|---|---|

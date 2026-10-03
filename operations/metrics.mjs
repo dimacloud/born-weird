@@ -21,7 +21,7 @@ const EVENTS = [
   ...['plan', 'future', 'debuff'].flatMap(k => ['chatgpt', 'claude'].map(p => 'ai_open_' + k + '_' + p)),
   // v0.4
   'birth_viewed', 'model_viewed', 'bridge_answered', ...[1, 2, 3, 4, 5, 6, 7].map(n => 'bridge_' + n),
-  ...[1, 2, 3, 4, 5, 6, 7, 8].map(i => 'item_answered_' + i), 'tension_O', 'tension_E', 'tension_clear',
+  ...[1, 2, 3, 4, 5, 6, 7, 8].map(i => 'item_answered_' + i), 'tension_O', 'tension_E', 'tension_clear', 'tension_mixed',
   'fb_true_no', 'fb_true_partly', 'fb_true_yes', ...['tension'].flatMap(k => ['chatgpt', 'claude'].map(p => 'ai_open_' + k + '_' + p)),
 ].filter((e, i, a) => a.indexOf(e) === i);
 // Russian-language segment (EXP-002): every event is also counted as ru_<event> when the UI is in Russian.
@@ -87,7 +87,7 @@ const metrics = {
   v04: {
     stage_dropoff: [1, 2, 3, 4, 5, 6, 7, 8].map(i => c['item_answered_' + i]),
     tension_rang_true: { no: c.fb_true_no, partly: c.fb_true_partly, yes: c.fb_true_yes },
-    tensions: { O: c.tension_O, E: c.tension_E, clear: c.tension_clear },
+    tensions: { O: c.tension_O, E: c.tension_E, clear: c.tension_clear, mixed: c.tension_mixed },
   },
   satisfaction: { worth_avg: worthAvg && Math.round(worthAvg * 100) / 100, worth_n: worthN, feel: { meh: c.fb_feel_meh, weird: c.fb_feel_weird, wtf: c.fb_feel_wtf } },
   alive_signal: (c.referred_simulation_completed || 0) >= 1
