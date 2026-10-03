@@ -19,11 +19,16 @@ const EVENTS = [
   // v0.3
   'key_landing_view', 'decode_viewed', 'sound_off',
   ...['plan', 'future', 'debuff'].flatMap(k => ['chatgpt', 'claude'].map(p => 'ai_open_' + k + '_' + p)),
-];
+  // v0.4
+  'birth_viewed', 'model_viewed', 'bridge_answered', ...[1, 2, 3, 4, 5, 6, 7].map(n => 'bridge_' + n),
+  ...[1, 2, 3, 4, 5, 6, 7, 8].map(i => 'item_answered_' + i), 'tension_O', 'tension_E', 'tension_clear',
+  'fb_true_no', 'fb_true_partly', 'fb_true_yes', ...['tension'].flatMap(k => ['chatgpt', 'claude'].map(p => 'ai_open_' + k + '_' + p)),
+].filter((e, i, a) => a.indexOf(e) === i);
 // Russian-language segment (EXP-002): every event is also counted as ru_<event> when the UI is in Russian.
 const RU_EVENTS = ['landing_view', 'referred_visit', 'key_landing_view', 'simulation_started', 'decode_viewed', 'simulation_completed', 'referred_simulation_completed',
   'artifact_generated', 'share_completed', 'link_copied', 'artifact_saved', 'reality_seed_copied', 'reality_seed_downloaded',
-  ...['plan', 'future', 'debuff'].flatMap(k => ['chatgpt', 'claude'].map(p => 'ai_open_' + k + '_' + p)),
+  ...['plan', 'future', 'debuff', 'tension'].flatMap(k => ['chatgpt', 'claude'].map(p => 'ai_open_' + k + '_' + p)),
+  'birth_viewed', 'model_viewed', 'bridge_answered', ...[1, 2, 3, 4, 5, 6, 7, 8].map(i => 'item_answered_' + i), 'fb_true_no', 'fb_true_partly', 'fb_true_yes',
   ...[1, 2, 3, 4, 5].map(i => 'choice_selected_' + i), ...[1, 2, 3, 4, 5].map(n => 'fb_worth_' + n), 'fb_send_yes', 'fb_send_no'];
 
 async function get(key) {
@@ -76,9 +81,14 @@ const metrics = {
     stage_dropoff: [1, 2, 3, 4, 5].map(i => c['choice_selected_' + i]),
   },
   ai_handoff: (() => {
-    const opens = ['plan', 'future', 'debuff'].flatMap(k => ['chatgpt', 'claude'].map(p => c['ai_open_' + k + '_' + p] || 0)).reduce((x, y) => x + y, 0);
+    const opens = ['plan', 'future', 'debuff', 'tension'].flatMap(k => ['chatgpt', 'claude'].map(p => c['ai_open_' + k + '_' + p] || 0)).reduce((x, y) => x + y, 0);
     return { opens, rate_per_completion: pct(opens, c.simulation_completed), note: 'EXP-003 trigger: >15% → propose runtime AI (HR-003)' };
   })(),
+  v04: {
+    stage_dropoff: [1, 2, 3, 4, 5, 6, 7, 8].map(i => c['item_answered_' + i]),
+    tension_rang_true: { no: c.fb_true_no, partly: c.fb_true_partly, yes: c.fb_true_yes },
+    tensions: { O: c.tension_O, E: c.tension_E, clear: c.tension_clear },
+  },
   satisfaction: { worth_avg: worthAvg && Math.round(worthAvg * 100) / 100, worth_n: worthN, feel: { meh: c.fb_feel_meh, weird: c.fb_feel_weird, wtf: c.fb_feel_wtf } },
   alive_signal: (c.referred_simulation_completed || 0) >= 1
     ? 'LIKELY: a referred visitor completed a simulation (needs human confirmation it was a non-Founder)'

@@ -1,56 +1,28 @@
-/* BORN WEIRD — engine v0.3
- * Deterministic life-simulation generator. Pure functions, no I/O.
- * Birth creates the seed. Choices create the timeline.
+/* BORN WEIRD — engine v0.4 "Mirror"
+ * A 3-minute mirror of today's choices. Not a test, not a diagnosis, not a prediction.
  *
- * Birth date → symbolic decoding (life path number, sun sign, eastern year, weekday). The life path gives a starting
- *   stat bonus and picks the first question; the other symbols are lore. Symbols are narrative devices, never predictions.
- * Each stage draws 1 of 3 situations; every choice shows its outcome and stat change immediately.
- * Language packs (en, ru) share one structure: same seed + choices → same reality in every language.
- * Privacy: shareable outputs (card, key, Reality Seed) depend on the birth date only through the life path number
- * (1 of 9). The seed is random per run; the key stores ranking + 0–10 bars, never exact scores.
- * Works in the browser (window.BW) and in Node (module.exports).
+ * Model (see reports/CONCEPT_v0.4.md):
+ *  - 4 value poles on two axes, after Schwartz's theory of basic human values (wording is ours, not validated):
+ *      FREEDOM (openness to change)  ↔  ANCHOR (conservation)
+ *      WEIGHT  (self-enhancement)    ↔  CARE   (self-transcendence)
+ *  - BRIDGE: future self-continuity, one 1–7 item (after Hershfield's overlapping-circles measure).
+ *  - 8 situations per run (best–worst: "I'd choose" / "definitely not"), drawn from a pool of 30.
+ * Birth date → real facts shown privately (weeks lived, next "fresh start" milestone, life stage, the world at birth)
+ *   + the life path number as openly symbolic lore. Only the life path reaches shareable outputs.
+ * Language packs (en, ru) share one structure. Works in the browser (window.BW) and in Node (module.exports).
  */
 (function (root) {
   'use strict';
 
-  const VERSION = '0.3';
-  const DIMS = ['AUTONOMY', 'SECURITY', 'CURIOSITY', 'CREATION', 'CONNECTION', 'POWER'];
+  const VERSION = '0.4';
+  const POLES = ['FREEDOM', 'ANCHOR', 'WEIGHT', 'CARE'];   // content options are always written in this order
+  const OPPOSITE = { FREEDOM: 'ANCHOR', ANCHOR: 'FREEDOM', WEIGHT: 'CARE', CARE: 'WEIGHT' };
+  const AXIS = { FREEDOM: 'O', ANCHOR: 'O', WEIGHT: 'E', CARE: 'E' };
   const LANGS = ['en', 'ru'];
-  const STAGE_WEIGHT = [1, 1.2, 1.5, 1.8, 2.2]; // choices weigh more as the simulation moves forward (Genesis §6)
-  // Only the life path affects the result. Sign, eastern year and weekday are lore shown on the local decode screen:
-  // any visible effect of them would let a shared card narrow down the birth date (QA-EVAL-001, v0.3).
-  const BONUS = { lifePath: 2 };
-  const FINAL6 = [{ CURIOSITY: 3 }, { CONNECTION: 3 }, { AUTONOMY: 3 }, { CREATION: 3 }, { SECURITY: 3 }, { POWER: 3 }];
-
-  // Language-neutral structure: per stage, 3 situations; per situation, option dimension weights.
-  const STAGE_META = [
-    { offsetYears: 0, sits: [
-      [{ CURIOSITY: 2, CONNECTION: 1 }, { AUTONOMY: 2, CREATION: 1 }, { SECURITY: 2 }],
-      [{ AUTONOMY: 2, CURIOSITY: 1 }, { SECURITY: 2, CURIOSITY: 1 }, { CONNECTION: 2, POWER: 1 }],
-      [{ CREATION: 2, CURIOSITY: 1 }, { CONNECTION: 2, POWER: 1 }, { AUTONOMY: 2, CURIOSITY: 1 }, { SECURITY: 2 }],
-    ] },
-    { offsetYears: 0, sits: [
-      [{ CONNECTION: 2, CREATION: 1 }, { CURIOSITY: 2, AUTONOMY: 1 }, { POWER: 2, SECURITY: 1 }],
-      [{ AUTONOMY: 2, CURIOSITY: 1 }, { CURIOSITY: 2, SECURITY: 1 }, { CONNECTION: 2, POWER: 1 }],
-      [{ SECURITY: 2, CONNECTION: 1 }, { CREATION: 2, AUTONOMY: 1 }, { POWER: 3 }],
-    ] },
-    { offsetYears: 1, sits: [
-      [{ CREATION: 3 }, { AUTONOMY: 2, CURIOSITY: 1 }, { SECURITY: 2, POWER: 1 }, { CONNECTION: 3 }],
-      [{ CONNECTION: 2, CURIOSITY: 1 }, { CREATION: 3 }, { POWER: 2, CONNECTION: 1 }, { AUTONOMY: 2, SECURITY: 1 }],
-      [{ CURIOSITY: 2, AUTONOMY: 1 }, { SECURITY: 2, POWER: 1 }, { CONNECTION: 3 }],
-    ] },
-    { offsetYears: 10, sits: [
-      [{ POWER: 3 }, { AUTONOMY: 2, CREATION: 1 }, { CONNECTION: 2, CURIOSITY: 2 }, { SECURITY: 2, CONNECTION: 1 }],
-      [{ POWER: 2, AUTONOMY: 1 }, { AUTONOMY: 2, CREATION: 1 }, { CONNECTION: 2, SECURITY: 1 }],
-      [{ POWER: 3 }, { AUTONOMY: 2, SECURITY: 1 }, { CREATION: 1, POWER: 2 }, { CONNECTION: 3 }],
-    ] },
-    { offsetYears: 40, sits: [FINAL6, FINAL6, FINAL6] },
-  ];
-
-  const LIFE_PATH_DIM = [null, 'POWER', 'CONNECTION', 'CREATION', 'SECURITY', 'AUTONOMY', 'CONNECTION', 'CURIOSITY', 'POWER', 'CURIOSITY'];
-  // Zodiac signs in order Aries..Pisces: [startMonth, startDay, element 0 fire/1 earth/2 air/3 water]
-  const ZODIAC = [[3, 21, 0], [4, 20, 1], [5, 21, 2], [6, 21, 3], [7, 23, 0], [8, 23, 1], [9, 23, 2], [10, 23, 3], [11, 22, 0], [12, 22, 1], [1, 20, 2], [2, 19, 3]];
-  const VISUAL_PROTOCOLS = ['LOST DOS GAME', 'CORRUPTED BROADCAST', 'FORBIDDEN CARTRIDGE'];
+  const HORIZONS = ['NOW', 'D7', 'Y1', 'Y10', 'Y40'];
+  const PLAN = ['NOW', 'NOW', 'D7', 'D7', 'Y1', 'Y1', 'Y10', 'Y40']; // 8 items per run
+  const BRIDGE_AFTER = 6; // the bridge question comes after the 10-year item (index 6)
+  const POOL_SIZE = 6;    // situations per horizon
 
   // ---------- seeded randomness ----------
   function hash(str) {
@@ -66,8 +38,7 @@
     return 4294967296 * (2097151 & h2) + (h1 >>> 0);
   }
   function rng(seed) {
-    // mulberry32
-    let a = seed >>> 0;
+    let a = seed >>> 0; // mulberry32
     return function () {
       a = (a + 0x6d2b79f5) >>> 0;
       let t = a;
@@ -78,9 +49,7 @@
   }
   const rngFor = (seed, tag) => rng(hash(seed + ':' + tag));
   const pickIdx = (r, n) => Math.floor(r() * n);
-  const int = (r, lo, hi) => lo + Math.floor(r() * (hi - lo + 1));
-
-  // Russian plural: plural(n, ['час','часа','часов'])
+  function shuffled(arr, r) { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = pickIdx(r, i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; }
   function plural(n, forms) {
     const n10 = n % 10, n100 = n % 100;
     if (forms.length < 3) return n === 1 ? forms[0] : forms[1];
@@ -88,550 +57,295 @@
     if (n10 >= 2 && n10 <= 4 && (n100 < 12 || n100 > 14)) return forms[1];
     return forms[2];
   }
-  // {k} inserts a value; {k|one|few|many} inserts the plural form of numeric var k.
-  const fill = (tpl, vars) => tpl.replace(/\{(\w+)(?:\|([^}]*))?\}/g, (m, k, forms) => {
-    if (!(k in vars)) return m;
-    return forms ? plural(vars[k], forms.split('|')) : vars[k];
-  });
 
-  // ---------- language packs ----------
-  const O = (text, outcome, vars) => ({ text, outcome, vars: vars || {} });
-  const finalSit = (prompt, texts, outcome, vars) => ({ prompt, options: texts.map(t => O(t, outcome, vars)) });
-
+  // Situation = [prompt, FREEDOM option, ANCHOR option, WEIGHT option, CARE option]
   const CONTENT = {
     en: {
-      stageLabels: ['NOW', '7 DAYS', '1 YEAR', '10 YEARS', '40 YEARS'],
-      lifePaths: [null, 'THE INITIATOR', 'THE DIPLOMAT', 'THE STORYTELLER', 'THE BUILDER', 'THE WANDERER', 'THE HEARTH-KEEPER', 'THE SEEKER', 'THE TYCOON', 'THE SAGE'],
-      zodiac: ['Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo', 'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces'],
-      elements: ['Fire', 'Earth', 'Air', 'Water'],
-      eastern: ['Rat', 'Ox', 'Tiger', 'Rabbit', 'Dragon', 'Snake', 'Horse', 'Goat', 'Monkey', 'Rooster', 'Dog', 'Pig'],
-      easternElements: ['Wood', 'Fire', 'Earth', 'Metal', 'Water'],
-      easternName: (el, animal) => el + ' ' + animal,
-      weekdays: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-      anomalies: [
-        'the hospital clock skipped four minutes and nobody wrote down which four',
-        'a radio in the next room tuned itself to a station that does not exist',
-        'every pigeon within two kilometres turned to face the same direction',
-        'the first word spoken in the room was “wait”',
-        'a vending machine two floors down dispensed something it was never loaded with',
-        'the weather forecast was exactly right, which was statistically suspicious',
-        'someone in the waiting room solved a crossword with a word that did not exist yet',
-        'the lights dimmed for exactly as long as it takes to make a decision',
-        'a lift stopped at a floor the building does not have',
-        'somewhere, a library book was returned forty years late with a note that said “sorry, busy”',
+      horizonLabels: { NOW: 'NOW', D7: 'IN 7 DAYS', Y1: 'IN 1 YEAR', Y10: 'IN 10 YEARS', Y40: 'IN 40 YEARS' },
+      poles: {
+        FREEDOM: { label: 'FREEDOM', meaning: 'new things, your own way, no script' },
+        ANCHOR: { label: 'ANCHOR', meaning: 'stability, predictability, clear rules' },
+        WEIGHT: { label: 'WEIGHT', meaning: 'results, recognition, influence' },
+        CARE: { label: 'CARE', meaning: 'being of use to people and the world beyond yourself' },
+      },
+      bridge: { label: 'BRIDGE', meaning: 'how much you-in-10-years feels like you' },
+      situations: {
+        NOW: [
+          ['A free evening, everything already paid for. Where to?', 'Somewhere you have never been — it might be boring', 'A familiar ritual with trusted people — nothing new', 'A closed meetup with people who decide your growth — you have to be "on"', 'Helping a friend move house — your back will thank you later. Much later'],
+          ['You are offered a new project. Your workload will grow.', 'I take it if I can do it my way, no approvals', 'I decline: what exists must keep running smoothly', 'I take it and ask for a title — otherwise why bother', 'I take it if it helps the team, even if not me'],
+          ['You find a wallet on the street with cash and a business card.', 'I return it in person — I want to know who this is', 'I hand it to the police, by the book', 'I return it — and casually make a useful contact', 'I return it and ask for nothing: let them have a good day'],
+          ['You can take any course for free. Three months.', 'Something totally unlike my life: blacksmithing, Japanese, improv', 'Personal finance — to sleep better', 'Negotiation and leadership — to grow faster', 'First aid or psychology — to be more useful to my people'],
+          ['A friend asks for an honest opinion on their business idea. It is weak.', 'I suggest flipping it completely — let\'s invent a stranger one', 'I gently suggest not quitting their stable job', 'I say it straight: this won\'t win — and show how to win', 'I first ask what they actually need — the idea is secondary'],
+          ['You get one whole free day that nobody knows about.', 'Leave town in a random direction, no plan', 'Finally sort out the things that have been hanging for months', 'Quietly push my own project while nobody distracts me', 'Spend it with someone who is having a hard time'],
+        ],
+        D7: [
+          ['In a week you could move to another city for six months. All paid. Decide now.', 'Going: new city, new version of me', 'Staying: everything that holds me is here', 'Going — only if it brings growth and connections', 'First I ask my people — they will live with it too'],
+          ['For a week you receive anonymous notes with one word: "decide."', 'I do the thing I keep postponing — never mind who writes', 'I find out who is sending them before doing anything', 'I go for the most ambitious item on my list', 'I finally say something important to someone who needs to hear it'],
+          ['The team needs someone to be the public face of the project for a week.', 'Yes — but in my own words, no press release', 'No — I\'d rather keep everything running backstage', 'Yes — my chance to be noticed', 'I suggest someone who needs it more for their growth'],
+          ['Friends dare you: a week without a phone. Prize: dinner on them.', 'Yes — curious who I am without the feed', 'No — too much depends on me being reachable', 'Yes — and I will win, it is a matter of character', 'Yes, if we all do it together'],
+          ['A neighbour starts fixing up the stairwell and needs weekend volunteers.', 'I\'m in if I can paint something strange on the wall', 'I chip in money, but my weekends are mine', 'I take over the organising — it will go better', 'I show up with tools, simply because it needs doing'],
+          ['You can swap your job for a completely different one for a week.', 'The strangest one: lighthouse keeper, cheesemaker, stunt double', 'Something close to mine — so I don\'t lose my edge', 'Wherever they pay most and decide most', 'Where people are helped directly: doctor, teacher, rescuer'],
+        ],
+        Y1: [
+          ['A year from now you get to choose:', 'A year\'s budget and full freedom for my strange experiment', 'A permanent contract with a clear salary and schedule', 'A role where I am the face of the project and I decide', 'Work that clearly helps people, even if it pays less'],
+          ['You receive enough money to stop working for three years. First:', 'I build the thing I describe at every party', 'I invest it and keep working. Quietly', 'I start a business to multiply it tenfold', 'I gather my people and solve their problems'],
+          ['In one year you can truly master one thing. Which?', 'A new language — and move away to practise it', 'Order in my money and my health', 'A skill that pays three times more', 'How to support people in their hardest moments'],
+          ['An old friend invites you into a joint venture. Chaotic, but on fire.', 'I\'m in — chaos suits me', 'I\'m in only with a contract and a plan B', 'I\'m in if the decisions are mine', 'I\'m in because they need someone solid'],
+          ['In a year you could live in any of four places:', 'A city where nobody knows me', 'My own home, right where I am now', 'The capital, where everything gets decided', 'Close to the people who can\'t manage without me'],
+          ['You are offered a public blog for a year. Topic of your choice.', 'Experiments on my own life', 'No blog: private stays private', 'How to get what you want — to become the expert', 'People nobody notices'],
+        ],
+        Y10: [
+          ['Ten years from now you are at a fork. Which life?', 'Start over in another country and profession', 'Strengthen what is already built', 'Reach the level where hundreds of people depend on me', 'Give most of my time to those who need help'],
+          ['Something you made is suddenly used by a million people — not as intended.', 'I shut it down and start something smaller and stranger', 'I build protections so nothing breaks', 'I take the wheel and scale it', 'I find the people it truly helps and build for them'],
+          ['You become known for one thing — not the one you wanted.', 'I quietly start over somewhere else', 'I accept it: a reputation is a foundation', 'I turn it into a brand', 'I teach others to do it better than me'],
+          ['An offer: double everything — money, influence, workload. Answer by midnight.', 'No — freedom is worth more', 'No — I won\'t rock what works', 'Yes', 'I ask the people I love — it is their call'],
+          ['In ten years you are offered a paid sabbatical year.', 'A year of travel with no route', 'A year for health, home and order', 'A year to write the book people will quote', 'A year of volunteering where it is hard'],
+          ['You can pass one of your skills on to a hundred strangers.', 'Not being afraid to start from zero', 'Keeping a cool head in a crisis', 'Getting what you want', 'Listening'],
+        ],
+        Y40: [
+          ['A child asks what you were actually doing all your life. One sentence.', '"Looking for the edge of the map."', '"Holding the line while everything changed."', '"Moving pieces nobody else could move."', '"Building a place where people could come."'],
+          ['You may carve one sentence somewhere forever. Where and what?', 'On a bench at the edge of town: "You don\'t have to."', 'On a bridge: "It held."', 'On a tower: "Moved."', 'Above a kitchen door: "Everyone eats."'],
+          ['You, 40 years older, send yourself one piece of advice on a sticky note.', '"Go further than seems reasonable."', '"Back it up."', '"Ask for more."', '"Call them. Today."'],
+          ['In 40 years someone makes a short film about you. Its title:', '"The One Who Always Left in Time"', '"The One You Could Count On"', '"The One Who Changed the Rules"', '"The One Who Left No One Behind"'],
+          ['At the end you can keep one object. Which?', 'An old one-way ticket', 'The key to the house where it all began', 'An award nobody expected you to win', 'A stack of letters that say "thank you"'],
+          ['You are asked what you regret least.', 'That life did not follow someone else\'s script', 'That everything important was safe', 'That the impossible thing got done', 'That there were always people around'],
+        ],
+      },
+      reactions: {
+        FREEDOM: ['Somewhere a door opens that was not there yesterday.', 'The world map quietly draws one more edge.', 'The script written for you loses a page.', 'For a second, the compass points at you.', 'SYSTEM LOG: route not approved. Proceeding anyway.', 'The wind changes direction. Coincidence?'],
+        ANCHOR: ['Somewhere a lock clicks. Everything is in place.', 'The foundation gets a centimetre thicker.', 'Backup created. By whom — unknown.', 'Your tea stays warm suspiciously long.', 'SYSTEM LOG: risk declined.', 'In an archive, one more folder is neatly labelled.'],
+        WEIGHT: ['Somewhere on the board, a piece moves.', 'The influence counter quietly ticks up.', 'Across town, someone says your name.', 'SYSTEM LOG: stakes raised.', 'The ladder grows one rung taller.', 'Lever found. Hand already on it.'],
+        CARE: ['Somewhere someone feels a little lighter. They don\'t know why.', 'One more heart in the group chat.', 'A kettle in someone else\'s kitchen boils right on time.', 'SYSTEM LOG: nobody left behind.', 'Someone\'s heavy bag suddenly feels lighter.', 'A window lights up that you could knock on.'],
+      },
+      archetypes: {
+        'FREEDOM|WEIGHT': { name: 'THE TRAILBLAZER', plus: 'starts what did not exist yet', shadow: 'leaves others to catch up' },
+        'FREEDOM|CARE': { name: 'THE KIND REBEL', plus: 'breaks rules for people', shadow: 'burns out on everyone else\'s causes' },
+        'ANCHOR|WEIGHT': { name: 'THE MASTER BUILDER', plus: 'builds what outlives fashion', shadow: 'mistakes control for care' },
+        'ANCHOR|CARE': { name: 'THE LIGHTHOUSE', plus: 'people feel calm around them', shadow: 'holds on to what is time to let go' },
+        'WEIGHT|FREEDOM': { name: 'THE MAVERICK', plus: 'turns risk into results', shadow: 'gets bored of everything that already works' },
+        'WEIGHT|ANCHOR': { name: 'THE STRATEGIST', plus: 'sees the board ten moves ahead', shadow: 'won\'t move without guarantees' },
+        'CARE|FREEDOM': { name: 'THE WANDERING HEALER', plus: 'appears where needed most', shadow: 'disappears when it gets crowded' },
+        'CARE|ANCHOR': { name: 'THE GUARDIAN', plus: 'never leaves anyone behind', shadow: 'protects even from what would help them grow' },
+      },
+      tension: {
+        O: { short: 'FREEDOM ↔ ANCHOR', text: 'You are pulled both toward the new and toward the reliable. Decisions get hard when freedom costs stability: moving, changing jobs, a big risk. That is not indecision — two real values are pulling in different directions.',
+          quest: '7 days: every day, one small "new" inside safe limits (a new route, dish, conversation) — and one action that strengthens your foundation. On day 7, write down which gave you more energy.' },
+        E: { short: 'WEIGHT ↔ CARE', text: 'Both achieving and caring matter to you. It gets hardest when success means leaving someone behind: missed evenings, tough calls. That is not weakness — two real values are pulling in different directions.',
+          quest: '7 days: every morning pick one thing for your own growth and one for a specific person. In the evening, note which of the two stayed undone.' },
+        clear: {
+          FREEDOM: { short: 'clear priority: FREEDOM (cost: ANCHOR)', text: 'Freedom wins almost without a fight. The price of that clarity is the anchor: plans, savings and predictability can quietly sag.', quest: '7 days: pick one area where you lack an anchor (money, sleep, order) and do one boring 10-minute action in it every day.' },
+          ANCHOR: { short: 'clear priority: ANCHOR (cost: FREEDOM)', text: 'The anchor wins almost without a fight. The price of that clarity is freedom: new things may pass you by because "it\'s fine as it is".', quest: '7 days: one small "first time" every day — a route, a dish, a person, a question. Write down what felt most alive.' },
+          WEIGHT: { short: 'clear priority: WEIGHT (cost: CARE)', text: 'Weight wins almost without a fight. The price of that clarity is care: people near you may start to feel like resources.', quest: '7 days: every day do one thing for one person with zero expected return. Write down how they reacted.' },
+          CARE: { short: 'clear priority: CARE (cost: WEIGHT)', text: 'Care wins almost without a fight. The price of that clarity is weight: your own goals may wait in line forever.', quest: '7 days: 30 minutes a day on your own goal — before answering anyone else\'s requests.' },
+        },
+      },
+      blind: {
+        FREEDOM: 'Blind spot — FREEDOM. It can feel like there is no choice when there is one. Where are you living by someone else\'s script?',
+        ANCHOR: 'Blind spot — ANCHOR. Without a plan B every storm becomes personal. What breaks first if tomorrow goes wrong?',
+        WEIGHT: 'Blind spot — WEIGHT. Your ideas may stay invisible. Where do you stay silent when you should take the floor?',
+        CARE: 'Blind spot — CARE. You can reach the goal alone. Who would notice if you needed help?',
+      },
+      bridgeText: [
+        'Future you is still a stranger. That is a very common state. Try the conversation with your future self below.',
+        'Future you is a distant relative: a familiar face, but you rarely meet. One letter to yourself in 10 years brings you closer.',
+        'You and future you are almost the same person. In Hershfield\'s studies, people like this have more savings and patience for the long game. Make that version of you one promise this week.',
       ],
-      worldFacts: [
-        'maps are updated by whoever walked there last',
-        'every city has one street that only exists on Thursdays',
-        'people celebrate a second birthday: the day they changed their mind about something important',
-        'libraries lend out unused afternoons',
-        'the moon drifts slightly closer to anyone who is lying',
-        'anyone may apprentice themselves to anyone else for one day, no questions asked',
-        'silence is a currency, but only in small denominations',
-        'regret is reported as weather',
-        'unfinished projects are legally considered pets',
-        'the post office delivers letters to every version of you that did not happen',
+      bridgeQ: { prompt: 'How much does you-in-10-years feel like you?', low: '1 — two different people', high: '7 — the same person' },
+      lifePaths: [null,
+        { name: 'THE INITIATOR', plus: 'starts first', shadow: 'drops things halfway', q: 'What will you start without waiting for permission?' },
+        { name: 'THE DIPLOMAT', plus: 'feels what others need', shadow: 'loses their own voice', q: 'Where do you agree when you want to object?' },
+        { name: 'THE STORYTELLER', plus: 'turns life into a story', shadow: 'embellishes', q: 'Which story about yourself is due for a rewrite?' },
+        { name: 'THE BUILDER', plus: 'finishes things', shadow: 'cannot rest', q: 'What are you building — and for whom?' },
+        { name: 'THE WANDERER', plus: 'is not afraid of change', shadow: 'runs from boredom, not toward a goal', q: 'What are you really leaving behind?' },
+        { name: 'THE HEARTH-KEEPER', plus: 'makes a home anywhere', shadow: 'takes on too much', q: 'Who takes care of you?' },
+        { name: 'THE SEEKER', plus: 'sees deeper', shadow: 'escapes from life into their head', q: 'Which question are you afraid to ask out loud?' },
+        { name: 'THE TYCOON', plus: 'turns effort into results', shadow: 'measures everything in money', q: 'What does wealth mean to you besides money?' },
+        { name: 'THE SAGE', plus: 'sees the big picture', shadow: 'watches life from the outside', q: 'Where is it time to stop watching and step in?' },
       ],
       stages: [
-        [
-          { prompt: 'A message arrives from your own number. It was sent ten years from today. It says only: “don\'t.”',
-            options: [
-              O('Reply: “don\'t WHAT?”', 'You reply. Three dots blink for {n} hours. Then: “{msg}”. You screenshot it. Nobody believes you.',
-                { n: [2, 9], msg: ['the blue one', 'you already know', 'fine. do it. but bring a jacket', 'wrong timeline, sorry', 'not the email. the other thing', 'ask the person you just thought of'] }),
-              O('Do the thing anyway', 'You do it anyway. {c}. The message quietly deletes itself.',
-                { c: ['Nothing explodes', 'A small door opens somewhere in your calendar', 'Your phone battery gains four percent', 'A stranger nods at you like they were expecting this'] }),
-              O('Cancel everything and stay home', 'You stay in. {t}, you hear {s} outside. Whatever it was, it happened without you — and you are fine with that.',
-                { t: ['At 3:14 am', 'At 11:11 pm', 'At exactly noon', 'At 4:44 pm'], s: ['thunderous applause', 'a brass band warming up', 'someone calling a name that is almost yours', 'a very confident goose'] }),
-            ] },
-          { prompt: 'An app nobody installed appears on your phone. It has one button: “LIVE DIFFERENTLY”. It is glowing.',
-            options: [
-              O('Press it', 'The screen goes white for {n} seconds. Afterwards, coffee tastes like a decision you have not made yet. Unread messages from you: {k}.',
-                { n: [3, 9], k: [2, 40] }),
-              O('Delete it. Then check it is really gone', 'It is gone. But your wallpaper is now {w}. Nobody changed it.',
-                { w: ['a door you have never seen', 'your own handwriting, upside down', 'a city map where one street has your name'] }),
-              O('Screenshot it and drop it in the group chat', '{k} people reply within a minute. One writes: “{q}”. The app vanishes from everyone\'s phone except yours.',
-                { k: [3, 14], q: ['mine says the same', 'do not press it without me', 'I pressed it in 2019'] }),
-            ] },
-          { prompt: 'You wake up 40 minutes early, absolutely certain that today matters. Nobody explains why.',
-            options: [
-              O('Write down everything that comes to mind', 'By seven you have {k} lines. Line {m} makes no sense yet. Keep it.', { k: [12, 60], m: [3, 11] }),
-              O('Call the person you have been avoiding', 'They pick up {n} and say: “{q}”',
-                { n: ['on the first ring', 'on the third ring', 'on the very last ring'], q: ['finally', 'well, that must be fate', 'hold on, let me sit down'] }),
-              O('Walk out in a direction you never take', '{k} minutes later you find {p}. Nobody else seems to notice it.',
-                { k: [7, 45], p: ['a shop that sells only keys', 'a bench with a plaque dedicated to you', 'a staircase that was not there yesterday'] }),
-              O('Make coffee and pretend it is a normal day', 'It works. Almost. At {t}, something small and important happens just around the corner. You hear about it {k} years later.',
-                { t: ['10:10', '13:37', '17:05'], k: [2, 9] }),
-            ] },
-        ],
-        [
-          { prompt: 'A stranger presses a brass key into your hand. The paper tag says: “you\'ll know.” It fits three doors in your city.',
-            options: [
-              O('The door with music behind it', 'Behind the door: {room}. Someone hands you an instrument you cannot play. You play it anyway. You are invited back.',
-                { room: ['a rehearsal for a band with no name', 'a wedding between two people who met yesterday', 'a choir that only sings in the key of “almost”', 'a party for a holiday no calendar has heard of'] }),
-              O('The door marked NO ENTRY', 'Behind it: {secret}. You take one photo. Later, the photo shows something different.',
-                { secret: ['a staircase that goes sideways', 'an office where someone has been waiting for you specifically', 'a garden growing under fluorescent light', 'a map of the city with your route already drawn on it'] }),
-              O('Copy the key. Sell access.', 'By Sunday you have sold {k} copies. A woman in a grey coat offers to buy the original. You say: not yet.', { k: [7, 40] }),
-            ] },
-          { prompt: 'A stranger offers a one-week swap: your life for theirs. No questions, no explanations, full return guaranteed.',
-            options: [
-              O('Accept immediately', 'Their life turns out to be {l}. By Thursday you are better at it than they were.',
-                { l: ['a night shift at a planetarium', 'a tiny bakery with an enormous debt', 'a famous anonymous account'] }),
-              O('Accept, but bring a notebook', 'You write everything down. {k} pages. Page {m} becomes the most-read thing you have ever written.', { k: [20, 90], m: [3, 19] }),
-              O('Refuse, and ask what is wrong with their life', 'You talk until {t}. It turns out the swap was never the point. Now you owe each other one favour each.',
-                { t: ['midnight', 'dawn', 'the café closes'] }),
-            ] },
-          { prompt: 'Someone with power over you — a boss, a teacher, a landlord — makes an obvious mistake. Only you notice.',
-            options: [
-              O('Tell them privately', 'A pause. Then: “{q}”. Something between you shifts by {k} degrees.',
-                { q: ['thank you. really', 'why are you helping me?', 'let\'s keep this between us'], k: [5, 40] }),
-              O('Quietly fix it yourself', 'Nobody knows. It works. You start a secret list called “{n}”. By Friday it has {k} entries.',
-                { n: ['quietly fixed', 'evidence', 'shadow résumé'], k: [2, 9] }),
-              O('Use it', 'You say nothing. You wait. On day {k}, you have what you wanted. You also learn something about yourself you would rather not know.', { k: [3, 7] }),
-            ] },
-        ],
-        [
-          { prompt: 'You receive enough money to stop working for three years. What happens first?',
-            options: [
-              O('I finally build the thing I describe at parties', 'Month {m}: the first version is ugly and alive. {k} people use it. One of them writes: “{q}”',
-                { m: [2, 7], k: [12, 300], q: ['this is weird. I need it.', 'who made this and why does it understand me', 'please do not fix the bug. the bug is the best part'] }),
-              O('One-way ticket. Phone off.', 'You land in {p}. You stop checking the date. You learn the word for “{w}” in a language with {k} speakers.',
-                { p: ['a port town with no tourist information', 'a city where the buses run on gossip', 'a mountain village with excellent wifi and no reason to use it'], w: ['the hour after a decision', 'a friend you have not met yet', 'homesick for a place that does not exist'], k: [300, 9000] }),
-              O('Invest it. Keep working. Quietly.', 'Nobody notices anything. That is the point. By winter, {r}.',
-                { r: ['your money has quietly started making more money', 'you own a small slice of something that is about to matter', 'you can say no to anything — and you start saying it'] }),
-              O('Gather the people I like in one place. Indefinitely.', 'You rent {v}. Within a month it has a name someone else chose. People start arriving whom nobody invited.',
-                { v: ['an old print shop', 'a flat above a bakery', 'a disused planetarium', 'half a boat'] }),
-            ] },
-          { prompt: 'You can master one skill instantly — but you forget another one forever. You do not get to choose which.',
-            options: [
-              O('A new language', 'You forget how to {f}. Nobody notices for {k} months. The new language has a word for exactly your situation.',
-                { f: ['whistle', 'ride a bike', 'fold a fitted sheet', 'lie convincingly'], k: [2, 8] }),
-              O('Making things with my hands', 'You forget how to {f}. Instead you build {b}. People ask if it is for sale. It is not.',
-                { f: ['whistle', 'ride a bike', 'fold a fitted sheet', 'lie convincingly'], b: ['a chair that is slightly too honest', 'a small boat', 'a door to nowhere'] }),
-              O('Reading people', 'You forget how to {f}. Now you know what people want {k} seconds before they say it. Useful. Exhausting.',
-                { f: ['whistle', 'ride a bike', 'fold a fitted sheet', 'lie convincingly'], k: [2, 9] }),
-              O('Doing absolutely nothing, perfectly', 'You forget how to {f}. For the first time in years, you get bored. It feels like {x}.',
-                { f: ['whistle', 'ride a bike', 'fold a fitted sheet', 'lie convincingly'], x: ['a door opening', 'the first day of summer', 'being fourteen again'] }),
-            ] },
-          { prompt: 'A box arrives, addressed to you, from you. It was sent a year ago. You do not remember sending it.',
-            options: [
-              O('Open it right away', 'Inside: {i}, and a note: “{q}”.',
-                { i: ['a key with no lock', 'a ticket to a city you never planned to visit', 'a list of seven names'], q: ['you were right', 'start with the second thing', 'don\'t tell anyone yet'] }),
-              O('Leave it closed and see what happens', 'Nothing happens for {k} weeks. Then everything happens at once. You are the only one ready.', { k: [3, 11] }),
-              O('Open it together with friends', 'Everyone finds something meant for them. {n} gets exactly what they needed. Nobody asks how this is possible.',
-                { n: ['The quietest one', 'Your oldest friend', 'A stranger who came along'] }),
-            ] },
-        ],
-        [
-          { prompt: 'Something you made is suddenly used by a million people — in a way you never intended.',
-            options: [
-              O('Take the wheel. Steer it.', 'You stop sleeping well and start winning. By the end of the year {h}.',
-                { h: ['there is a documentary about you, and you hate your haircut in it', 'a government quotes you without understanding you', 'three copycats exist and one of them is better'] }),
-              O('Shut it down. It is not mine anymore.', 'You pull the plug. The internet is furious for {k} days. You start something smaller, stranger and entirely yours.', { k: [3, 19] }),
-              O('Find the strangest user and meet them', 'The strangest user is {u}. You meet in a café and talk for {k} hours. Your next decade quietly rearranges itself.',
-                { u: ['a retired lighthouse keeper using it to talk to ships', 'a fourteen-year-old running a very small nation on it', 'a monastery using it to schedule silence'], k: [3, 11] }),
-              O('Protect the people already using it', 'You build walls, then doors in the walls. It grows slower and lasts longer. {k} years later, people still thank you in strange places.', { k: [4, 12] }),
-            ] },
-          { prompt: 'You become known for one thing. It is not the thing you wanted to be known for.',
-            options: [
-              O('Lean into it', 'You turn it into a brand. By the end of the year, {h}.',
-                { h: ['there is merch', 'a podcast does an impression of you', 'your mother finally understands what you do'] }),
-              O('Quietly start over somewhere else', 'New city, new name in the credits. {k} years later, the thing you actually wanted is quietly famous.', { k: [2, 7] }),
-              O('Teach others to do it better than you', '{k} students. One of them overtakes you. You are happier about it than you expected.', { k: [5, 300] }),
-            ] },
-          { prompt: 'An offer arrives: double everything — money, influence, workload. Answer by midnight.',
-            options: [
-              O('Yes', 'You accept. You gain {x}. You lose {y}.',
-                { x: ['a view', 'a driver', 'a three-word job title'], y: ['your Sundays', 'one friend', 'the ability to be bored'] }),
-              O('No', 'You decline at 23:{k}. The next morning: {f}.', { k: [10, 59], f: ['lighter than in years', 'a kind of wealth nobody can tax', 'suspicious freedom'] }),
-              O('Counter: half the work, same money', 'The answer: {q}. It turns out negotiating is a creative act.', { q: ['“yes”, surprisingly', 'first “no”, then “yes”', '“who taught you this?”'] }),
-              O('Ask the people you love', 'They argue for {k} hours. In the end the decision is theirs, and it is the right one.', { k: [2, 6] }),
-            ] },
-        ],
-        [
-          finalSit('A child asks what you were actually doing all those years. You get one sentence.',
-            ['“Looking for the edge of the map.”', '“Building a place where people belonged.”', '“Making sure nobody could tell me what to do.”',
-              '“Making things that did not exist yet.”', '“Holding the line while everything changed.”', '“Moving the pieces nobody else could move.”'],
-            'Year {Y}. The child thinks about it, then says: “{reply}” You laugh harder than you have in a decade.',
-            { reply: ['That is not a job.', 'Can I do that too?', 'So you were weird on purpose.', 'You should write that down.', 'Did it work?'] }),
-          finalSit('You may leave one sentence carved somewhere forever. Where, and what?',
-            ['On a lighthouse: “Keep looking.”', 'Above a kitchen door: “Everyone eats.”', 'On a bench at the edge of town: “You don\'t have to.”',
-              'On a machine that still works: “Made by hand.”', 'On a bridge: “It held.”', 'On a tower: “Moved.”'],
-            'Year {Y}. A stranger photographs it and posts it with the caption “{c}”. {k} likes. You never find out.',
-            { c: ['who wrote this', 'needed this today', 'weird but correct'], k: [3, 40000] }),
-          finalSit('Your future self, 40 years older, sends one piece of advice. It has to fit on a sticky note.',
-            ['“Go further than seems reasonable.”', '“Call them. Today.”', '“Nobody is coming to give you permission.”',
-              '“Make the ugly version first.”', '“Back it up.”', '“Ask for more.”'],
-            'Year {Y}. You find that sticky note in an old book and count: it worked {k} times out of ten.', { k: [4, 9] }),
-        ],
+        { max: 12, name: 'industry vs inferiority', q: 'What are you best at?' },
+        { max: 18, name: 'identity vs role confusion', q: 'Who are you when nobody is watching?' },
+        { max: 39, name: 'intimacy vs isolation', q: 'With whom — and for what?' },
+        { max: 64, name: 'generativity vs stagnation', q: 'What will you leave to those who come after you?' },
+        { max: 200, name: 'integrity vs despair', q: 'Which story of your life rings true?' },
       ],
-      dims: {
-        AUTONOMY: {
-          label: 'AUTONOMY', nouns: ['RUNAWAY', 'FREE AGENT', 'NOMAD'], adjs: ['UNSUPERVISED', 'UNLICENSED'],
-          future: 'You built a life with very few bosses and a lot of exits.',
-          verdicts: ['ERROR 403: AUTHORITY NOT FOUND.', 'READS TERMS AND CONDITIONS ONLY TO FIND THE EXIT.', 'SYSTEM NOTE: WILL NOT BE SUPERVISED. STOP ASKING.'],
-          buff: 'Exit vision — sees the way out of any situation', debuff: 'Waits for permission', boss: 'THE GATEKEEPER',
-          kept: 'your own terms over anyone else\'s plan', rejected: 'permission',
-          project: 'A one-person operation that needs nobody\'s approval: a micro-studio, a tiny product, a newsletter with an indefensible premise.',
-          experiment: 'For 7 days, spend one hour a day on something no one asked you to do. Publish it on day 7, however small.',
-          question: 'What would you do this year if nobody could see it?',
-        },
-        SECURITY: {
-          label: 'SECURITY', nouns: ['KEEPER', 'ARCHIVIST', 'LIGHTHOUSE KEEPER'], adjs: ['FORTIFIED', 'PATIENT'],
-          future: 'People ran toward you when things broke, because you had already prepared for it.',
-          verdicts: ['BACKUP OF A BACKUP DETECTED.', 'HAS A PLAN B FOR THE PLAN B. IT WORKS.', 'WARNING: SUSPICIOUSLY CALM IN EMERGENCIES.'],
-          buff: 'Shield wall — things do not break on your watch', debuff: 'No safety net', boss: 'THE SUDDEN STORM',
-          kept: 'the solid floor that still holds when everything else breaks', rejected: 'unnecessary risk',
-          project: 'A system that makes you and the people around you calmer: a savings engine, a tool, a ritual that holds when things break.',
-          experiment: 'Write down the three things that would hurt most if they disappeared. Build one small backup for one of them this week.',
-          question: 'Which of your safety nets is actually a cage?',
-        },
-        CURIOSITY: {
-          label: 'CURIOSITY', nouns: ['CARTOGRAPHER', 'INVESTIGATOR', 'SIGNAL HUNTER'], adjs: ['RESTLESS', 'UNMAPPED'],
-          future: 'You followed questions further than was reasonable, and some of them followed you back.',
-          verdicts: ['TOO MANY TABS OPEN. ALL OF THEM IMPORTANT.', 'ERROR: QUESTION HAS NO BOTTOM.', 'HAS ASKED “BUT WHY” MORE TIMES THAN THE SYSTEM CAN COUNT.'],
-          buff: 'Deep dive — finds the hidden layer', debuff: 'Skips the “why”', boss: 'THE OBVIOUS ANSWER',
-          kept: 'the unmarked door: the question over the answer', rejected: 'the obvious explanation',
-          project: 'An obsessive public investigation into one question nobody is paid to answer.',
-          experiment: 'Pick one question you cannot stop thinking about. Ask 5 people who would know. Write down what surprised you.',
-          question: 'Which question have you been circling for years without asking out loud?',
-        },
-        CREATION: {
-          label: 'CREATION', nouns: ['INVENTOR', 'ARCHITECT', 'MACHINIST'], adjs: ['HANDMADE', 'UNFINISHED'],
-          future: 'You left a trail of objects, tools and strange machines that outlived their reasons.',
-          verdicts: ['BUILD STATUS: UNFINISHED. AS ALWAYS. AS INTENDED.', 'TURNS BOREDOM INTO PROTOTYPES.', 'WARNING: WILL MAKE IT BEFORE EXPLAINING IT.'],
-          buff: 'Prototype — turns ideas into objects fast', debuff: 'Plans that never ship', boss: 'THE BLANK PAGE',
-          kept: 'making the thing instead of talking about the thing', rejected: 'finished, polished, safe',
-          project: 'The thing you keep describing at parties — built as an ugly, working first version.',
-          experiment: 'Make the ugliest possible version of your idea in 3 hours. Show it to one person. Write down the first question you hear.',
-          question: 'Which idea in your head already deserves a bad first draft?',
-        },
-        CONNECTION: {
-          label: 'CONNECTION', nouns: ['HOST', 'MATCHMAKER', 'CHOIR LEADER'], adjs: ['GENEROUS', 'CROWDED'],
-          future: 'Wherever you went, rooms filled up — with people who otherwise would never have met.',
-          verdicts: ['GROUP CHAT ADMIN BY DEFAULT.', 'REMEMBERS EVERYONE\'S COFFEE ORDER. IT IS A SUPERPOWER.', 'WARNING: STRANGERS TELL THIS PERSON THEIR SECRETS.'],
-          buff: 'Rally — people show up when you call', debuff: 'Solo queue — does it all alone', boss: 'THE EMPTY ROOM',
-          kept: 'people, rooms and the conversations between them', rejected: 'going it alone',
-          project: 'A recurring room — a dinner, a club, a chat — around one strange shared obsession.',
-          experiment: 'Invite 3 people who do not know each other into one conversation about a question you care about. Listen more than you talk.',
-          question: 'Which two people you know should have met years ago?',
-        },
-        POWER: {
-          label: 'POWER', nouns: ['OPERATOR', 'STRATEGIST', 'KINGMAKER'], adjs: ['LEVERAGED', 'INEVITABLE'],
-          future: 'You learned where the levers were, and you were not shy about pulling them.',
-          verdicts: ['LEVER DETECTED. HAND ALREADY ON IT.', 'DOES NOT WAIT FOR THE MEETING. IS THE MEETING.', 'WARNING: HAS OPINIONS ABOUT HOW THIS SHOULD BE RUN.'],
-          buff: 'Leverage — small move, big result', debuff: 'Lets others decide', boss: 'THE MEETING WITHOUT YOU',
-          kept: 'leverage: the small move with big consequences', rejected: 'staying small for comfort',
-          project: 'A lever: something that lets a small input move a large outcome — a platform, a fund, a movement.',
-          experiment: 'Find one decision this week that someone else is currently making badly. Offer to own it.',
-          question: 'What would you change first if people actually listened to you?',
-        },
-      },
-      places: ['UNFINISHED ROOMS', 'THE THURSDAY STREET', 'LOST AFTERNOONS', 'THE SECOND MOON', 'BORROWED WEATHER',
-        'SMALL APOCALYPSES', 'QUIET MACHINES', 'OPEN DOORS', 'THE LAST BUS', 'IMPOSSIBLE MAPS'],
-      title: (adj, noun, place) => 'THE ' + adj + ' ' + noun + ' OF ' + place,
-      future: (earth, fact, title, f1, f2) => 'In ' + earth + ', where ' + fact + ', you became ' + title + '. ' + f1 + ' ' + f2,
-      kept: (k1, k2) => k1 + '; and, close behind, ' + k2,
-      branchQuestion: 'What would the version of you who chose differently at “1 YEAR” say about this life?',
-      alreadyTrue: 'Which part of this timeline is already true?',
+      techMilestones: [[1957, 'the first satellite'], [1961, 'the first human in space'], [1969, 'the Moon landing'], [1971, 'the first email'], [1983, 'the first mobile phone on sale'], [1991, 'the World Wide Web'], [1998, 'Google'], [2001, 'Wikipedia'], [2005, 'YouTube'], [2007, 'the iPhone'], [2022, 'ChatGPT']],
+      worldAtBirth: (pop, tech, yrs) => 'When you arrive, there are about ' + pop + ' billion people on Earth' + (tech ? ', and ' + tech + ' is still ' + yrs + ' year' + (yrs === 1 ? '' : 's') + ' away.' : '.'),
+      places: ['OF UNFINISHED ROOMS', 'OF THE THURSDAY STREET', 'OF LOST AFTERNOONS', 'OF THE SECOND MOON', 'OF BORROWED WEATHER', 'OF SMALL APOCALYPSES', 'OF QUIET MACHINES', 'OF OPEN DOORS', 'OF THE LAST BUS', 'OF IMPOSSIBLE MAPS'],
+      worldFacts: [
+        'maps are updated by whoever walked there last', 'every city has one street that only exists on Thursdays',
+        'people celebrate a second birthday: the day they changed their mind about something important', 'libraries lend out unused afternoons',
+        'the moon drifts slightly closer to anyone who is lying', 'anyone may apprentice themselves to anyone else for one day',
+        'silence is a currency, but only in small denominations', 'regret is reported as weather',
+        'unfinished projects are legally considered pets', 'the post office delivers letters to every version of you that did not happen',
+      ],
       prompts: {
-        plan: r => 'I played BORN WEIRD, a playful life-simulation game (not a prediction). My character: ' + r.title + '. Strength: ' + r.buff + '. Weak spot: ' + r.debuff + '. Quest: ' + r.experiment +
-          ' Turn this quest into a 7-day plan: one concrete action of 15–30 minutes per day, each with a clear "done" criterion. First ask me one question about my real situation, then give the plan.',
-        future: r => 'Role-play: you are me in ' + r.finalYear + ', in a strange reality where ' + r.worldFact + '. In that life I became ' + r.title + '. That life in one line: ' + r.finalLine +
-          ' Talk to present-day me as that future self: short, warm, honest, no predictions — it is a game. Start with one question to me.',
-        debuff: r => 'In the game BORN WEIRD my weak spot came out as "' + r.debuff + '" (lowest stat: ' + r.labels[r.rejected] + '). It is a game, not a diagnosis. Help me check where this actually shows up in my life: ask me 3 short questions one at a time, then suggest one small experiment for this week.',
+        plan: r => 'I played BORN WEIRD, a values mirror game (a game — not a test or a prediction). My value order: ' + r.orderText + '. My main tension: ' + r.tension.short + '. My 7-day quest: ' + r.tension.quest +
+          ' Turn it into a 7-day plan: one concrete 15–30 minute action per day with a clear "done" criterion. First ask me one question about my real situation, then give the plan.',
+        future: r => 'Role-play: you are me, 10 years from now. Right now my connection with my future self is ' + r.bridge + ' out of 7. My values: ' + r.orderText + '; main tension: ' + r.tension.short +
+          '. Talk to present-day me as that future self: short, warm, honest, no predictions — it is a game. Start with one question to me.',
+        tension: r => 'In the game BORN WEIRD my main inner tension came out as: ' + r.tension.short + ' — "' + r.tension.text + '" It is a game, not a diagnosis. Help me see where this tension actually shows up in my decisions: ask me 3 short questions one at a time, then suggest one small experiment for this week.',
       },
+      orderSep: ' > ',
       seed: {
-        disclaimer: '> This file describes an explored possibility, not objective truth. It was generated by a playful simulator from a random seed, symbolic birth numbers and five choices. Nothing here is a prediction.',
-        h: { timeline: 'TIMELINE', birth: 'BIRTH SEED', world: 'THE WORLD', build: 'CHARACTER BUILD', future: 'THE POSSIBLE FUTURE', choices: 'CHOICES THAT CREATED IT',
-          kept: 'WHAT I KEPT CHOOSING', rejected: 'WHAT I KEPT REJECTING', events: 'IMPORTANT EVENTS', project: 'POSSIBLE PROJECT',
-          experiment: 'FIRST EXPERIMENT', visual: 'VISUAL LANGUAGE', questions: 'OPEN QUESTIONS', ai: 'INSTRUCTIONS FOR AN AI' },
-        birth: r => 'Life path number ' + r.lifePath + ' → starting class ' + r.startClass + '. (A symbolic device used as a game seed, not a reading of character.) At the moment of birth, in this reality, ' + r.anomaly + '.',
-        world: (earth, fact) => earth + ': a world where ' + fact + '.',
-        build: r => ['Class: ' + r.startClass + ' → ' + r.title, 'Buff: ' + r.buff, 'Debuff: ' + r.debuff, 'Boss: ' + r.boss, 'Verdict: ' + r.verdict,
-          'Stats (0–10): ' + r.scores.map(s => s.label + ' ' + s.value).join(', ')],
-        visual: p => 'Protocol: ' + p + '. Low-resolution pixel landscapes, VGA palette, scanlines, an interface from a reality that never existed.',
-        ai: [
-          'Treat this future as a hypothesis, not truth about me.',
-          'Help me explore it, challenge it, visualize it and turn interesting parts into experiments.',
-          'You may: continue the timeline, generate alternate branches, write from my future perspective, identify hidden assumptions, or turn the First Experiment into a concrete 7-day plan.',
-          'Begin by asking: **"What do you want to do with this reality?"**',
-        ],
-        footer: v => 'Generated by BORN WEIRD v' + v + ' (dimacloud.github.io/born-weird). A simulator for lives you have not lived yet.',
+        title: 'BORN WEIRD // REALITY SEED',
+        disclaimer: '> A mirror of one set of choices on one day — not a psychometric test, not a diagnosis, not a prediction. Questions are inspired by Schwartz\'s theory of basic human values and Hershfield\'s research on future self-continuity; the wording is ours and not validated. The life path number is symbolic decoration.',
+        h: { profile: 'VALUE PROFILE', tension: 'MAIN TENSION', blind: 'BLIND SPOT', bridge: 'BRIDGE TO FUTURE SELF', quest: '7-DAY QUEST', archetype: 'ARCHETYPE', lore: 'BIRTH SYMBOL (LORE)', choices: 'CHOICES', world: 'THE WORLD', ai: 'INSTRUCTIONS FOR AN AI' },
+        lore: r => 'Life path ' + r.lifePath + ' — ' + r.lp.name + ': plus — ' + r.lp.plus + '; shadow — ' + r.lp.shadow + '. Question: ' + r.lp.q,
+        best: 'chose', worst: 'rejected',
+        ai: ['Treat this as a hypothesis about today\'s choices, not truth about me.', 'Help me test it against my real life, find where the main tension shows up, and turn the 7-day quest into concrete steps.', 'Begin by asking: **"Where did you recognise yourself — and where not at all?"**'],
+        footer: v => 'BORN WEIRD v' + v + ' (dimacloud.github.io/born-weird). A simulator for lives you have not lived yet.',
       },
     },
 
     ru: {
-      stageLabels: ['СЕЙЧАС', '7 ДНЕЙ', '1 ГОД', '10 ЛЕТ', '40 ЛЕТ'],
-      lifePaths: [null, 'ЗАЧИНЩИК', 'ДИПЛОМАТ', 'РАССКАЗЧИК', 'СТРОИТЕЛЬ', 'СТРАННИК', 'ХРАНИТЕЛЬ ОЧАГА', 'ИСКАТЕЛЬ', 'МАГНАТ', 'МУДРЕЦ'],
-      zodiac: ['Овен', 'Телец', 'Близнецы', 'Рак', 'Лев', 'Дева', 'Весы', 'Скорпион', 'Стрелец', 'Козерог', 'Водолей', 'Рыбы'],
-      elements: ['Огонь', 'Земля', 'Воздух', 'Вода'],
-      eastern: ['Крыса', 'Бык', 'Тигр', 'Кролик', 'Дракон', 'Змея', 'Лошадь', 'Коза', 'Обезьяна', 'Петух', 'Собака', 'Свинья'],
-      easternFem: [true, false, false, false, false, true, true, true, true, false, true, true],
-      easternElements: [['Деревянный', 'Деревянная'], ['Огненный', 'Огненная'], ['Земляной', 'Земляная'], ['Металлический', 'Металлическая'], ['Водяной', 'Водяная']],
-      weekdays: ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'],
-      anomalies: [
-        'часы в роддоме пропустили четыре минуты, и никто не записал, какие именно',
-        'радио в соседней комнате само настроилось на несуществующую станцию',
-        'все голуби в радиусе двух километров повернулись в одну сторону',
-        'первым словом, прозвучавшим в палате, было «подождите»',
-        'автомат с газировкой двумя этажами ниже выдал то, чего в него никогда не загружали',
-        'прогноз погоды сбылся абсолютно точно, что статистически подозрительно',
-        'кто-то в приёмном покое вписал в кроссворд слово, которого ещё не существовало',
-        'свет мигнул ровно на столько, сколько нужно, чтобы принять решение',
-        'лифт остановился на этаже, которого в здании нет',
-        'где-то вернули библиотечную книгу с опозданием на сорок лет и запиской «извините, дела»',
+      horizonLabels: { NOW: 'СЕЙЧАС', D7: 'ЧЕРЕЗ 7 ДНЕЙ', Y1: 'ЧЕРЕЗ ГОД', Y10: 'ЧЕРЕЗ 10 ЛЕТ', Y40: 'ЧЕРЕЗ 40 ЛЕТ' },
+      poles: {
+        FREEDOM: { label: 'СВОБОДА', meaning: 'хочется нового, своего, без сценария' },
+        ANCHOR: { label: 'ОПОРА', meaning: 'хочется стабильности, предсказуемости, понятных правил' },
+        WEIGHT: { label: 'ВЕС', meaning: 'хочется результата, признания, влияния' },
+        CARE: { label: 'ЗАБОТА', meaning: 'хочется приносить пользу людям и миру за пределами себя' },
+      },
+      bridge: { label: 'МОСТ', meaning: 'насколько ты-через-10-лет ощущается как ты' },
+      situations: {
+        NOW: [
+          ['Свободный вечер, всё уже оплачено. Куда?', 'Туда, где ещё ни разу не бывало, — может оказаться скучно', 'Привычный ритуал с проверенными людьми — ничего нового', 'Закрытая встреча с теми, от кого зависит рост, — придётся быть «в форме»', 'Помочь другу с переездом — спина скажет спасибо не сразу'],
+          ['Тебе предлагают новый проект. Нагрузка вырастет.', 'Беру, если можно сделать по-своему, без согласований', 'Отказываюсь: текущее должно работать без сбоев', 'Беру и прошу должность с названием — иначе зачем', 'Беру, если это поможет команде, пусть и не мне'],
+          ['На улице лежит кошелёк с деньгами и визиткой.', 'Верну лично — интересно, кто этот человек', 'Сдам в полицию, всё по правилам', 'Верну — и между делом заведу полезное знакомство', 'Верну и ничего не попрошу — пусть у человека будет хороший день'],
+          ['Можно бесплатно пройти любой курс. Три месяца.', 'Что-то совсем не из моей жизни: кузнечное дело, японский, импровизация', 'Финансовую грамотность — чтобы спать спокойнее', 'Переговоры и лидерство — чтобы расти быстрее', 'Первую помощь или психологию — чтобы быть опорой для своих'],
+          ['Друг просит честно оценить его бизнес-идею. Идея слабая.', 'Предлагаю перевернуть её целиком — придумаем что-то страннее', 'Мягко советую не бросать стабильную работу', 'Говорю прямо: так не выиграть — и показываю, как надо', 'Сначала спрашиваю, что ему на самом деле нужно: идея вторична'],
+          ['У тебя появляется целый свободный день, о котором никто не знает.', 'Уехать куда глаза глядят, без плана', 'Наконец разобрать дела, которые висят месяцами', 'Тихо продвинуть свой проект, пока никто не отвлекает', 'Провести его с тем, кому сейчас тяжело'],
+        ],
+        D7: [
+          ['Через неделю можно переехать в другой город на полгода. Всё оплачено. Решать сейчас.', 'Еду: новый город — новая версия меня', 'Остаюсь: здесь всё, что меня держит', 'Еду — но только если это даст рост и связи', 'Сначала спрашиваю своих — им с этим жить'],
+          ['Неделю подряд приходят анонимные записки с одним словом: «решайся».', 'Делаю то, что давно откладываю, — неважно, кто пишет', 'Сначала выясняю, кто отправитель', 'Берусь за самое амбициозное из своего списка', 'Наконец говорю важное человеку, которому давно стоило это сказать'],
+          ['Команде нужен человек, который неделю будет публичным лицом проекта.', 'Соглашаюсь, но говорю своими словами, без пресс-релиза', 'Отказываюсь: лучше обеспечу, чтобы всё работало за кулисами', 'Соглашаюсь — это шанс, чтобы меня заметили', 'Предлагаю того, кому это нужнее для роста'],
+          ['Друзья берут на слабо: неделя без телефона. Приз — ужин за их счёт.', 'Да — интересно, кто я без ленты', 'Нет — слишком многое держится на том, что я на связи', 'Да — и выиграю, это вопрос характера', 'Да, если делаем это все вместе'],
+          ['Сосед затевает ремонт в подъезде и ищет добровольцев на выходные.', 'Иду, если можно расписать стену чем-то странным', 'Скидываюсь деньгами, но выходные — мои', 'Беру организацию на себя — так выйдет лучше', 'Прихожу с инструментами, просто потому что надо'],
+          ['Можно на неделю поменять свою работу на совсем другую.', 'На самую странную: смотритель маяка, сыровар, каскадёр', 'На похожую — чтобы не потерять навык', 'Туда, где больше всего платят и решают', 'Туда, где помогают напрямую: врач, учитель, спасатель'],
+        ],
+        Y1: [
+          ['Через год тебе предлагают выбор:', 'Годовой бюджет и полная свобода на свой странный эксперимент', 'Бессрочный контракт с понятной зарплатой и графиком', 'Роль, где я — лицо проекта и решаю я', 'Работа, которая ощутимо помогает людям, пусть и скромнее'],
+          ['Тебе достаются деньги, на которые можно не работать три года. Первым делом:', 'Строю то, о чём рассказываю на каждой вечеринке', 'Инвестирую и продолжаю работать. Тихо', 'Запускаю бизнес, чтобы через три года денег стало в десять раз больше', 'Собираю своих и закрываю их проблемы'],
+          ['За год можно по-настоящему освоить одно. Что?', 'Новый язык — и уехать его практиковать', 'Порядок в деньгах и здоровье', 'Навык, за который платят втрое больше', 'Умение поддержать человека в самый тяжёлый момент'],
+          ['Старый друг зовёт в общее дело. Хаотичный, но горит.', 'Иду — хаос мне по душе', 'Иду, только с договором и запасным планом', 'Иду, если решения будут за мной', 'Иду, потому что ему нужна опора'],
+          ['Через год можно жить в любом из четырёх мест:', 'Город, где меня никто не знает', 'Свой дом там же, где сейчас', 'Столица, где всё решается', 'Рядом с теми, кто без меня не справится'],
+          ['Тебе предлагают вести публичный блог целый год. Тема — любая.', 'Эксперименты над собственной жизнью', 'Никакого блога: личное остаётся личным', 'Как добиваться своего — чтобы стать экспертом', 'Люди, которых никто не замечает'],
+        ],
+        Y10: [
+          ['Через 10 лет ты на развилке. Какую жизнь выбираешь?', 'Начать заново в другой стране и профессии', 'Укрепить то, что уже построено', 'Выйти на уровень, где от меня зависят сотни людей', 'Отдавать большую часть времени тем, кому нужна помощь'],
+          ['Тем, что ты создаёшь, внезапно пользуется миллион человек — совсем не так, как задумано.', 'Закрываю и начинаю что-то поменьше и страннее', 'Строю защиту, чтобы ничего не сломалось', 'Беру штурвал и масштабирую', 'Ищу тех, кому это правда помогает, и делаю для них'],
+          ['Тебя начинают узнавать по одной вещи — и совсем не по той, по которой хотелось.', 'Тихо начинаю заново в другом месте', 'Принимаю: репутация — это опора', 'Делаю из этого бренд', 'Учу других делать это лучше меня'],
+          ['Предложение: всё удвоить — деньги, влияние, нагрузку. Ответ до полуночи.', 'Нет — свобода дороже', 'Нет — не буду раскачивать то, что работает', 'Да', 'Спрашиваю тех, кого люблю, — решать им'],
+          ['Через 10 лет тебе дают оплачиваемый год «творческого отпуска».', 'Год путешествий без маршрута', 'Год для здоровья, дома и порядка', 'Год на книгу, которую будут цитировать', 'Год волонтёрства там, где тяжело'],
+          ['Можно передать одно своё умение сотне незнакомых людей.', 'Не бояться начинать с нуля', 'Не терять голову в кризис', 'Добиваться своего', 'Слушать'],
+        ],
+        Y40: [
+          ['Ребёнок спрашивает: «А что ты на самом деле делаешь всю жизнь?» У тебя одно предложение.', '«Ищу край карты».', '«Держу оборону, пока всё вокруг меняется».', '«Двигаю фигуры, которые больше никто не может сдвинуть».', '«Строю место, где людям есть куда прийти».'],
+          ['Где-то можно навсегда высечь одну фразу. Где и какую?', 'На скамейке на краю города: «Не обязательно».', 'На мосту: «Выдержал».', 'На башне: «Сдвинуто».', 'Над дверью кухни: «Есть будут все».'],
+          ['Ты, только на 40 лет старше, присылаешь себе один совет на стикере.', '«Иди дальше, чем кажется разумным».', '«Сделай резервную копию».', '«Проси больше».', '«Позвони им. Сегодня».'],
+          ['Через 40 лет о тебе снимают короткий фильм. Как он называется?', '«Тот, кто всегда уходил вовремя»', '«Тот, на кого можно было положиться»', '«Тот, кто менял правила»', '«Тот, кто никого не бросил»'],
+          ['В самом конце можно сохранить один предмет. Какой?', 'Старый билет в один конец', 'Ключ от дома, где всё началось', 'Награду, которой от тебя никто не ждал', 'Пачку писем со словом «спасибо»'],
+          ['Тебя спрашивают, о чём ты жалеешь меньше всего.', 'О том, что жизнь не прошла по чужому сценарию', 'О том, что всё важное было в безопасности', 'О том, что невозможное всё-таки получилось', 'О том, что рядом всегда были люди'],
+        ],
+      },
+      reactions: {
+        FREEDOM: ['Где-то открывается дверь, которой вчера не было.', 'Карта мира тихо дорисовывает ещё один край.', 'Сценарий, написанный для тебя, теряет страницу.', 'На секунду компас указывает прямо на тебя.', 'СИСТЕМА: маршрут не согласован. Продолжаем.', 'Ветер меняет направление. Совпадение?'],
+        ANCHOR: ['Где-то щёлкает замок. Всё на месте.', 'Фундамент становится на сантиметр толще.', 'Резервная копия создана. Кем — неизвестно.', 'Чай остаётся тёплым подозрительно долго.', 'СИСТЕМА: риск отклонён.', 'В архиве аккуратно подписывают ещё одну папку.'],
+        WEIGHT: ['Где-то на доске двигается фигура.', 'Счётчик влияния тихо щёлкает вверх.', 'На другом конце города кто-то произносит твоё имя.', 'СИСТЕМА: ставка повышена.', 'Лестница становится на ступень выше.', 'Рычаг найден. Рука уже на нём.'],
+        CARE: ['Где-то кому-то становится чуть легче. Он не знает почему.', 'В общем чате на одно сердечко больше.', 'Чайник на чужой кухне закипает вовремя.', 'СИСТЕМА: никто не брошен.', 'Чья-то тяжёлая сумка вдруг стала легче.', 'Где-то загорается окно, в которое можно постучать.'],
+      },
+      archetypes: {
+        'FREEDOM|WEIGHT': { name: 'ПЕРВОПРОХОДЕЦ', plus: 'начинает то, чего ещё не было', shadow: 'оставляет других догонять' },
+        'FREEDOM|CARE': { name: 'ДОБРЫЙ БУНТАРЬ', plus: 'нарушает правила ради людей', shadow: 'сгорает в чужих делах' },
+        'ANCHOR|WEIGHT': { name: 'ЗОДЧИЙ', plus: 'строит то, что переживёт моду', shadow: 'путает контроль с заботой' },
+        'ANCHOR|CARE': { name: 'МАЯК', plus: 'рядом с ним спокойно', shadow: 'держится за то, что пора отпустить' },
+        'WEIGHT|FREEDOM': { name: 'АВАНТЮРИСТ', plus: 'превращает риск в результат', shadow: 'скучает от всего, что уже получилось' },
+        'WEIGHT|ANCHOR': { name: 'СТРАТЕГ', plus: 'видит доску на десять ходов вперёд', shadow: 'не делает ход без гарантий' },
+        'CARE|FREEDOM': { name: 'ВОЛЬНЫЙ ЛЕКАРЬ', plus: 'появляется там, где нужнее всего', shadow: 'исчезает, когда становится тесно' },
+        'CARE|ANCHOR': { name: 'СТРАЖ', plus: 'никого не бросает', shadow: 'защищает даже от того, что помогло бы вырасти' },
+      },
+      tension: {
+        O: { short: 'СВОБОДА ↔ ОПОРА', text: 'Тебя тянет и к новому, и к надёжному. Решения даются тяжело, когда свобода стоит стабильности: переезд, смена работы, большой риск. Это не нерешительность — две настоящие ценности тянут в разные стороны.',
+          quest: '7 дней: каждый день одно маленькое «новое» внутри безопасных рамок (маршрут, блюдо, разговор) — и одно действие, которое укрепляет опору. На седьмой день запиши, что дало больше энергии.' },
+        E: { short: 'ВЕС ↔ ЗАБОТА', text: 'Тебе важно и добиваться, и заботиться. Тяжелее всего, когда успех требует кого-то оставить позади: пропущенные вечера, жёсткие решения. Это не слабость — две настоящие ценности тянут в разные стороны.',
+          quest: '7 дней: каждое утро выбирай одно дело для своего роста и одно — для конкретного человека. Вечером отмечай, какое из двух осталось несделанным.' },
+        clear: {
+          FREEDOM: { short: 'ясный приоритет — СВОБОДА (цена — ОПОРА)', text: 'Свобода побеждает почти без боя. Цена этой ясности — опора: планы, подушка и предсказуемость могут незаметно проседать.', quest: '7 дней: выбери одну область, где не хватает опоры (деньги, сон, порядок), и каждый день делай в ней одно скучное действие на 10 минут.' },
+          ANCHOR: { short: 'ясный приоритет — ОПОРА (цена — СВОБОДА)', text: 'Опора побеждает почти без боя. Цена этой ясности — свобода: новое может проходить мимо, потому что «и так нормально».', quest: '7 дней: каждый день одно маленькое «впервые» — путь, блюдо, человек, вопрос. Записывай, что было самым живым.' },
+          WEIGHT: { short: 'ясный приоритет — ВЕС (цена — ЗАБОТА)', text: 'Вес побеждает почти без боя. Цена этой ясности — забота: людям рядом может начать казаться, что они ресурс.', quest: '7 дней: каждый день делай что-то для одного человека без расчёта на пользу. Записывай, как он реагирует.' },
+          CARE: { short: 'ясный приоритет — ЗАБОТА (цена — ВЕС)', text: 'Забота побеждает почти без боя. Цена этой ясности — вес: свои цели могут вечно ждать очереди.', quest: '7 дней: 30 минут в день на свою цель — до того, как отвечать на чужие просьбы.' },
+        },
+      },
+      blind: {
+        FREEDOM: 'Слепая зона — СВОБОДА. Может казаться, что выбора нет, хотя он есть. Где ты живёшь по чужому сценарию?',
+        ANCHOR: 'Слепая зона — ОПОРА. Без запасного плана любая буря становится личной. Что сломается первым, если завтра всё пойдёт не так?',
+        WEIGHT: 'Слепая зона — ВЕС. Твои идеи могут оставаться невидимыми. Где ты молчишь, хотя стоило бы взять слово?',
+        CARE: 'Слепая зона — ЗАБОТА. До цели можно дойти в одиночестве. Кто заметит, если тебе понадобится помощь?',
+      },
+      bridgeText: [
+        'Ты-через-10-лет — пока незнакомец. Это очень частое состояние. Попробуй разговор с собой из будущего — кнопка ниже.',
+        'Ты-через-10-лет — как дальний родственник: лицо знакомое, но видитесь вы редко. Одно письмо себе через 10 лет заметно сближает.',
+        'Ты сейчас и ты-через-10-лет — почти одно лицо. В исследованиях Хершфилда у таких людей больше сбережений и терпения к долгой игре. Дай этой версии себя одно обещание на этой неделе.',
       ],
-      worldFacts: [
-        'карты обновляет тот, кто прошёл там последним',
-        'в каждом городе есть улица, которая существует только по четвергам',
-        'люди празднуют второй день рождения — день, когда передумали насчёт чего-то важного',
-        'библиотеки выдают на время неиспользованные вечера',
-        'луна слегка приближается к тем, кто врёт',
-        'к любому можно на один день пойти в ученики, без лишних вопросов',
-        'тишина — это валюта, но только мелкими купюрами',
-        'о сожалениях сообщают в прогнозе погоды',
-        'недоделанные проекты по закону считаются домашними питомцами',
-        'почта доставляет письма всем версиям тебя, которые не случились',
+      bridgeQ: { prompt: 'Насколько ты-через-10-лет ощущается как ты?', low: '1 — два разных человека', high: '7 — один и тот же человек' },
+      lifePaths: [null,
+        { name: 'ЗАЧИНЩИК', plus: 'начинает первым', shadow: 'бросает на середине', q: 'Что ты начнёшь, не дожидаясь разрешения?' },
+        { name: 'ДИПЛОМАТ', plus: 'чувствует, что нужно другому', shadow: 'теряет свой голос', q: 'Где ты соглашаешься, хотя хочется возразить?' },
+        { name: 'РАССКАЗЧИК', plus: 'превращает жизнь в историю', shadow: 'приукрашивает', q: 'Какую историю о себе пора переписать?' },
+        { name: 'СТРОИТЕЛЬ', plus: 'доводит до конца', shadow: 'не умеет отдыхать', q: 'Что ты строишь — и для кого?' },
+        { name: 'СТРАННИК', plus: 'не боится перемен', shadow: 'бежит от скуки, а не к цели', q: 'От чего ты на самом деле уходишь?' },
+        { name: 'ХРАНИТЕЛЬ ОЧАГА', plus: 'создаёт дом где угодно', shadow: 'берёт на себя слишком много', q: 'Кто позаботится о тебе?' },
+        { name: 'ИСКАТЕЛЬ', plus: 'видит глубже', shadow: 'уходит от жизни в голову', q: 'Какой вопрос ты боишься задать вслух?' },
+        { name: 'МАГНАТ', plus: 'превращает усилие в результат', shadow: 'измеряет всё деньгами', q: 'Что для тебя богатство, кроме денег?' },
+        { name: 'МУДРЕЦ', plus: 'видит большую картину', shadow: 'смотрит на жизнь со стороны', q: 'Где пора перестать наблюдать и вмешаться?' },
       ],
       stages: [
-        [
-          { prompt: 'Приходит сообщение с твоего же номера. Дата отправки — через десять лет. В нём одно слово: «не надо».',
-            options: [
-              O('Ответить: «что НЕ НАДО?»', 'Ты отвечаешь. Три точки мигают {n} {n|час|часа|часов}. Потом: «{msg}». Ты делаешь скриншот. Никто не верит.',
-                { n: [2, 9], msg: ['синюю', 'ты и так знаешь', 'ладно. делай. но возьми куртку', 'ой, не та реальность', 'не письмо. другое', 'спроси человека, который только что пришёл тебе в голову'] }),
-              O('Всё равно сделать задуманное', 'Ты всё равно это делаешь. {c}. Сообщение тихо удаляет само себя.',
-                { c: ['Ничего не взрывается', 'Где-то в твоём календаре открывается маленькая дверь', 'Батарея телефона прибавляет четыре процента', 'Незнакомец кивает тебе так, будто ждал именно этого'] }),
-              O('Отменить всё и остаться дома', 'Ты остаёшься дома. {t} за окном раздаётся {s}. Что бы это ни было, оно происходит без тебя — и тебя это устраивает.',
-                { t: ['В 3:14 ночи', 'В 23:11', 'Ровно в полдень', 'В 16:44'], s: ['гром аплодисментов', 'звук разыгрывающегося духового оркестра', 'голос, зовущий имя, почти похожее на твоё', 'гогот очень уверенного в себе гуся'] }),
-            ] },
-          { prompt: 'На телефоне появляется приложение, которое никто не устанавливал. В нём одна кнопка: «ЖИТЬ ИНАЧЕ». Она светится.',
-            options: [
-              O('Нажать', 'Экран белеет на {n} {n|секунду|секунды|секунд}. После этого кофе на вкус как решение, которое ещё не принято. Непрочитанных сообщений от тебя же: {k}.',
-                { n: [3, 9], k: [2, 40] }),
-              O('Удалить. Потом проверить, точно ли удалилось', 'Удалилось. Но на заставке теперь {w}. Заставку никто не менял.',
-                { w: ['незнакомая дверь', 'твой собственный почерк вверх ногами', 'карта города, где одна улица названа твоим именем'] }),
-              O('Сделать скриншот и кинуть в общий чат', 'За минуту отвечают {k} {k|человек|человека|человек}. Кто-то пишет: «{q}». Приложение исчезает у всех, кроме тебя.',
-                { k: [3, 14], q: ['у меня то же самое', 'без меня не нажимай', 'а я его ещё в 2019-м нажал'] }),
-            ] },
-          { prompt: 'Ты просыпаешься на 40 минут раньше с полной уверенностью, что сегодня важный день. Никто не объясняет почему.',
-            options: [
-              O('Записать всё, что приходит в голову', 'К семи утра у тебя {k} {k|строка|строки|строк}. Строка №{m} пока не имеет смысла. Её стоит сохранить.', { k: [12, 60], m: [3, 11] }),
-              O('Позвонить тому, кого давно избегаешь', 'Трубку берут {n}, и голос говорит: «{q}».',
-                { n: ['после первого же гудка', 'после третьего гудка', 'на самом последнем гудке'], q: ['ну наконец-то', 'это судьба, не иначе', 'подожди, я сяду'] }),
-              O('Выйти и пойти туда, куда никогда не ходишь', 'Через {k} {k|минуту|минуты|минут} ты находишь {p}. Больше никто этого, похоже, не замечает.',
-                { k: [7, 45], p: ['лавку, где продают только ключи', 'скамейку с табличкой, посвящённой тебе', 'лестницу, которой вчера здесь не было'] }),
-              O('Сварить кофе и притвориться, что день обычный', 'Получается. Почти. В {t} совсем рядом происходит что-то маленькое и важное. Ты узнаёшь об этом через {k} {k|год|года|лет}.',
-                { t: ['10:10', '13:37', '17:05'], k: [2, 9] }),
-            ] },
-        ],
-        [
-          { prompt: 'Незнакомец вкладывает тебе в руку латунный ключ с бумажной биркой: «ты поймёшь». Ключ подходит к трём дверям в твоём городе.',
-            options: [
-              O('Дверь, за которой играет музыка', 'За дверью — {room}. Тебе вручают инструмент, на котором ты не умеешь играть. Ты всё равно играешь. Тебя приглашают ещё.',
-                { room: ['репетиция группы без названия', 'свадьба двух людей, познакомившихся вчера', 'хор, который поёт только в тональности «почти»', 'вечеринка в честь праздника, которого нет ни в одном календаре'] }),
-              O('Дверь с табличкой «ВХОДА НЕТ»', 'За ней — {secret}. Ты делаешь одну фотографию. Позже на снимке оказывается что-то другое.',
-                { secret: ['лестница, ведущая вбок', 'кабинет, где кто-то ждёт именно тебя', 'сад, растущий под лампами дневного света', 'карта города, на которой уже нарисован твой маршрут'] }),
-              O('Сделать копию ключа. Продавать доступ.', 'К воскресенью продано {k} {k|копия|копии|копий}. Женщина в сером пальто предлагает купить оригинал. Ты отвечаешь: пока нет.', { k: [7, 40] }),
-            ] },
-          { prompt: 'Незнакомец предлагает обмен на неделю: твоя жизнь на его. Без вопросов, без объяснений, с гарантией возврата.',
-            options: [
-              O('Согласиться сразу', 'Его жизнь оказывается {l}. К четвергу у тебя получается лучше, чем у него.',
-                { l: ['ночной сменой в планетарии', 'крошечной пекарней с огромным долгом', 'знаменитым анонимным аккаунтом'] }),
-              O('Согласиться, но взять блокнот', 'Ты записываешь всё. {k} {k|страница|страницы|страниц}. Страница {m} становится самым читаемым текстом в твоей жизни.', { k: [20, 90], m: [3, 19] }),
-              O('Отказаться и спросить, что не так с его жизнью', 'Вы разговариваете до {t}. Оказывается, дело было вовсе не в обмене. Теперь вы должны друг другу по одной услуге.',
-                { t: ['полуночи', 'рассвета', 'закрытия кафе'] }),
-            ] },
-          { prompt: 'Человек, у которого есть власть над тобой — начальник, преподаватель, арендодатель, — совершает очевидную ошибку. Замечаешь только ты.',
-            options: [
-              O('Сказать наедине', 'Повисает пауза, потом: «{q}». Что-то между вами сдвигается на {k} {k|градус|градуса|градусов}.',
-                { q: ['спасибо. правда', 'зачем ты мне помогаешь?', 'давай это останется между нами'], k: [5, 40] }),
-              O('Тихо всё исправить', 'Никто не знает. Всё работает. Ты заводишь тайный список «{n}». К пятнице в нём {k} {k|пункт|пункта|пунктов}.',
-                { n: ['тихо починено', 'улики', 'теневое резюме'], k: [2, 9] }),
-              O('Обратить это в свою пользу', 'Ты молчишь и ждёшь. На {k}-й день желаемое у тебя в руках. Заодно ты узнаёшь о себе кое-что, чего лучше было бы не знать.', { k: [3, 7] }),
-            ] },
-        ],
-        [
-          { prompt: 'Тебе достаются деньги, на которые можно не работать три года. Что происходит первым делом?',
-            options: [
-              O('Наконец строю то, о чём рассказываю всем на вечеринках', 'Месяц {m}-й: первая версия уродлива, но жива. Ей пользуются {k} {k|человек|человека|человек}. Один пишет: «{q}».',
-                { m: [2, 7], k: [12, 300], q: ['это странно. мне это нужно', 'кто это сделал и почему оно меня понимает', 'пожалуйста, не чините баг. баг — лучшее, что тут есть'] }),
-              O('Билет в один конец. Телефон выключен.', 'Ты оказываешься в {p}. Перестаёшь следить за датой. Учишь слово, означающее «{w}», на языке, на котором говорят {k} {k|человек|человека|человек}.',
-                { p: ['портовом городке без туристического центра', 'городе, где автобусы ходят на сплетнях', 'горной деревне с отличным вайфаем и без единой причины им пользоваться'], w: ['час после принятого решения', 'друг, с которым вы ещё не знакомы', 'тоска по месту, которого не существует'], k: [300, 9000] }),
-              O('Инвестирую. Продолжаю работать. Тихо.', 'Никто ничего не замечает. В этом и смысл. К зиме {r}.',
-                { r: ['твои деньги тихо начинают зарабатывать новые деньги', 'у тебя есть маленький кусочек того, что вот-вот станет важным', 'ты можешь сказать «нет» чему угодно — и начинаешь говорить'] }),
-              O('Собираю всех, кто мне нравится, в одном месте. Бессрочно.', 'Ты снимаешь {v}. Через месяц у места появляется название, которое выбрал кто-то другой. Начинают приходить люди, которых никто не звал.',
-                { v: ['старую типографию', 'квартиру над пекарней', 'заброшенный планетарий', 'половину лодки'] }),
-            ] },
-          { prompt: 'Можно мгновенно освоить один навык — но навсегда забыть другой. Какой именно забудется, выбрать нельзя.',
-            options: [
-              O('Новый язык', 'Ты забываешь, как {f}. Никто не замечает {k} {k|месяц|месяца|месяцев}. Зато в новом языке есть слово ровно для твоей ситуации.',
-                { f: ['свистеть', 'кататься на велосипеде', 'складывать простыню на резинке', 'убедительно врать'], k: [2, 8] }),
-              O('Делать вещи руками', 'Ты забываешь, как {f}. Зато собираешь {b}. Люди спрашивают, продаётся ли. Нет.',
-                { f: ['свистеть', 'кататься на велосипеде', 'складывать простыню на резинке', 'убедительно врать'], b: ['стул, который чуть честнее, чем нужно', 'небольшую лодку', 'дверь в никуда'] }),
-              O('Читать людей', 'Ты забываешь, как {f}. Теперь ты знаешь, чего человек хочет, за {k} {k|секунду|секунды|секунд} до того, как он это скажет. Полезно. Утомительно.',
-                { f: ['свистеть', 'кататься на велосипеде', 'складывать простыню на резинке', 'убедительно врать'], k: [2, 9] }),
-              O('Мастерски ничего не делать', 'Ты забываешь, как {f}. Впервые за годы тебе скучно. Это похоже на {x}.',
-                { f: ['свистеть', 'кататься на велосипеде', 'складывать простыню на резинке', 'убедительно врать'], x: ['открывающуюся дверь', 'первый день лета', 'возвращение в четырнадцать лет'] }),
-            ] },
-          { prompt: 'Приходит коробка: от тебя — тебе. Отправлена год назад. Как её отправляли, ты не помнишь.',
-            options: [
-              O('Открыть сразу', 'Внутри — {i} и записка: «{q}».',
-                { i: ['ключ без замка', 'билет в город, которого не было в планах', 'список из семи имён'], q: ['всё верно', 'начни со второго пункта', 'пока никому не говори'] }),
-              O('Не открывать и подождать', '{k} {k|неделю|недели|недель} ничего не происходит. Потом всё происходит одновременно. И только у тебя всё уже готово.', { k: [3, 11] }),
-              O('Открыть вместе с друзьями', 'Каждый находит там что-то своё. {n} получает ровно то, что было нужно. Никто не спрашивает, как такое возможно.',
-                { n: ['Самый тихий из вас', 'Твой самый старый друг', 'Незнакомец, пришедший за компанию'] }),
-            ] },
-        ],
-        [
-          { prompt: 'Тем, что ты создаёшь, внезапно пользуется миллион человек — и совсем не так, как было задумано.',
-            options: [
-              O('Взять штурвал. Рулить.', 'Ты перестаёшь нормально спать и начинаешь выигрывать. К концу года {h}.',
-                { h: ['про тебя снимают документальный фильм, и в нём у тебя ужасная причёска', 'правительство цитирует тебя, ничего не понимая', 'появляются три клона, и один из них лучше'] }),
-              O('Закрыть. Это уже не моё.', 'Ты выдёргиваешь вилку из розетки. Интернет злится {k} {k|день|дня|дней}. Ты начинаешь что-то поменьше, постраннее и целиком своё.', { k: [3, 19] }),
-              O('Найти самого странного пользователя и встретиться', 'Самый странный пользователь — {u}. Вы встречаетесь в кафе и говорите {k} {k|час|часа|часов}. Следующее десятилетие тихо перестраивается.',
-                { u: ['отставной смотритель маяка, который с его помощью разговаривает с кораблями', 'четырнадцатилетний подросток, который управляет через него очень маленькой страной', 'монастырь, который планирует в нём тишину'], k: [3, 11] }),
-              O('Защитить тех, кто уже пользуется', 'Ты строишь стены, а потом двери в стенах. Всё растёт медленнее, зато надолго. Через {k} {k|год|года|лет} тебя всё ещё благодарят в самых странных местах.', { k: [4, 12] }),
-            ] },
-          { prompt: 'Тебя начинают узнавать по одной вещи — и совсем не по той, по которой хотелось.',
-            options: [
-              O('Принять и усилить', 'Ты делаешь из этого бренд. К концу года {h}.',
-                { h: ['появляется мерч', 'какой-то подкаст тебя пародирует', 'мама наконец понимает, чем ты занимаешься'] }),
-              O('Тихо начать заново в другом месте', 'Новый город, новое имя в титрах. Через {k} {k|год|года|лет} то, чего хотелось на самом деле, тихо становится знаменитым.', { k: [2, 7] }),
-              O('Научить других делать это лучше тебя', '{k} {k|ученик|ученика|учеников}. Один из них тебя обходит. Радости от этого больше, чем ожидалось.', { k: [5, 300] }),
-            ] },
-          { prompt: 'Приходит предложение: всё удвоить — деньги, влияние, нагрузку. Ответ нужен до полуночи.',
-            options: [
-              O('Да', 'Ты соглашаешься. Получаешь {x}. Теряешь {y}.',
-                { x: ['вид из окна', 'водителя', 'должность из трёх слов'], y: ['свои воскресенья', 'одного друга', 'способность скучать'] }),
-              O('Нет', 'Ты отказываешься в 23:{k}. Наутро — {f}.', { k: [10, 59], f: ['лёгкость, какой не было годами', 'богатство, которое никто не обложит налогом', 'подозрительная свобода'] }),
-              O('Встречное: половина работы за те же деньги', 'Ответ: {q}. Оказывается, торговаться — это тоже творчество.', { q: ['«да», как ни странно', 'сначала «нет», потом «да»', '«кто тебя этому научил?»'] }),
-              O('Спросить тех, кого любишь', 'Они спорят {k} {k|час|часа|часов}. В итоге решение принимают они, и оно правильное.', { k: [2, 6] }),
-            ] },
-        ],
-        [
-          finalSit('Ребёнок спрашивает: «А что ты на самом деле делаешь всю жизнь?» У тебя одно предложение.',
-            ['«Ищу край карты».', '«Строю место, где людям есть куда прийти».', '«Слежу, чтобы никто не указывал мне, что делать».',
-              '«Делаю вещи, которых ещё не было».', '«Держу оборону, пока всё вокруг меняется».', '«Двигаю фигуры, которые больше никто не может сдвинуть».'],
-            '{Y} год. Ребёнок думает и выдаёт: «{reply}» — и тебе так смешно, как не было уже лет десять.',
-            { reply: ['Это же не работа', 'А мне так можно?', 'То есть вся эта странность — нарочно?', 'Это надо записать', 'И как, получилось?'] }),
-          finalSit('Где-то можно навсегда высечь одну фразу. Где и какую?',
-            ['На маяке: «Ищи дальше».', 'Над дверью кухни: «Есть будут все».', 'На скамейке на краю города: «Не обязательно».',
-              'На машине, которая всё ещё работает: «Сделано руками».', 'На мосту: «Выдержал».', 'На башне: «Сдвинуто».'],
-            '{Y} год. Незнакомец фотографирует надпись и выкладывает с подписью «{c}». {k} {k|лайк|лайка|лайков}. Ты так об этом и не узнаёшь.',
-            { c: ['кто это написал?', 'как раз сегодня было нужно', 'странно, но верно'], k: [3, 40000] }),
-          finalSit('Ты, только на 40 лет старше, присылаешь себе один совет. Он должен уместиться на стикере.',
-            ['«Иди дальше, чем кажется разумным».', '«Позвони им. Сегодня».', '«Никто не придёт дать тебе разрешение».',
-              '«Сначала сделай уродливую версию».', '«Сделай резервную копию».', '«Проси больше».'],
-            '{Y} год. Ты находишь этот стикер в старой книге и подсчитываешь: совет сработал {k} {k|раз|раза|раз} из 10.', { k: [4, 9] }),
-        ],
+        { max: 12, name: 'трудолюбие ↔ неполноценность', q: 'Что у тебя получается лучше всего?' },
+        { max: 18, name: 'идентичность ↔ смешение ролей', q: 'Кто ты, когда никто не смотрит?' },
+        { max: 39, name: 'близость ↔ изоляция', q: 'С кем — и ради чего?' },
+        { max: 64, name: 'продуктивность ↔ застой', q: 'Что ты оставишь тем, кто идёт следом?' },
+        { max: 200, name: 'целостность ↔ отчаяние', q: 'Какая история твоей жизни звучит правдой?' },
       ],
-      dims: {
-        AUTONOMY: {
-          label: 'АВТОНОМИЯ', nouns: ['БЕГЛЕЦ', 'ВОЛЬНЫЙ АГЕНТ', 'КОЧЕВНИК'], adjs: ['БЕСПРИЗОРНЫЙ', 'НЕЛИЦЕНЗИРОВАННЫЙ'],
-          future: 'Это жизнь, где мало начальников и много запасных выходов.',
-          verdicts: ['ОШИБКА 403: НАЧАЛЬСТВУ ВХОД ЗАПРЕЩЁН.', 'ЧИТАЕТ ПРАВИЛА, ТОЛЬКО ЧТОБЫ НАЙТИ ЛАЗЕЙКУ.', 'СИСТЕМА: ПОД КОНТРОЛЬ НЕ БЕРЁТСЯ. ДАЖЕ НЕ ПРОБУЙТЕ.'],
-          buff: 'Видит выход из любой ситуации', debuff: 'Ждёт разрешения', boss: 'ПРИВРАТНИК',
-          kept: 'свои правила вместо чужого плана', rejected: 'разрешение',
-          project: 'Дело на одного человека, которому не нужно ничьё одобрение: микростудия, крошечный продукт, рассылка с безумной идеей.',
-          experiment: '7 дней подряд трать час в день на то, о чём тебя никто не просил. На седьмой день опубликуй результат, каким бы маленьким он ни был.',
-          question: 'Что появилось бы в этом году, если бы никто не смотрел?',
-        },
-        SECURITY: {
-          label: 'НАДЁЖНОСТЬ', nouns: ['ХРАНИТЕЛЬ', 'АРХИВАРИУС', 'СМОТРИТЕЛЬ МАЯКА'], adjs: ['НЕПРОБИВАЕМЫЙ', 'ТЕРПЕЛИВЫЙ'],
-          future: 'Когда что-то ломается, люди бегут к тебе — потому что у тебя всё уже готово.',
-          verdicts: ['ОБНАРУЖЕНА РЕЗЕРВНАЯ КОПИЯ РЕЗЕРВНОЙ КОПИИ.', 'ЕСТЬ ПЛАН Б ДЛЯ ПЛАНА Б. ОН РАБОТАЕТ.', 'ВНИМАНИЕ: ПОДОЗРИТЕЛЬНОЕ СПОКОЙСТВИЕ В ЧС.'],
-          buff: 'При тебе ничего не ломается', debuff: 'Без страховки', boss: 'ВНЕЗАПНЫЙ ШТОРМ',
-          kept: 'твёрдый пол, который держит, даже когда всё остальное сломалось', rejected: 'лишний риск',
-          project: 'Система, от которой спокойнее тебе и людям вокруг: финансовая подушка, инструмент, ритуал, который держит, когда всё рушится.',
-          experiment: 'Выпиши три вещи, потеря которых ударила бы сильнее всего. На этой неделе сделай маленькую страховку для одной из них.',
-          question: 'Какая из твоих страховочных сеток на самом деле клетка?',
-        },
-        CURIOSITY: {
-          label: 'ЛЮБОПЫТСТВО', nouns: ['КАРТОГРАФ', 'СЫЩИК', 'ОХОТНИК ЗА СИГНАЛАМИ'], adjs: ['БЕСПОКОЙНЫЙ', 'НЕИЗВЕДАННЫЙ'],
-          future: 'Ты идёшь за вопросами дальше, чем разумно, и некоторые из них идут следом за тобой.',
-          verdicts: ['ОТКРЫТО СЛИШКОМ МНОГО ВКЛАДОК. ВСЕ ВАЖНЫЕ.', 'ОШИБКА: У ВОПРОСА НЕТ ДНА.', 'СЧЁТЧИК «А ПОЧЕМУ?» ПЕРЕПОЛНЕН.'],
-          buff: 'Находит скрытый слой', debuff: 'Пропускает «зачем»', boss: 'ОЧЕВИДНЫЙ ОТВЕТ',
-          kept: 'безымянная дверь: вопрос вместо ответа', rejected: 'очевидное объяснение',
-          project: 'Публичное и слегка одержимое расследование одного вопроса, за ответ на который никто не платит.',
-          experiment: 'Выбери вопрос, о котором не можешь перестать думать. Задай его пятерым людям, которые могут знать ответ. Запиши, что удивило.',
-          question: 'Вокруг какого вопроса ты кружишь годами, так и не задав его вслух?',
-        },
-        CREATION: {
-          label: 'СОЗИДАНИЕ', nouns: ['ИЗОБРЕТАТЕЛЬ', 'АРХИТЕКТОР', 'МЕХАНИК'], adjs: ['РУКОТВОРНЫЙ', 'НЕДОДЕЛАННЫЙ'],
-          future: 'За тобой тянется след из вещей, инструментов и странных машин, которые переживают собственный смысл.',
-          verdicts: ['СТАТУС СБОРКИ: НЕ ДОДЕЛАНО. КАК ВСЕГДА. ТАК И ЗАДУМАНО.', 'ПРЕВРАЩАЕТ СКУКУ В ПРОТОТИПЫ.', 'ВНИМАНИЕ: СНАЧАЛА СДЕЛАЕТ, ПОТОМ ОБЪЯСНИТ.'],
-          buff: 'Быстро превращает идеи в вещи', debuff: 'Планы, которые не доходят до дела', boss: 'ЧИСТЫЙ ЛИСТ',
-          kept: 'делать вещь вместо разговоров о вещи', rejected: 'законченное, отполированное, безопасное',
-          project: 'То, что ты описываешь всем на вечеринках, — собранное в уродливую, но работающую первую версию.',
-          experiment: 'За 3 часа сделай самую уродливую версию своей идеи. Покажи одному человеку. Запиши первый вопрос, который услышишь.',
-          question: 'Какая идея в твоей голове уже заслужила плохой первый черновик?',
-        },
-        CONNECTION: {
-          label: 'ЛЮДИ', nouns: ['ТАМАДА', 'ПРОВОДНИК', 'ХОРМЕЙСТЕР'], adjs: ['ЩЕДРЫЙ', 'МНОГОЛЮДНЫЙ'],
-          future: 'Вокруг тебя наполняются комнаты — людьми, которые иначе никогда бы не встретились.',
-          verdicts: ['АДМИН ОБЩЕГО ЧАТА ПО УМОЛЧАНИЮ.', 'ПОМНИТ, КТО КАКОЙ КОФЕ ПЬЁТ. ЭТО СУПЕРСИЛА.', 'ВНИМАНИЕ: НЕЗНАКОМЦЫ САМИ ВЫКЛАДЫВАЮТ СЕКРЕТЫ.'],
-          buff: 'Позовёт — и люди придут', debuff: 'Всё тащит в одиночку', boss: 'ПУСТАЯ КОМНАТА',
-          kept: 'люди, комнаты и разговоры между ними', rejected: 'путь в одиночку',
-          project: 'Регулярная встреча — ужин, клуб, чат — вокруг одной странной общей одержимости.',
-          experiment: 'Позови в один разговор троих людей, не знакомых друг с другом, — на тему, которая тебе важна. Слушай больше, чем говоришь.',
-          question: 'Какие двое из твоих знакомых давно должны были познакомиться?',
-        },
-        POWER: {
-          label: 'ВЛИЯНИЕ', nouns: ['ОПЕРАТОР', 'СТРАТЕГ', 'ДЕЛАТЕЛЬ КОРОЛЕЙ'], adjs: ['ВЛИЯТЕЛЬНЫЙ', 'НЕИЗБЕЖНЫЙ'],
-          future: 'Ты знаешь, где рычаги, и не стесняешься за них тянуть.',
-          verdicts: ['ОБНАРУЖЕН РЫЧАГ. РУКА УЖЕ НА НЁМ.', 'НЕ ХОДИТ НА СОВЕЩАНИЯ. СОВЕЩАНИЯ ПРИХОДЯТ САМИ.', 'ВНИМАНИЕ: УЖЕ ЕСТЬ ПЛАН, КАК ТУТ ВСЁ ПЕРЕУСТРОИТЬ.'],
-          buff: 'Малым движением — большой результат', debuff: 'Отдаёт решения другим', boss: 'СОВЕЩАНИЕ БЕЗ ТЕБЯ',
-          kept: 'рычаг: маленькое движение с большими последствиями', rejected: 'маленький масштаб ради комфорта',
-          project: 'Рычаг: то, что позволяет малым усилием сдвинуть большое, — платформа, фонд, движение.',
-          experiment: 'Найди на этой неделе одно решение, которое кто-то принимает плохо. Предложи взять его на себя.',
-          question: 'Что изменится первым, если тебя действительно начнут слушать?',
-        },
-      },
-      places: ['НЕДОСТРОЕННЫХ КОМНАТ', 'ЧЕТВЕРГОВОЙ УЛИЦЫ', 'ПОТЕРЯННЫХ ВЕЧЕРОВ', 'ВТОРОЙ ЛУНЫ', 'ОДОЛЖЕННОЙ ПОГОДЫ',
-        'МАЛЕНЬКИХ АПОКАЛИПСИСОВ', 'ТИХИХ МАШИН', 'ОТКРЫТЫХ ДВЕРЕЙ', 'ПОСЛЕДНЕГО АВТОБУСА', 'НЕВОЗМОЖНЫХ КАРТ'],
-      title: (adj, noun, place) => adj + ' ' + noun + ' ' + place,
-      future: (earth, fact, title, f1, f2) => 'В реальности ' + earth + ', где ' + fact + ', ты — ' + title + '. ' + f1 + ' ' + f2,
-      kept: (k1, k2) => k1 + '; а сразу следом — ' + k2,
-      branchQuestion: 'Что сказала бы о такой жизни версия тебя, которая на этапе «1 ГОД» выбрала иначе?',
-      alreadyTrue: 'Какая часть этой хронологии уже правда?',
+      techMilestones: [[1957, 'первого спутника'], [1961, 'полёта Гагарина'], [1969, 'высадки на Луну'], [1971, 'первого электронного письма'], [1983, 'первого мобильного телефона в продаже'], [1991, 'Всемирной паутины'], [1998, 'Google'], [2001, 'Википедии'], [2005, 'YouTube'], [2007, 'iPhone'], [2022, 'ChatGPT']],
+      worldAtBirth: (pop, tech, yrs) => 'Когда ты появляешься на свет, на Земле около ' + pop + ' млрд человек' + (tech ? ', а до ' + tech + ' ещё ' + yrs + ' ' + plural(yrs, ['год', 'года', 'лет']) + '.' : '.'),
+      places: ['НЕДОСТРОЕННЫХ КОМНАТ', 'ЧЕТВЕРГОВОЙ УЛИЦЫ', 'ПОТЕРЯННЫХ ВЕЧЕРОВ', 'ВТОРОЙ ЛУНЫ', 'ОДОЛЖЕННОЙ ПОГОДЫ', 'МАЛЕНЬКИХ АПОКАЛИПСИСОВ', 'ТИХИХ МАШИН', 'ОТКРЫТЫХ ДВЕРЕЙ', 'ПОСЛЕДНЕГО АВТОБУСА', 'НЕВОЗМОЖНЫХ КАРТ'],
+      worldFacts: [
+        'карты обновляет тот, кто прошёл там последним', 'в каждом городе есть улица, которая существует только по четвергам',
+        'люди празднуют второй день рождения — день, когда передумали насчёт чего-то важного', 'библиотеки выдают на время неиспользованные вечера',
+        'луна слегка приближается к тем, кто врёт', 'к любому можно на один день пойти в ученики',
+        'тишина — это валюта, но только мелкими купюрами', 'о сожалениях сообщают в прогнозе погоды',
+        'недоделанные проекты по закону считаются домашними питомцами', 'почта доставляет письма всем версиям тебя, которые не случились',
+      ],
       prompts: {
-        plan: r => 'Я прохожу BORN WEIRD — игру-симулятор жизни (это игра, не предсказание). Мой персонаж: ' + r.title + '. Сильная сторона: ' + r.buff + '. Слабое место: ' + r.debuff + '. Квест: ' + r.experiment +
-          ' Преврати квест в план на 7 дней: одно конкретное действие на 15–30 минут в день и понятный критерий «сделано». Сначала задай мне один вопрос о моей реальной ситуации, потом дай план. Отвечай по-русски.',
-        future: r => 'Ролевая игра: ты — это я в ' + r.finalYear + ' году, в странной реальности, где ' + r.worldFact + '. В этой жизни я — ' + r.title + '. Итог этой жизни в одной фразе: ' + r.finalLine +
-          ' Поговори с сегодняшней версией меня от лица этого будущего: коротко, тепло, честно, без предсказаний — это игра. Начни с одного вопроса ко мне. Отвечай по-русски.',
-        debuff: r => 'В игре BORN WEIRD моим слабым местом выпало «' + r.debuff + '» (самая низкая характеристика: ' + r.labels[r.rejected] + '). Это игра, не диагноз. Помоги проверить, где это реально проявляется в моей жизни: задай 3 коротких вопроса по одному, потом предложи один маленький эксперимент на эту неделю. Отвечай по-русски.',
+        plan: r => 'Я прохожу BORN WEIRD — игру-зеркало ценностей (это игра, не тест и не предсказание). Мой порядок ценностей: ' + r.orderText + '. Главное напряжение: ' + r.tension.short + '. Квест на 7 дней: ' + r.tension.quest +
+          ' Преврати его в план на 7 дней: одно конкретное действие на 15–30 минут в день и понятный критерий «сделано». Сначала задай мне один вопрос о моей реальной ситуации, потом дай план. Отвечай по-русски.',
+        future: r => 'Ролевая игра: ты — это я через 10 лет. Сейчас моя связь с будущим собой — ' + r.bridge + ' из 7. Мои ценности: ' + r.orderText + '; главное напряжение: ' + r.tension.short +
+          '. Поговори с сегодняшней версией меня от лица меня-будущего: коротко, тепло, честно, без предсказаний — это игра. Начни с одного вопроса ко мне. Отвечай по-русски.',
+        tension: r => 'В игре BORN WEIRD моё главное внутреннее напряжение вышло таким: ' + r.tension.short + ' — «' + r.tension.text + '» Это игра, не диагноз. Помоги увидеть, где это напряжение реально проявляется в моих решениях: задай 3 коротких вопроса по одному, потом предложи один маленький эксперимент на эту неделю. Отвечай по-русски.',
       },
+      orderSep: ' > ',
       seed: {
-        disclaimer: '> Этот файл описывает исследованную возможность, а не объективную правду. Его сгенерировал игровой симулятор из случайного зерна, символических чисел рождения и пяти выборов. Ничто здесь не является предсказанием.',
-        h: { timeline: 'ХРОНОЛОГИЯ (TIMELINE)', birth: 'ЗЕРНО РОЖДЕНИЯ (BIRTH SEED)', world: 'МИР (THE WORLD)', build: 'СБОРКА ПЕРСОНАЖА (CHARACTER BUILD)', future: 'ВОЗМОЖНОЕ БУДУЩЕЕ (THE POSSIBLE FUTURE)',
-          choices: 'ВЫБОРЫ, КОТОРЫЕ ЕГО СОЗДАЛИ (CHOICES THAT CREATED IT)', kept: 'ЧТО ВЫБИРАЛОСЬ СНОВА И СНОВА (WHAT I KEPT CHOOSING)',
-          rejected: 'ЧТО ОТВЕРГАЛОСЬ (WHAT I KEPT REJECTING)', events: 'ВАЖНЫЕ СОБЫТИЯ (IMPORTANT EVENTS)', project: 'ВОЗМОЖНЫЙ ПРОЕКТ (POSSIBLE PROJECT)',
-          experiment: 'ПЕРВЫЙ ЭКСПЕРИМЕНТ (FIRST EXPERIMENT)', visual: 'ВИЗУАЛЬНЫЙ ЯЗЫК (VISUAL LANGUAGE)', questions: 'ОТКРЫТЫЕ ВОПРОСЫ (OPEN QUESTIONS)',
-          ai: 'ИНСТРУКЦИИ ДЛЯ ИИ (INSTRUCTIONS FOR AN AI)' },
-        birth: r => 'Число пути ' + r.lifePath + ' → стартовый класс ' + r.startClass + '. (Символический приём и игровое зерно, а не описание характера.) В момент рождения в этой реальности ' + r.anomaly + '.',
-        world: (earth, fact) => earth + ': мир, где ' + fact + '.',
-        build: r => ['Класс: ' + r.startClass + ' → ' + r.title, 'Бафф: ' + r.buff, 'Дебафф: ' + r.debuff, 'Босс: ' + r.boss, 'Вердикт: ' + r.verdict,
-          'Характеристики (0–10): ' + r.scores.map(s => s.label + ' ' + s.value).join(', ')],
-        visual: p => 'Протокол: ' + p + '. Пиксельные пейзажи низкого разрешения, VGA-палитра, строки развёртки, интерфейс из реальности, которой никогда не было.',
-        ai: [
-          'Относись к этому будущему как к гипотезе, а не как к правде обо мне.',
-          'Помоги мне исследовать его, оспорить, визуализировать и превратить интересные части в эксперименты.',
-          'Можно: продолжить хронологию, сгенерировать альтернативные ветки, написать текст от лица меня из будущего, найти скрытые допущения или превратить Первый эксперимент в конкретный план на 7 дней.',
-          'Общайся со мной по-русски.',
-          'Начни с вопроса: **«Что ты хочешь сделать с этой реальностью?»**',
-        ],
-        footer: v => 'Сгенерировано BORN WEIRD v' + v + ' (dimacloud.github.io/born-weird/ru). Симулятор жизней, которых у тебя ещё не было.',
+        title: 'BORN WEIRD // ЗЕРНО РЕАЛЬНОСТИ (REALITY SEED)',
+        disclaimer: '> Зеркало одного набора выборов в один день — не психометрический тест, не диагноз и не предсказание. Вопросы вдохновлены теорией базовых ценностей Шварца и исследованиями Хершфилда о связи с будущим собой; формулировки наши и не валидированы. Число пути — символическое украшение.',
+        h: { profile: 'ПРОФИЛЬ ЦЕННОСТЕЙ (VALUE PROFILE)', tension: 'ГЛАВНОЕ НАПРЯЖЕНИЕ (MAIN TENSION)', blind: 'СЛЕПАЯ ЗОНА (BLIND SPOT)', bridge: 'МОСТ К БУДУЩЕМУ СЕБЕ (BRIDGE TO FUTURE SELF)', quest: 'КВЕСТ НА 7 ДНЕЙ (7-DAY QUEST)', archetype: 'АРХЕТИП (ARCHETYPE)', lore: 'СИМВОЛ РОЖДЕНИЯ — ЛОР (BIRTH SYMBOL)', choices: 'ВЫБОРЫ (CHOICES)', world: 'МИР (THE WORLD)', ai: 'ИНСТРУКЦИИ ДЛЯ ИИ (INSTRUCTIONS FOR AN AI)' },
+        lore: r => 'Число пути ' + r.lifePath + ' — ' + r.lp.name + ': плюс — ' + r.lp.plus + '; тень — ' + r.lp.shadow + '. Вопрос: ' + r.lp.q,
+        best: 'выбрано', worst: 'отвергнуто',
+        ai: ['Относись к этому как к гипотезе о сегодняшних выборах, а не как к правде обо мне.', 'Помоги проверить её на моей реальной жизни, найти, где проявляется главное напряжение, и превратить квест на 7 дней в конкретные шаги.', 'Общайся со мной по-русски.', 'Начни с вопроса: **«Где ты себя узнал — а где совсем нет?»**'],
+        footer: v => 'BORN WEIRD v' + v + ' (dimacloud.github.io/born-weird/ru). Симулятор жизней, которых у тебя ещё не было.',
       },
     },
   };
+  // RU AI-seed opening question must stay gender-neutral:
+  CONTENT.ru.seed.ai[3] = 'Начни с вопроса: **«Где в этом результате есть узнавание — а где совсем нет?»**';
 
-  // Rarity of the (primary|secondary) pair = share of random simulations; generated by operations/rarity.mjs.
-  const RARITY = {"AUTONOMY|CONNECTION":0.04507,"AUTONOMY|CREATION":0.02495,"AUTONOMY|CURIOSITY":0.02279,"AUTONOMY|POWER":0.04181,"AUTONOMY|SECURITY":0.02523,"CONNECTION|AUTONOMY":0.04849,"CONNECTION|CREATION":0.03936,"CONNECTION|CURIOSITY":0.04021,"CONNECTION|POWER":0.06105,"CONNECTION|SECURITY":0.0431,"CREATION|AUTONOMY":0.03198,"CREATION|CONNECTION":0.03366,"CREATION|CURIOSITY":0.01311,"CREATION|POWER":0.03225,"CREATION|SECURITY":0.01605,"CURIOSITY|AUTONOMY":0.03177,"CURIOSITY|CONNECTION":0.04111,"CURIOSITY|CREATION":0.0158,"CURIOSITY|POWER":0.03281,"CURIOSITY|SECURITY":0.01744,"POWER|AUTONOMY":0.04353,"POWER|CONNECTION":0.05783,"POWER|CREATION":0.03379,"POWER|CURIOSITY":0.02806,"POWER|SECURITY":0.0366,"SECURITY|AUTONOMY":0.03093,"SECURITY|CONNECTION":0.04265,"SECURITY|CREATION":0.01761,"SECURITY|CURIOSITY":0.01525,"SECURITY|POWER":0.03567};
+  // Archetype × tension rarity = share of random play; generated by operations/rarity.mjs.
+  const RARITY = {"ANCHOR|CARE|E":0.02211,"ANCHOR|CARE|O":0.06194,"ANCHOR|CARE|clear":0.04181,"ANCHOR|WEIGHT|E":0.02304,"ANCHOR|WEIGHT|O":0.06132,"ANCHOR|WEIGHT|clear":0.04052,"CARE|ANCHOR|E":0.06162,"CARE|ANCHOR|O":0.02266,"CARE|ANCHOR|clear":0.04109,"CARE|FREEDOM|E":0.06152,"CARE|FREEDOM|O":0.02293,"CARE|FREEDOM|clear":0.04084,"FREEDOM|CARE|E":0.02234,"FREEDOM|CARE|O":0.06223,"FREEDOM|CARE|clear":0.04036,"FREEDOM|WEIGHT|E":0.02221,"FREEDOM|WEIGHT|O":0.06184,"FREEDOM|WEIGHT|clear":0.04026,"WEIGHT|ANCHOR|E":0.06223,"WEIGHT|ANCHOR|O":0.02202,"WEIGHT|ANCHOR|clear":0.04108,"WEIGHT|FREEDOM|E":0.06048,"WEIGHT|FREEDOM|O":0.02234,"WEIGHT|FREEDOM|clear":0.04118};
 
   const normLang = lang => (LANGS.indexOf(lang) >= 0 ? lang : 'en');
   const pack = lang => CONTENT[normLang(lang)];
 
-  // ---------- birth decoding (local display only; never shared) ----------
+  // ---------- birth date: real facts (private) + one symbol (shareable) ----------
   function parseBirthDate(str) {
     const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(str || '');
     if (!m) return null;
@@ -640,182 +354,192 @@
     if (date.getUTCFullYear() !== y || date.getUTCMonth() !== mo - 1 || date.getUTCDate() !== d) return null;
     return date;
   }
-  function validateBirth(str, now) {
-    const date = parseBirthDate(str);
-    if (!date) throw new Error('invalid birth date');
-    now = now || new Date();
-    const today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
-    const daysAlive = Math.floor((today - date.getTime()) / 86400000);
-    if (daysAlive < 0) throw new Error('birth date is in the future');
-    if (date.getUTCFullYear() < 1900) throw new Error('birth date too early');
-    return { date, daysAlive };
-  }
-  /** Numerology-style life path: digit sum reduced to 1–9, with the steps shown to the user. */
   function lifePathOf(str) {
     const [y, m, d] = str.split('-');
-    const digits = (d + m + y).split('').map(Number); // shown in DD.MM.YYYY order, as people write dates
+    const digits = (d + m + y).split('').map(Number); // DD.MM.YYYY order, as people write dates
     let n = digits.reduce((a, b) => a + b, 0);
     const steps = [digits.join('+') + ' = ' + n];
     while (n > 9) { const ds = String(n).split('').map(Number); n = ds.reduce((a, b) => a + b, 0); steps.push(ds.join('+') + ' = ' + n); }
     return { n, steps };
   }
+  const ZODIAC = [[3, 21], [4, 20], [5, 21], [6, 21], [7, 23], [8, 23], [9, 23], [10, 23], [11, 22], [12, 22], [1, 20], [2, 19]];
+  const ZODIAC_NAMES = { en: ['Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo', 'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces'],
+    ru: ['Овен', 'Телец', 'Близнецы', 'Рак', 'Лев', 'Дева', 'Весы', 'Скорпион', 'Стрелец', 'Козерог', 'Водолей', 'Рыбы'] };
   function zodiacOf(month, day) {
-    const md = month * 100 + day;
-    let best = 9; // Capricorn covers 22 Dec – 19 Jan (wraps the year)
-    let bestStart = -1;
+    const md = month * 100 + day; let best = 9, bestStart = -1;
     ZODIAC.forEach(([m, d], i) => { const s = m * 100 + d; if (s <= md && s > bestStart) { bestStart = s; best = i; } });
     return best;
   }
-  function easternOf(y, month, day) {
-    // Simplified: the eastern year is taken to start on 4 February.
-    const yy = (month < 2 || (month === 2 && day < 4)) ? y - 1 : y;
-    return { animal: (((yy - 4) % 12) + 12) % 12, element: Math.floor(((((yy - 4) % 10) + 10) % 10) / 2) };
+  const POP = [[1900, 1.6], [1930, 2.07], [1950, 2.5], [1960, 3.0], [1970, 3.7], [1980, 4.4], [1990, 5.3], [2000, 6.1], [2010, 6.9], [2020, 7.8], [2026, 8.2]];
+  function populationAt(year) {
+    for (let i = 1; i < POP.length; i++) if (year <= POP[i][0]) { const [y0, p0] = POP[i - 1], [y1, p1] = POP[i]; return p0 + (p1 - p0) * (year - y0) / (y1 - y0); }
+    return POP[POP.length - 1][1];
   }
+  const DAY = 86400000;
+  const fmtDate = (ms, lang) => { const d = new Date(ms); const dd = String(d.getUTCDate()).padStart(2, '0'), mm = String(d.getUTCMonth() + 1).padStart(2, '0'); return lang === 'ru' ? dd + '.' + mm + '.' + d.getUTCFullYear() : d.getUTCFullYear() + '-' + mm + '-' + dd; };
 
-  /** Symbolic decoding of a birth date. Shown to the user only; never part of shareable output. */
+  /** Everything the birth date gives. Shown to the user only — never part of shareable output (except lifePath). */
   function decodeBirth(birthDateStr, lang, now) {
+    lang = normLang(lang);
     const P = pack(lang);
-    const { date, daysAlive } = validateBirth(birthDateStr, now);
+    const date = parseBirthDate(birthDateStr);
+    if (!date) throw new Error('invalid birth date');
+    now = now || new Date();
+    const today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+    const daysAlive = Math.floor((today - date.getTime()) / DAY);
+    if (daysAlive < 0) throw new Error('birth date is in the future');
     const y = date.getUTCFullYear(), mo = date.getUTCMonth() + 1, d = date.getUTCDate();
+    if (y < 1900) throw new Error('birth date too early');
+    let age = new Date(today).getUTCFullYear() - y;
+    if ((new Date(today).getUTCMonth() + 1) * 100 + new Date(today).getUTCDate() < mo * 100 + d) age--;
     const lp = lifePathOf(birthDateStr);
-    const z = zodiacOf(mo, d), zEl = ZODIAC[z][2];
-    const e = easternOf(y, mo, d);
-    const wd = date.getUTCDay();
-    const eastern = P.easternName ? P.easternName(P.easternElements[e.element], P.eastern[e.animal])
-      : P.easternElements[e.element][P.easternFem[e.animal] ? 1 : 0] + ' ' + P.eastern[e.animal];
-    const bonuses = [{ kind: 'lifePath', dim: LIFE_PATH_DIM[lp.n], value: BONUS.lifePath }];
-    bonuses.forEach(b => { b.label = P.dims[b.dim].label; });
+    // Next "fresh start" milestone: the next round thousand of days, or a billion-seconds mark if sooner.
+    const cands = [{ day: (Math.floor(daysAlive / 1000) + 1) * 1000, kind: 'days' }];
+    for (let k = 1; k <= 4; k++) { const day = Math.ceil(k * 1e9 / 86400); if (day > daysAlive) { cands.push({ day, kind: 'gsec', k }); break; } }
+    const ms = cands.sort((a, b) => a.day - b.day)[0];
+    const milestone = { day: ms.day, kind: ms.kind, k: ms.k || 0, inDays: ms.day - daysAlive, date: fmtDate(date.getTime() + ms.day * DAY, lang) };
+    const stage = P.stages.find(s => age <= s.max);
+    const tech = P.techMilestones.find(([ty]) => ty > y);
+    const pop = populationAt(y);
+    const popTxt = lang === 'ru' ? pop.toFixed(1).replace('.', ',') : pop.toFixed(1);
     return {
-      daysAlive, lifePath: lp.n, lifePathSteps: lp.steps, startClass: P.lifePaths[lp.n],
-      zodiac: P.zodiac[z], element: P.elements[zEl], eastern, weekday: P.weekdays[wd], bonuses,
+      daysAlive, weeksLived: Math.floor(daysAlive / 7), age,
+      lifePath: lp.n, lifePathSteps: lp.steps, lp: P.lifePaths[lp.n],
+      zodiac: ZODIAC_NAMES[lang][zodiacOf(mo, d)],
+      stage: { name: stage.name, q: stage.q },
+      world: P.worldAtBirth(popTxt, tech ? tech[1] : null, tech ? tech[0] - y : 0),
+      milestone,
+      retakeDate: fmtDate(today + 7 * DAY, lang),
     };
   }
 
   // ---------- runs ----------
-  /** Start a run. The seed comes from the per-run random salt only — never from the date — so it cannot be traced back. */
-  function newRun(birthDateStr, salt, lang, now) {
+  /**
+   * Start a run. The seed comes from the per-run random salt only (never the date).
+   * seen: situation ids from earlier runs in this browser (e.g. ['NOW3','Y1-0']) — preferred to be skipped, so repeats are rare.
+   */
+  function newRun(birthDateStr, salt, lang, now, seen) {
     lang = normLang(lang);
-    now = now || new Date();
     const decoded = decodeBirth(birthDateStr, lang, now);
     if (salt == null) salt = Math.floor(Math.random() * 4294967296);
     const seed = hash('bornweird:seed:' + salt);
-    const scores = {};
-    DIMS.forEach(dim => { scores[dim] = 0; });
-    decoded.bonuses.forEach(b => { scores[b.dim] = Math.round((scores[b.dim] + b.value) * 10) / 10; });
-    return makeRun(seed, decoded.lifePath, scores, lang, now.getFullYear(), decoded);
+    return makeRun(seed, decoded.lifePath, lang, decoded, seen || []);
   }
-  function makeRun(seed, lifePath, scores, lang, year, decoded) {
-    // First situation is chosen by the life path number ("your number picked this question"); the rest by the seed.
-    const sits = STAGE_META.map((m, i) => (i === 0 ? lifePath % m.sits.length : pickIdx(rngFor(seed, 'sit' + i), m.sits.length)));
-    return { seed, lifePath, lang: normLang(lang), year, sits, choices: [], outcomes: [], scores, decoded: decoded || null };
-  }
-
-  /** The strange world of this run (from the seed, so it can be shown before the choices). */
-  function world(run) {
-    const P = pack(run.lang), fr = rngFor(run.seed, 'world');
-    const anomaly = P.anomalies[pickIdx(fr, P.anomalies.length)];
-    const worldFact = P.worldFacts[pickIdx(fr, P.worldFacts.length)];
-    return { earth: 'EARTH-' + String(1000 + (run.seed % 9000)), anomaly, worldFact };
-  }
-
-  /** The situation shown at stage i. */
-  function stage(run, i) {
-    const P = pack(run.lang);
-    const sit = P.stages[i][run.sits[i]];
-    return { index: i, label: P.stageLabels[i], prompt: sit.prompt, options: sit.options.map(o => o.text), byBirth: i === 0, total: STAGE_META.length };
-  }
-
-  function outcomeText(run, i, choice) {
-    const P = pack(run.lang);
-    const opt = P.stages[i][run.sits[i]].options[choice];
-    const r = rngFor(run.seed, 's' + i + ':' + run.sits[i] + ':' + choice);
-    const vars = { Y: run.year + STAGE_META[i].offsetYears };
-    Object.keys(opt.vars).sort().forEach(k => {
-      const v = opt.vars[k];
-      vars[k] = Array.isArray(v) && typeof v[0] === 'number' && v.length === 2 ? int(r, v[0], v[1]) : v[pickIdx(r, v.length)];
+  const sitId = (h, i) => h + i;
+  function pickSits(seed, lifePath, seen) {
+    const used = {}; const sits = [];
+    PLAN.forEach((h, k) => {
+      used[h] = used[h] || [];
+      const r = rngFor(seed, 'pick' + k);
+      // first item: the life path number picks the starting point ("your number picked this question"), rotating past seen ones
+      const order = k === 0 ? [0, 1, 2, 3, 4, 5].map(j => (lifePath + j) % POOL_SIZE) : shuffled([0, 1, 2, 3, 4, 5], r);
+      const fresh = order.filter(i => used[h].indexOf(i) < 0 && seen.indexOf(sitId(h, i)) < 0);
+      const any = order.filter(i => used[h].indexOf(i) < 0);
+      const i = (fresh.length ? fresh : any)[0];
+      used[h].push(i); sits.push(i);
     });
-    return fill(opt.outcome, vars);
+    return sits;
+  }
+  function makeRun(seed, lifePath, lang, decoded, seen) {
+    const sits = pickSits(seed, lifePath, seen || []);
+    const orders = PLAN.map((h, k) => shuffled([0, 1, 2, 3], rngFor(seed, 'order' + k))); // display order of poles
+    return { seed, lifePath, lang: normLang(lang), sits, orders, answers: [], bridge: null, decoded: decoded || null };
+  }
+  const sitIds = run => PLAN.map((h, k) => sitId(h, run.sits[k]));
+
+  /** Item k as shown: options in display order (pole hidden from the UI text). */
+  function item(run, k) {
+    const P = pack(run.lang), h = PLAN[k], s = P.situations[h][run.sits[k]];
+    return { index: k, total: PLAN.length, horizon: P.horizonLabels[h], prompt: s[0], options: run.orders[k].map(p => ({ text: s[1 + p], pole: POLES[p] })), byBirth: k === 0, bridgeNext: k === BRIDGE_AFTER };
   }
 
-  /** Apply a choice at stage i; returns the outcome text and the stat changes to show. */
-  function choose(run, i, choice) {
-    if (i !== run.choices.length) throw new Error('stages must be chosen in order');
-    const opts = STAGE_META[i].sits[run.sits[i]];
-    if (!Number.isInteger(choice) || choice < 0 || choice >= opts.length) throw new Error('invalid choice at stage ' + i);
-    const P = pack(run.lang);
-    const deltas = Object.entries(opts[choice]).map(([dim, v]) => {
-      const value = Math.round(v * STAGE_WEIGHT[i] * 10) / 10;
-      run.scores[dim] = Math.round((run.scores[dim] + value) * 10) / 10;
-      return { dim, label: P.dims[dim].label, value };
-    });
-    const text = outcomeText(run, i, choice);
-    run.choices.push(choice);
-    run.outcomes.push(text);
-    return { text, deltas };
+  /** Answer item k: best and worst are DISPLAY positions (0–3). Returns the weird reaction and the score changes. */
+  function answer(run, k, bestPos, worstPos) {
+    if (k !== run.answers.length) throw new Error('items must be answered in order');
+    if (k > BRIDGE_AFTER && run.bridge == null) throw new Error('bridge question comes first');
+    if (![bestPos, worstPos].every(v => Number.isInteger(v) && v >= 0 && v < 4) || bestPos === worstPos) throw new Error('invalid answer');
+    const best = run.orders[k][bestPos], worst = run.orders[k][worstPos];
+    run.answers.push([best, worst]);
+    const P = pack(run.lang), r = rngFor(run.seed, 'react' + k + ':' + best);
+    const pool = P.reactions[POLES[best]];
+    return {
+      reaction: pool[pickIdx(r, pool.length)],
+      deltas: [{ pole: POLES[best], label: P.poles[POLES[best]].label, value: 1 }, { pole: POLES[worst], label: P.poles[POLES[worst]].label, value: -1 }],
+    };
+  }
+  function setBridge(run, v) {
+    if (!(Number.isInteger(v) && v >= 1 && v <= 7)) throw new Error('bridge must be 1–7');
+    if (run.answers.length !== BRIDGE_AFTER + 1) throw new Error('bridge is asked after item ' + (BRIDGE_AFTER + 1));
+    run.bridge = v;
   }
 
-  /**
-   * Build the final result once all 5 choices are made.
-   * Privacy: exact scores (which contain the birth bonuses) never leave this function. The shared result
-   * keeps only the ranking (top, second, lowest) and 0–10 bars — exactly what the card shows.
-   */
+  // ---------- scoring ----------
+  function score(run) {
+    const best = [0, 0, 0, 0], worst = [0, 0, 0, 0];
+    run.answers.forEach(([b, w]) => { best[b]++; worst[w]++; });
+    const net = best.map((b, i) => b - worst[i]);
+    const r = rngFor(run.seed, 'tie');
+    const jitter = POLES.map(() => r() * 0.001);
+    const rank = [0, 1, 2, 3].sort((a, b) => (net[b] - net[a]) || (worst[a] - worst[b]) || (jitter[b] - jitter[a]));
+    // Tension: an axis where BOTH poles were chosen as "I'd choose" at least twice; otherwise a clear priority.
+    const pull = { O: Math.min(best[0], best[1]), E: Math.min(best[2], best[3]) };
+    const top = POLES[rank[0]];
+    let tension;
+    if (Math.max(pull.O, pull.E) >= 2) tension = pull.O === pull.E ? AXIS[top] : (pull.O > pull.E ? 'O' : 'E');
+    else tension = 'clear:' + top;
+    const otherAxis = AXIS[top] === 'O' ? [2, 3] : [0, 1];
+    const second = POLES[otherAxis.sort((a, b) => rank.indexOf(a) - rank.indexOf(b))[0]];
+    return { best, worst, net, rank: rank.map(i => POLES[i]), top, second, low: POLES[rank[3]], tension };
+  }
+
+  /** Final result. Shared outputs carry only: choices (best/worst poles), bridge, life path — no birth facts. */
   function finish(run) {
-    if (run.choices.length !== STAGE_META.length) throw new Error('run not complete');
-    const P = pack(run.lang), D = P.dims;
-    const r = rngFor(run.seed, 'final:' + run.choices.join('') + ':' + run.sits.join(''));
-    const jitter = {};
-    DIMS.forEach(d => { jitter[d] = r() * 0.01; }); // seeded tie-breaker (always consumed: keeps rng in step for keys)
-    if (!run.shared) {
-      const scores = run.scores;
-      const ranked = DIMS.slice().sort((a, b) => (scores[b] + jitter[b]) - (scores[a] + jitter[a]));
-      const max = Math.max(...DIMS.map(d => scores[d]), 1);
-      run.shared = { d1: ranked[0], d2: ranked[1], low: ranked[ranked.length - 1], bars: DIMS.map(d => Math.max(0, Math.min(10, Math.round(scores[d] / max * 10)))) };
-    }
-    const { d1, d2, low, bars } = run.shared;
-    const adj = D[d2].adjs[pickIdx(r, D[d2].adjs.length)];
-    const noun = D[d1].nouns[pickIdx(r, D[d1].nouns.length)];
+    if (run.answers.length !== PLAN.length || run.bridge == null) throw new Error('run not complete');
+    const P = pack(run.lang);
+    const sc = score(run);
+    const arch = P.archetypes[sc.top + '|' + sc.second];
+    const r = rngFor(run.seed, 'final:' + run.answers.map(a => a.join('')).join(','));
     const place = P.places[pickIdx(r, P.places.length)];
-    const title = P.title(adj, noun, place);
     const hex = () => Math.floor(r() * 0x10000).toString(16).toUpperCase().padStart(4, '0');
     const id = hex() + '-' + hex();
-    const verdict = D[d1].verdicts[pickIdx(r, D[d1].verdicts.length)];
-    const { earth, anomaly, worldFact } = world(run);
-    const events = STAGE_META.map((m, i) => {
-      const st = stage(run, i);
-      return { stage: st.label, year: run.year + m.offsetYears, prompt: st.prompt, choice: st.options[run.choices[i]], text: run.outcomes[i] };
+    const worldFact = P.worldFacts[pickIdx(rngFor(run.seed, 'world'), P.worldFacts.length)];
+    const tension = sc.tension.startsWith('clear:') ? Object.assign({ kind: 'clear', pole: sc.top }, P.tension.clear[sc.top]) : Object.assign({ kind: 'axis', axis: sc.tension }, P.tension[sc.tension]);
+    const bars = sc.net.map(n => Math.max(0, Math.min(10, Math.round((n + 8) / 16 * 10))));
+    const choices = run.answers.map(([b, w], k) => {
+      const s = P.situations[PLAN[k]][run.sits[k]];
+      return { horizon: P.horizonLabels[PLAN[k]], prompt: s[0], best: s[1 + b], worst: s[1 + w], bestPole: POLES[b] };
     });
-    const rare = RARITY[d1 + '|' + d2];
+    const tKey = sc.top + '|' + sc.second + '|' + (tension.kind === 'clear' ? 'clear' : tension.axis);
+    const rare = RARITY[tKey];
     const res = {
-      id, version: VERSION, lang: run.lang, title,
-      lifePath: run.lifePath, startClass: P.lifePaths[run.lifePath],
-      earth, anomaly, worldFact, events,
-      primary: d1, secondary: d2, rejected: low,
-      labels: Object.fromEntries(DIMS.map(d => [d, D[d].label])),
-      scores: DIMS.map((d, i) => ({ dim: d, label: D[d].label, value: bars[i], norm: bars[i] / 10 })),
-      verdict, buff: D[d1].buff, debuff: D[low].debuff, boss: D[low].boss,
-      future: P.future(earth, worldFact, title, D[d1].future, D[d2].future),
-      project: D[d1].project, experiment: D[d1].experiment,
-      kept: P.kept(D[d1].kept, D[d2].kept), rejectedText: D[low].rejected,
-      questions: [D[d1].question, P.branchQuestion, P.alreadyTrue],
-      protocol: VISUAL_PROTOCOLS[run.seed % VISUAL_PROTOCOLS.length],
-      artSeed: hash(run.seed + ':art:' + run.choices.join('')) % 4294967296,
-      finalLine: events[4].choice, finalYear: events[4].year,
-      highlight: events[3].text,
+      id, version: VERSION, lang: run.lang,
+      archetype: arch.name, plus: arch.plus, shadow: arch.shadow,
+      title: run.lang === 'ru' ? arch.name + ' ' + place : arch.name + ' ' + place,
+      rank: sc.rank, top: sc.top, second: sc.second, low: sc.low,
+      labels: Object.fromEntries(POLES.map(p => [p, P.poles[p].label])),
+      meanings: Object.fromEntries(POLES.map(p => [p, P.poles[p].meaning])),
+      profile: POLES.map((p, i) => ({ pole: p, label: P.poles[p].label, net: sc.net[i], best: sc.best[i], worst: sc.worst[i], bar: bars[i] })),
+      orderText: sc.rank.map(p => P.poles[p].label).join(P.orderSep),
+      tension, blind: P.blind[sc.low],
+      bridge: run.bridge, bridgeLabel: P.bridge.label, bridgeText: P.bridgeText[run.bridge <= 2 ? 0 : run.bridge <= 5 ? 1 : 2],
+      lifePath: run.lifePath, lp: P.lifePaths[run.lifePath],
+      choices, earth: 'EARTH-' + String(1000 + (run.seed % 9000)), worldFact,
+      protocol: ['LOST DOS GAME', 'CORRUPTED BROADCAST', 'FORBIDDEN CARTRIDGE'][run.seed % 3],
+      artSeed: hash(run.seed + ':art:' + run.answers.join('|')) % 4294967296,
       rarity: rare ? Math.max(2, Math.round(1 / rare)) : null,
+      rarityKey: tKey,
+      sitIds: sitIds(run),
     };
     res.key = encodeKey(run);
     return res;
   }
 
-  // ---------- player key: restores a finished result without the birth date ----------
-  // Bits: version 3 | seed 53 | lifePath 4 | year-2000 7 | sits 5×2 | choices 5×3 | d1,d2,low 3×3 | bars 6×4 | check 12 = 137
-  // → 30 base32 chars (13 leading zero bits). Holds only what the card already shows — no exact scores, no birth bonuses.
-  const B32 = '0123456789ABCDEFGHJKMNPQRSTVWXYZ'; // Crockford base32
-  const KEY_VERSION = 2;
+  // ---------- player key (restores a result without the birth date) ----------
+  // Bits: version 3 | seed 53 | lifePath 4 | sits 8×3 | answers 8×(2+2) | bridge 3 | check 12 = 131 → 30 base32 chars.
+  const B32 = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
+  const KEY_VERSION = 3;
   function keyFields(run) {
-    return [[KEY_VERSION, 3], [run.seed, 53], [run.lifePath, 4], [run.year - 2000, 7]]
-      .concat(run.sits.map(v => [v, 2]), run.choices.map(v => [v, 3]),
-        [run.shared.d1, run.shared.d2, run.shared.low].map(d => [DIMS.indexOf(d), 3]), run.shared.bars.map(v => [v, 4]));
+    return [[KEY_VERSION, 3], [run.seed, 53], [run.lifePath, 4]].concat(run.sits.map(v => [v, 3]), run.answers.flatMap(([b, w]) => [[b, 2], [w, 2]]), [[run.bridge, 3]]);
   }
   const checksum = fields => hash('bwkey:' + fields.map(f => f[0]).join(',')) % 4096;
   function encodeKey(run) {
@@ -826,77 +550,56 @@
     for (let i = 0; i < 30; i++) { s = B32[Number(n & 31n)] + s; n >>= 5n; }
     return s.match(/.{5}/g).join('-');
   }
-  /** Rebuild a finished result from a key (no birth date needed). Returns null for an invalid key. */
   function fromKey(key, lang) {
     const clean = String(key || '').toUpperCase().replace(/[^0-9A-Z]/g, '');
     if (clean.length !== 30) return null;
     let n = 0n;
     for (const ch of clean) { const v = B32.indexOf(ch); if (v < 0) return null; n = (n << 5n) | BigInt(v); }
     const take = bits => { const v = Number(n & ((1n << BigInt(bits)) - 1n)); n >>= BigInt(bits); return v; };
-    const check = take(12);
-    const bars = DIMS.map(() => take(4)).reverse();
-    const [d1i, d2i, lowi] = [0, 0, 0].map(() => take(3)).reverse();
-    const choices = [0, 0, 0, 0, 0].map(() => take(3)).reverse();
-    const sits = [0, 0, 0, 0, 0].map(() => take(2)).reverse();
-    const year = take(7) + 2000, lifePath = take(4), seed = take(53), version = take(3);
-    if (version !== KEY_VERSION || lifePath < 1 || lifePath > 9 || n !== 0n) return null;
-    if ([d1i, d2i, lowi].some(i => i >= DIMS.length) || d1i === d2i || d1i === lowi || d2i === lowi || bars.some(b => b > 10)) return null;
-    const run = makeRun(seed, lifePath, {}, lang, year);
-    if (sits.some((s, i) => s !== run.sits[i])) return null; // integrity: situations follow from seed + life path
-    for (let i = 0; i < 5; i++) {
-      if (choices[i] >= STAGE_META[i].sits[sits[i]].length) return null;
-      run.choices.push(choices[i]); run.outcomes.push(outcomeText(run, i, choices[i]));
-    }
-    run.shared = { d1: DIMS[d1i], d2: DIMS[d2i], low: DIMS[lowi], bars };
-    if (checksum(keyFields(run)) !== check) return null; // forged or mistyped key
+    const check = take(12), bridge = take(3);
+    const answers = PLAN.map(() => { const w = take(2), b = take(2); return [b, w]; }).reverse();
+    const sits = PLAN.map(() => take(3)).reverse();
+    const lifePath = take(4), seed = take(53), version = take(3);
+    if (version !== KEY_VERSION || n !== 0n || lifePath < 1 || lifePath > 9 || bridge < 1 || bridge > 7) return null;
+    if (sits.some(s => s >= POOL_SIZE) || answers.some(([b, w]) => b === w)) return null;
+    const run = makeRun(seed, lifePath, lang, null, []);
+    run.sits = sits; run.answers = answers; run.bridge = bridge;
+    if (checksum(keyFields(run)) !== check) return null;
     return finish(run);
   }
 
-  /** Convenience for tests and tools: full run in one call. */
-  function simulate(birthDateStr, choices, opts) {
+  /** Convenience for tests/tools: answers = [[bestPos, worstPos] ×8] in display positions. */
+  function simulate(birthDateStr, answers, opts) {
     opts = opts || {};
-    const run = newRun(birthDateStr, opts.salt, opts.lang, opts.now);
-    if (!Array.isArray(choices) || choices.length !== STAGE_META.length) throw new Error('need one choice per stage');
-    choices.forEach((c, i) => choose(run, i, c));
+    const run = newRun(birthDateStr, opts.salt, opts.lang, opts.now, opts.seen);
+    answers.forEach(([b, w], k) => { answer(run, k, b, w); if (k === BRIDGE_AFTER) setBridge(run, opts.bridge || 4); });
     return finish(run);
   }
 
-  // ---------- outputs ----------
-  function aiPrompts(res) {
-    const Pr = pack(res.lang).prompts;
-    return { plan: Pr.plan(res), future: Pr.future(res), debuff: Pr.debuff(res) };
-  }
+  function aiPrompts(res) { const Pr = pack(res.lang).prompts; return { plan: Pr.plan(res), future: Pr.future(res), tension: Pr.tension(res) }; }
 
-  const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
   function realitySeedMarkdown(res) {
-    const S = pack(res.lang).seed, H = S.h;
-    const L = [];
+    const S = pack(res.lang).seed, H = S.h, L = [];
     const sec = (h, lines) => { L.push('## ' + h); [].concat(lines).forEach(l => L.push(l)); L.push(''); };
-    L.push('# BORN WEIRD // REALITY SEED'); L.push('');
-    L.push(S.disclaimer); L.push('');
-    sec(H.timeline, res.title + ' — Reality #' + res.id + ' (' + res.earth + ')');
-    sec(H.birth, S.birth(res));
-    sec(H.world, S.world(res.earth, res.worldFact));
-    sec(H.build, S.build(res).map(l => '- ' + l));
-    sec(H.future, res.future);
-    sec(H.choices, res.events.map(e => '- **' + e.stage + '** — ' + e.prompt + ' → *' + e.choice + '*'));
-    sec(H.kept, cap(res.kept) + '.');
-    sec(H.rejected, cap(res.rejectedText) + '.');
-    sec(H.events, res.events.map(e => '- **' + e.stage + ' (' + e.year + ')**: ' + e.text));
-    sec(H.project, res.project);
-    sec(H.experiment, res.experiment);
-    sec(H.visual, S.visual(res.protocol));
-    sec(H.questions, res.questions.map(q => '- ' + q));
+    L.push('# ' + S.title); L.push(''); L.push(S.disclaimer); L.push('');
+    sec(H.archetype, [res.title + ' — #' + res.id, '+ ' + res.plus, '− ' + res.shadow]);
+    sec(H.profile, [res.orderText].concat(res.profile.map(p => '- ' + p.label + ' (' + res.meanings[p.pole] + '): ' + p.bar + '/10')));
+    sec(H.tension, ['**' + res.tension.short + '**', res.tension.text]);
+    sec(H.blind, res.blind);
+    sec(H.bridge, [res.bridgeLabel + ': ' + res.bridge + '/7', res.bridgeText]);
+    sec(H.quest, res.tension.quest);
+    sec(H.lore, S.lore(res));
+    sec(H.choices, res.choices.map(c => '- **' + c.horizon + '** — ' + c.prompt + ' → ✓ ' + c.best + ' · ✗ ' + c.worst));
+    sec(H.world, res.earth + ': ' + res.worldFact + '.');
     sec(H.ai, S.ai);
-    L.push('---');
-    L.push(S.footer(res.version));
+    L.push('---'); L.push(S.footer(res.version));
     return L.join('\n');
   }
 
   const api = {
-    VERSION, DIMS, LANGS, STAGE_META, STAGE_WEIGHT, BONUS, CONTENT, RARITY,
-    hash, rng, plural, parseBirthDate, decodeBirth, lifePathOf, zodiacOf, easternOf,
-    newRun, world, stage, choose, finish, encodeKey, fromKey, simulate, aiPrompts, realitySeedMarkdown,
+    VERSION, POLES, OPPOSITE, AXIS, LANGS, HORIZONS, PLAN, BRIDGE_AFTER, POOL_SIZE, CONTENT, RARITY,
+    hash, rng, plural, parseBirthDate, lifePathOf, zodiacOf, decodeBirth,
+    newRun, item, answer, setBridge, score, finish, encodeKey, fromKey, simulate, aiPrompts, realitySeedMarkdown,
   };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.BW = api;

@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>BORN WEIRD</title>
-<meta name="description" content="A simulator for lives you haven't lived yet. 5 choices. 3 minutes. One character card from a reality that never existed.">
-<meta property="og:title" content="BORN WEIRD — a simulator for lives you haven't lived yet">
-<meta property="og:description" content="5 choices. 3 minutes. A character card from a reality that never existed.">
+<meta name="description" content="A 3-minute mirror: which values pull you in different directions — and how close you feel to your future self. Weird, honest, not a prediction.">
+<meta property="og:title" content="BORN WEIRD — a mirror for lives you haven't lived yet">
+<meta property="og:description" content="8 choices. 3 minutes. Your values, your main inner tension, your bridge to future you — on a pixel character card.">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://dimacloud.github.io/born-weird/og.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -20,28 +20,11 @@
   @font-face { font-family: 'Plex'; font-weight: 400; src: url('PlexMono-400-cyrillic.woff2') format('woff2'); font-display: swap; unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
   @font-face { font-family: 'Plex'; font-weight: 600; src: url('PlexMono-600-latin.woff2') format('woff2'); font-display: swap; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
   @font-face { font-family: 'Plex'; font-weight: 600; src: url('PlexMono-600-cyrillic.woff2') format('woff2'); font-display: swap; unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
-  :root {
-    --bg: #000;
-    --fg: #c8ffc8;
-    --dim: #8fb08f;
-    --hi: #ffff55;
-    --cy: #55ffff;
-    --mg: #ff55ff;
-    --blue: #0000aa;
-    --line: #2a4a2a;
-  }
+  :root { --bg: #000; --fg: #c8ffc8; --dim: #8fb08f; --hi: #ffff55; --cy: #55ffff; --mg: #ff55ff; --ok: #55ff99; --no: #ff7777; --blue: #0000aa; --line: #2a4a2a; }
   * { box-sizing: border-box; }
   html, body { margin: 0; background: var(--bg); color: var(--fg); }
-  body {
-    font-family: 'VT323', ui-monospace, Menlo, Consolas, monospace;
-    font-size: 22px; line-height: 1.25;
-    min-height: 100vh; min-height: 100dvh;
-  }
-  body::after { /* scanlines */
-    content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 10;
-    background: repeating-linear-gradient(to bottom, rgba(0,0,0,0) 0 2px, rgba(0,0,0,.16) 2px 3px);
-  }
-  /* Russian: IBM Plex Mono — readable Cyrillic in a terminal mood */
+  body { font-family: 'VT323', ui-monospace, Menlo, Consolas, monospace; font-size: 22px; line-height: 1.25; min-height: 100vh; min-height: 100dvh; }
+  body::after { content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 10; background: repeating-linear-gradient(to bottom, rgba(0,0,0,0) 0 2px, rgba(0,0,0,.16) 2px 3px); }
   html[lang=ru] body { font-family: 'Plex', ui-monospace, Menlo, monospace; font-size: 16px; line-height: 1.5; }
   html[lang=ru] body::after { background: repeating-linear-gradient(to bottom, rgba(0,0,0,0) 0 2px, rgba(0,0,0,.08) 2px 3px); }
   .top { position: sticky; top: 0; z-index: 5; display: flex; align-items: center; gap: 6px; background: var(--blue); color: #fff; padding: 4px 10px; font-size: 18px; }
@@ -58,83 +41,78 @@
   h1 { font-size: 64px; line-height: .95; margin: 6vh 0 8px; color: var(--hi); letter-spacing: 2px; text-shadow: 3px 3px 0 var(--mg); font-weight: normal; font-family: 'VT323', monospace; }
   h2 { font-size: 30px; color: var(--hi); margin: 0 0 12px; font-weight: normal; }
   html[lang=ru] h2 { font-size: 20px; font-weight: 600; line-height: 1.35; }
-  h3 { font-size: 24px; color: var(--cy); margin: 0 0 8px; font-weight: normal; }
-  html[lang=ru] h3 { font-size: 16px; font-weight: 600; }
-  p { margin: 0 0 14px; }
-  .muted { color: var(--dim); }
-  .tag { color: var(--cy); }
-  .hi { color: var(--hi); }
-  .small { font-size: 18px; }
-  html[lang=ru] .small { font-size: 14px; }
+  h3 { font-size: 24px; color: var(--cy); margin: 18px 0 6px; font-weight: normal; }
+  html[lang=ru] h3 { font-size: 15px; font-weight: 600; }
+  p { margin: 0 0 12px; }
+  .muted { color: var(--dim); } .tag { color: var(--cy); } .hi { color: var(--hi); } .okc { color: var(--ok); } .noc { color: var(--no); }
+  .small { font-size: 18px; } html[lang=ru] .small { font-size: 14px; }
   .bar { background: var(--blue); color: #fff; padding: 2px 8px; display: inline-block; margin-bottom: 14px; }
   .ref { border: 1px dashed var(--mg); color: var(--mg); padding: 10px 12px; margin: 0 0 18px; }
   .ref img { display: block; width: 100%; max-width: 280px; margin: 10px auto; border: 1px solid var(--mg); }
-  .ref b { color: var(--hi); font-weight: normal; display: block; }
-  html[lang=ru] .ref b { font-weight: 600; }
+  .ref b { color: var(--hi); font-weight: normal; display: block; } html[lang=ru] .ref b { font-weight: 600; }
   .stat { border: 1px solid var(--cy); color: var(--cy); padding: 8px 12px; margin: 0 0 16px; }
+  .box { border: 1px solid var(--line); padding: 10px 12px; margin: 0 0 14px; }
   label { display: block; margin: 22px 0 6px; color: var(--cy); }
-  input[type=date] {
-    font: inherit; font-size: 26px; width: 100%; padding: 10px 12px;
-    background: #001400; color: var(--hi); border: 2px solid var(--fg); border-radius: 0;
-    color-scheme: dark; min-height: 54px; -webkit-appearance: none; appearance: none; display: block;
-  }
+  input[type=date] { font: inherit; font-size: 26px; width: 100%; padding: 10px 12px; background: #001400; color: var(--hi); border: 2px solid var(--fg); border-radius: 0; color-scheme: dark; min-height: 54px; -webkit-appearance: none; appearance: none; display: block; }
   html[lang=ru] input[type=date] { font-size: 20px; }
-  button, a.btn {
-    font: inherit; font-size: 24px; cursor: pointer; border-radius: 0; text-decoration: none;
-    display: block; width: 100%; text-align: left; margin: 10px 0; padding: 12px 14px;
-    background: transparent; color: var(--fg); border: 2px solid var(--fg);
-  }
+  button, a.btn { font: inherit; font-size: 24px; cursor: pointer; border-radius: 0; text-decoration: none; display: block; width: 100%; text-align: left; margin: 10px 0; padding: 12px 14px; background: transparent; color: var(--fg); border: 2px solid var(--fg); }
   html[lang=ru] button, html[lang=ru] a.btn { font-size: 16px; line-height: 1.4; }
   button:hover, button:focus-visible, a.btn:hover, a.btn:focus-visible { background: var(--fg); color: #000; outline: none; }
   button.primary { background: var(--hi); color: #000; border-color: var(--hi); text-align: center; }
   html[lang=ru] button.primary { font-weight: 600; }
   button.primary:hover, button.primary:focus-visible { background: #fff; border-color: #fff; }
   button.ghost, a.btn.ghost { border-color: var(--line); color: var(--dim); text-align: center; }
-  button[aria-pressed=true]:not(.top button) { background: var(--fg); color: #000; }
   button:disabled { opacity: .45; cursor: default; }
-  button.chosen:disabled { opacity: 1; background: var(--fg); color: #000; }
-  .opt::before { content: '> ' / ''; color: var(--hi); }
-  button.chosen.opt::before { color: #000; }
+  .opt.best, .opt.best:disabled { background: #0d3a1c; border-color: var(--ok); color: #fff; opacity: 1; }
+  .opt.worst, .opt.worst:disabled { background: #3a0d0d; border-color: var(--no); color: #fff; opacity: 1; }
+  .opt .mk { display: block; font-size: .8em; letter-spacing: 1px; }
+  .opt.best .mk { color: var(--ok); } .opt.worst .mk { color: var(--no); }
   .row { display: flex; gap: 8px; flex-wrap: wrap; }
   .row > button, .row > a.btn { flex: 1 1 0; text-align: center; min-width: 54px; }
   .err { color: #ff5555; min-height: 1.3em; }
-  .type { white-space: pre-wrap; min-height: 6em; }
-  .cursor::after { content: '█'; animation: blink 1s steps(1) infinite; }
-  @keyframes blink { 50% { opacity: 0; } }
-  .outcome { border-left: 3px solid var(--cy); padding: 8px 0 8px 12px; margin: 14px 0 6px; min-height: 3em; }
-  .deltas { color: var(--hi); margin: 6px 0 4px; }
-  .deltas span { display: inline-block; margin-right: 12px; }
-  .hud { display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; margin: 10px 0 16px; font-size: 18px; align-items: center; }
+  .hint { color: var(--cy); min-height: 1.4em; }
+  .type { white-space: pre-wrap; }
+  .react { border-left: 3px solid var(--cy); padding: 8px 0 8px 12px; margin: 14px 0 6px; }
+  .deltas span { display: inline-block; margin-right: 14px; }
+  .hud { display: grid; grid-template-columns: auto 1fr; gap: 3px 10px; margin: 10px 0 14px; font-size: 18px; align-items: center; }
   html[lang=ru] .hud { font-size: 13px; }
   .hud i { display: block; height: 10px; background: #1d2d1d; position: relative; }
   .hud i b { position: absolute; inset: 0 auto 0 0; background: var(--fg); transition: width .4s steps(8); }
+  .life { display: grid; grid-template-columns: repeat(18, 1fr); gap: 2px; margin: 8px 0 4px; }
+  .life i { aspect-ratio: 1; background: #1d2d1d; }
+  .life i.on { background: var(--fg); } .life i.now { background: var(--hi); box-shadow: 0 0 0 2px var(--hi); }
+  .poles div { margin: 0 0 10px; }
+  .poles b { color: var(--hi); font-weight: normal; } html[lang=ru] .poles b { font-weight: 600; }
+  .axis { color: var(--cy); margin: 6px 0 12px; }
+  .bridge { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin: 12px 0 6px; }
+  .bridge button { margin: 0; padding: 6px 2px; text-align: center; }
+  .bridge svg { display: block; width: 100%; height: auto; }
+  .bridge .n { display: block; font-size: 14px; }
+  .scale { display: flex; justify-content: space-between; font-size: 14px; color: var(--dim); }
+  .prof { display: grid; grid-template-columns: auto 1fr auto; gap: 4px 10px; align-items: center; margin: 6px 0 4px; }
+  .prof i { display: block; height: 12px; background: #1d2d1d; position: relative; }
+  .prof i b { position: absolute; inset: 0 auto 0 0; background: var(--fg); }
+  .prof .top1 { color: var(--hi); } .prof .top1 + i b { background: var(--hi); }
   .progress { border: 2px solid var(--fg); height: 26px; margin: 20px 0; }
   .progress > i { display: block; height: 100%; width: 0; background: var(--fg); transition: width 1.4s steps(14); }
   img.artifact { display: block; width: 100%; max-width: 420px; margin: 6px auto 4px; height: auto; border: 2px solid var(--fg); -webkit-touch-callout: default; }
-  .hint { text-align: center; }
-  .section { border-top: 1px dashed var(--line); margin-top: 26px; padding-top: 18px; }
-  .build div { margin: 0 0 8px; }
-  .build b { color: var(--cy); font-weight: normal; display: inline-block; min-width: 7.5em; }
-  html[lang=ru] .build b { font-weight: 600; min-width: 9em; }
-  ol.tl { list-style: none; padding: 0; margin: 0; }
-  ol.tl li { margin: 0 0 12px; }
-  ol.tl b { color: var(--cy); font-weight: normal; }
+  .center { text-align: center; }
+  .section { border-top: 1px dashed var(--line); margin-top: 24px; padding-top: 16px; }
+  ol.tl { list-style: none; padding: 0; margin: 0; } ol.tl li { margin: 0 0 10px; } ol.tl b { color: var(--cy); font-weight: normal; }
   pre.seed { white-space: pre-wrap; background: #001400; border: 1px solid var(--line); padding: 10px; max-height: 200px; overflow: auto; font: inherit; font-size: 15px; color: var(--dim); }
   html[lang=ru] pre.seed { font-size: 13px; }
   details summary { cursor: pointer; color: var(--cy); margin: 12px 0 8px; }
   .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: var(--hi); color: #000; padding: 8px 14px; z-index: 20; display: none; max-width: calc(100% - 32px); }
   .glitch { animation: glitch .45s steps(5); }
   @keyframes glitch { 0% { transform: translateX(0); filter: hue-rotate(0); } 25% { transform: translateX(-6px); filter: hue-rotate(90deg); } 50% { transform: translateX(5px); } 75% { transform: translateX(-2px); filter: hue-rotate(200deg); } 100% { transform: none; filter: none; } }
-  footer { margin-top: 40px; font-size: 16px; color: var(--dim); }
-  html[lang=ru] footer { font-size: 13px; }
-  footer a { color: var(--dim); }
+  footer { margin-top: 40px; font-size: 16px; color: var(--dim); } html[lang=ru] footer { font-size: 13px; } footer a { color: var(--dim); }
   @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
 </style>
 </head>
 <body>
 <div class="top">
   <span>BORN_WEIRD.EXE</span><span class="sp"></span>
-  <span id="langBox"><button type="button" id="langEn" lang="en">EN</button> <button type="button" id="langRu" lang="ru">RU</button></span>
+  <span id="langBox"><button type="button" id="langEn" lang="en">EN</button><button type="button" id="langRu" lang="ru">RU</button></span>
   <button type="button" id="btnSound" aria-pressed="true"></button>
 </div>
 <main id="app">
@@ -152,38 +130,62 @@
     <p class="small muted" data-i18n="privacy"></p>
   </section>
 
-  <section class="screen" id="s-decode">
-    <span class="bar" data-i18n="decodeBar"></span>
-    <div class="type" id="decodeText"></div>
-    <div class="hud" id="hudDecode"></div>
-    <button class="primary" id="btnDecode" disabled data-i18n="enter"></button>
+  <section class="screen" id="s-birth">
+    <span class="bar" data-i18n="birthBar"></span>
+    <h2 id="birthWeeks" tabindex="-1"></h2>
+    <div class="life" id="lifeGrid" aria-hidden="true"></div>
+    <p class="small muted" id="lifeCaption"></p>
+    <div class="box"><span class="hi" id="milestone"></span><br><span class="small muted" data-i18n="milestoneWhy"></span></div>
+    <div class="box"><span id="stage"></span></div>
+    <p id="world" class="muted"></p>
+    <h3 data-i18n="symbolHead"></h3>
+    <div class="box" id="symbol"></div>
+    <p class="small tag" data-i18n="motto"></p>
+    <button class="primary" id="btnBirth" data-i18n="toModel"></button>
   </section>
 
-  <section class="screen" id="s-stage">
-    <span class="bar" id="stageBar"></span>
-    <p class="small tag" id="stageBirth" hidden></p>
-    <h2 id="stagePrompt" tabindex="-1"></h2>
-    <div id="stageOpts"></div>
-    <div id="stageOutcome" hidden>
-      <div class="outcome type" id="outcomeText"></div>
-      <div class="deltas" id="outcomeDeltas"></div>
-      <div class="hud" id="hudStage"></div>
-      <button class="primary" id="btnNext" disabled></button>
+  <section class="screen" id="s-model">
+    <span class="bar" data-i18n="modelBar"></span>
+    <h2 data-i18n="modelHead" tabindex="-1"></h2>
+    <div class="poles" id="poles"></div>
+    <p data-i18n="howTo"></p>
+    <p class="small muted" data-i18n="caveat"></p>
+    <button class="primary" id="btnModel" data-i18n="begin"></button>
+  </section>
+
+  <section class="screen" id="s-item">
+    <span class="bar" id="itemBar"></span>
+    <p class="small tag" id="itemBirth" hidden></p>
+    <h2 id="itemPrompt" tabindex="-1"></h2>
+    <p class="hint" id="itemHint" aria-live="polite"></p>
+    <div id="itemOpts"></div>
+    <div id="itemOut" hidden>
+      <div class="react type" id="itemReact"></div>
+      <div class="deltas" id="itemDeltas"></div>
+      <div class="hud" id="hud"></div>
+      <button class="primary" id="btnNext"></button>
     </div>
+  </section>
+
+  <section class="screen" id="s-bridge">
+    <span class="bar" data-i18n="bridgeBar"></span>
+    <h2 id="bridgePrompt" tabindex="-1"></h2>
+    <div class="bridge" id="bridgeOpts"></div>
+    <div class="scale"><span id="bridgeLow"></span><span id="bridgeHigh"></span></div>
   </section>
 
   <section class="screen" id="s-compile">
     <span class="bar" data-i18n="compileBar"></span>
-    <p id="compileText" data-i18n="compileText"></p>
+    <p data-i18n="compileText"></p>
     <div class="progress"><i id="compileBar"></i></div>
   </section>
 
   <section class="screen" id="s-result">
     <span class="bar" id="resBar"></span>
     <h2 id="resTitle" tabindex="-1"></h2>
-    <p class="hi" id="resVerdict"></p>
+    <p><span class="okc">+ </span><span id="resPlus"></span><br><span class="noc">− </span><span id="resShadow"></span></p>
     <img class="artifact" id="artifact" alt="BORN WEIRD">
-    <p class="small muted hint" id="saveHint"></p>
+    <p class="small muted center" id="saveHint"></p>
     <button class="primary" id="btnShare" data-i18n="share"></button>
     <div class="row">
       <button class="ghost" id="btnSave" data-i18n="save"></button>
@@ -192,20 +194,30 @@
     <p class="small muted" data-i18n="keyExplain"></p>
 
     <div class="section">
-      <h2 data-i18n="hBuild"></h2>
-      <div class="build" id="resBuild"></div>
+      <h3 data-i18n="hProfile"></h3>
+      <p class="hi" id="resOrder"></p>
+      <div class="prof" id="resProfile"></div>
+      <h3 data-i18n="hTension"></h3>
+      <p><b class="hi" id="resTensionShort"></b><br><span id="resTension"></span></p>
+      <h3 data-i18n="hBlind"></h3>
+      <p id="resBlind"></p>
+      <h3 id="resBridgeHead"></h3>
+      <p id="resBridge"></p>
+      <h3 data-i18n="hQuest"></h3>
+      <p id="resQuest"></p>
+      <p class="tag small" id="resStart"></p>
     </div>
 
     <div class="section">
-      <h2 data-i18n="hAI"></h2>
+      <h3 data-i18n="hAI"></h3>
       <p class="muted small" data-i18n="aiExplain"></p>
       <div class="row" role="group" aria-label="AI">
         <button type="button" id="aiChatgpt">ChatGPT</button>
         <button type="button" id="aiClaude">Claude</button>
       </div>
       <a class="btn" id="aiPlan" target="_blank" rel="noopener"></a>
+      <a class="btn" id="aiTension" target="_blank" rel="noopener"></a>
       <a class="btn" id="aiFuture" target="_blank" rel="noopener"></a>
-      <a class="btn" id="aiDebuff" target="_blank" rel="noopener"></a>
       <details>
         <summary data-i18n="seedMore"></summary>
         <p class="muted small" data-i18n="seedDesc"></p>
@@ -218,17 +230,20 @@
     </div>
 
     <div class="section">
-      <h2 data-i18n="hFuture"></h2>
-      <p id="resFuture"></p>
-      <ol class="tl" id="resEvents"></ol>
+      <div class="stat" id="retake"></div>
+      <p class="small muted" data-i18n="caveat"></p>
+      <details>
+        <summary data-i18n="myChoices"></summary>
+        <ol class="tl" id="resChoices"></ol>
+      </details>
     </div>
 
     <div class="section" id="fb">
       <h3 data-i18n="fbWorth"></h3>
       <div class="row" id="fbWorth"></div>
-      <h3 style="margin-top:16px" data-i18n="fbFeel"></h3>
-      <div class="row" id="fbFeel"></div>
-      <h3 style="margin-top:16px" data-i18n="fbSend"></h3>
+      <h3 data-i18n="fbTrue"></h3>
+      <div class="row" id="fbTrue"></div>
+      <h3 data-i18n="fbSend"></h3>
       <div class="row" id="fbSend"></div>
       <p class="muted small" id="fbThanks" hidden data-i18n="fbThanks"></p>
     </div>
@@ -249,8 +264,6 @@
   const BW = window.BW;
   const $ = id => document.getElementById(id);
   const params = new URLSearchParams(location.search);
-
-  // ---------- storage (best effort) ----------
   const store = {
     get(k, s) { try { return (s ? sessionStorage : localStorage).getItem(k); } catch (e) { return null; } },
     set(k, v, s) { try { (s ? sessionStorage : localStorage).setItem(k, v); } catch (e) {} },
@@ -260,105 +273,113 @@
   // ---------- i18n ----------
   const UI = {
     en: {
-      tagline: 'A simulator for lives you haven\'t lived yet.',
-      subline: 'Your birth date becomes a symbolic seed · 5 choices · ~3 minutes · a character card from a reality that never existed · a ready next step with your AI.',
-      dobLabel: 'ENTER BIRTH DATE TO GENERATE SEED:',
-      start: 'BEGIN SIMULATION',
-      privacy: 'Your birth date never leaves this device and is never stored. It is decoded into symbols (numerology, signs) used as a game seed — not a prediction. Birth creates the seed. Choices create the timeline.',
-      decodeBar: 'BIRTH SEED DECODED', enter: 'ENTER THE TIMELINE',
-      decode: d => [
-        'DATE ' + d.dateShown + '  →  ' + d.lifePathSteps.join('  →  '),
-        ['LIFE PATH ' + d.lifePath + ' → STARTING CLASS: ' + d.startClass, d.bonuses[0]],
-        'SUN SIGN: ' + d.zodiac + ' · ' + d.element + ' · EASTERN YEAR: ' + d.eastern + ' · BORN ON A ' + d.weekday.toUpperCase(),
-        'DAYS ALIVE: ' + d.daysAlive.toLocaleString('en-US'),
-        '',
-        'Loading ' + d.earth + ': a world where ' + d.worldFact + '.',
-        '',
-        'These symbols are a game seed, not a prediction. Your life path number gives the starting points and picks your first question. The signs are just lore: they do not affect the result. Your choices decide the rest — and each one weighs more than the last.',
-      ],
+      tagline: 'A mirror for lives you haven\'t lived yet.',
+      subline: '3 minutes · 8 situations · find out which values pull you in different directions, where your blind spot is, and how close you feel to your future self. Then a 7-day quest and a pixel character card.',
+      dobLabel: 'ENTER YOUR BIRTH DATE:', start: 'BEGIN',
+      privacy: 'Your birth date never leaves this device and is never stored. It gives real facts about your time (shown only to you) and one openly symbolic number. Not a prediction.',
+      birthBar: 'YOUR TIME',
+      weeks: n => 'WEEKS LIVED: ' + n.toLocaleString('en-US'),
+      lifeCaption: a => 'Each cell is a year of a 90-year life. You are here: year ' + (a + 1) + '. The empty ones can still be coloured differently.',
+      milestone: m => (m.kind === 'gsec' ? 'In ' + m.inDays + ' days you turn ' + m.k + ' billion seconds old (' + m.date + ').' : 'In ' + m.inDays + ' days it is your ' + m.day.toLocaleString('en-US') + 'th day (' + m.date + ').'),
+      milestoneWhy: 'Research on the "fresh start effect" (Dai, Milkman & Riis): people start new things more often after personal landmarks like this. A good day to begin.',
+      stage: s => 'Psychologist Erik Erikson called this stage of life "' + s.name + '". Its main question: ' + s.q,
+      symbolHead: 'SYMBOL (LORE, NOT A FORECAST)',
+      symbol: d => 'Date ' + d.dateShown + ' → ' + d.lifePathSteps.join(' → ') + '\nLife path ' + d.lifePath + ' — ' + d.lp.name + '\n+ ' + d.lp.plus + '\n− ' + d.lp.shadow + '\n? ' + d.lp.q + '\nSun sign: ' + d.zodiac + ' — just for decoration.',
+      motto: 'The numbers are facts. The archetype is a metaphor. The choice is yours.',
+      toModel: 'NEXT: WHAT WE EXPLORE →',
+      modelBar: 'WHAT WE EXPLORE', modelHead: 'Which values pull you in different directions — and how close you-in-10-years feels.',
+      axisO: 'FREEDOM ↔ ANCHOR', axisE: 'WEIGHT ↔ CARE',
+      howTo: 'In each of 8 situations, first tap what you WOULD CHOOSE, then what you would DEFINITELY NOT. No right answers: every option has a price.',
+      caveat: 'A mirror of today\'s choices — not a test, not a diagnosis. Inspired by Schwartz\'s theory of basic human values and Hershfield\'s research on the future self; the wording is ours and not validated. 8 situations show only the order of your values, not how you compare to others.',
+      begin: 'START',
       byBirth: n => 'YOUR NUMBER ' + n + ' PICKED THIS QUESTION',
-      next: 'NEXT →', toResult: 'COMPILE MY REALITY →',
-      compileBar: 'COMPILING REALITY', compileText: 'Collapsing possible futures…',
+      pickBest: 'Tap what you WOULD CHOOSE', pickWorst: 'Now tap what you would DEFINITELY NOT', mkBest: '✓ I\'D CHOOSE', mkWorst: '✗ DEFINITELY NOT',
+      next: 'NEXT →', toBridge: 'ONE QUESTION ABOUT YOU →', toResult: 'SHOW MY MIRROR →',
+      bridgeBar: 'BRIDGE TO FUTURE YOU',
+      compileBar: 'COMPILING MIRROR', compileText: 'Sorting values, measuring tensions…',
       share: 'SEND THE KEY LINK TO SOMEONE', save: 'SAVE IMAGE', copyLink: 'COPY LINK',
-      keyExplain: 'The key link opens your card for your friend. If they play their own, the counter of realities you spawned goes up.',
-      hintIOS: 'Tip: press and hold the card → “Save to Photos”.', hintOther: 'Tip: press and hold (or right-click) the card to save it.',
-      hBuild: 'YOUR BUILD', hAI: 'CONTINUE WITH YOUR AI',
-      aiExplain: 'One tap opens your AI with a ready request built from this card. (You need to be signed in there.)',
-      aiPlan: '▸ 7-DAY QUEST PLAN', aiFuture: '▸ TALK TO ME FROM ', aiDebuff: '▸ DEBUG MY DEBUFF',
-      seedMore: 'Full Reality Seed (file for any AI)',
-      seedDesc: 'A portable file describing this timeline. Paste it into any AI and it will ask: “What do you want to do with this reality?”',
+      keyExplain: 'The key link opens your card for a friend. If they play their own, the counter of realities you spawned goes up.',
+      hintIOS: 'Tip: press and hold the card → "Save to Photos".', hintOther: 'Tip: press and hold (or right-click) the card to save it.',
+      hProfile: 'YOUR VALUE ORDER', hTension: 'MAIN TENSION', hBlind: 'BLIND SPOT', bridgeHead: n => 'BRIDGE TO FUTURE YOU: ' + n + '/7', hQuest: 'QUEST FOR 7 DAYS',
+      start2: m => 'Good day to start: ' + m.date + ' (in ' + m.inDays + ' days) — a personal landmark.',
+      hAI: 'CONTINUE WITH YOUR AI', aiExplain: 'One tap opens your AI with a ready request built from this result. (You need to be signed in there.)',
+      aiPlan: '▸ TURN THE QUEST INTO A 7-DAY PLAN', aiTension: '▸ UNPACK MY MAIN TENSION', aiFuture: '▸ TALK TO ME IN 10 YEARS',
+      seedMore: 'Full Reality Seed (file for any AI)', seedDesc: 'A portable file with this result. Paste it into any AI.',
       copySeed: 'COPY SEED TEXT', dlSeed: 'DOWNLOAD .weird.md',
-      hFuture: 'THE POSSIBLE FUTURE',
-      build: { cls: 'CLASS', buff: 'BUFF', debuff: 'DEBUFF', boss: 'BOSS', quest: '7-DAY QUEST', rare: 'RARITY', rareText: n => '1 in ' + n + ' realities' },
-      fbWorth: 'WAS THIS WORTH YOUR TIME?', fbFeel: 'HOW DID THAT FEEL?', fbSend: 'WOULD YOU SEND THIS TO ONE SPECIFIC PERSON?',
+      retake: d => 'TAKE IT AGAIN ON ' + d + ' — see whether the mirror shows the same thing. Values are stable; moods are not.',
+      myChoices: 'My 8 choices',
+      fbWorth: 'WAS THIS WORTH YOUR TIME?', fbTrue: 'DID THE MAIN TENSION RING TRUE?', fbSend: 'WOULD YOU SEND THIS TO ONE SPECIFIC PERSON?',
+      trueOpts: ['NOT AT ALL', 'PARTLY', 'SPOT ON'], yesno: ['YES', 'NO'],
       fbThanks: 'Logged anonymously. The company reads this.', again: 'LIVE ANOTHER LIFE',
-      feel: ['MEH', 'WEIRD', 'WTF'], yesno: ['YES', 'NO'],
       soundOn: 'SOUND: ON', soundOff: 'SOUND: OFF',
-      footer: 'BORN WEIRD is an experiment run by an AI-agent company. Nothing here is prediction or science. No accounts, no cookies, no third-party trackers (your browser keeps only the IDs of realities you made); only anonymous event counts (e.g. “a simulation was completed”) are sent to a public counter service.',
+      footer: 'BORN WEIRD is an experiment run by an AI-agent company. Not a test, not a prediction, not science. No accounts, no cookies, no third-party trackers (your browser keeps only the IDs of realities you made and which situations you have seen); only anonymous event counts are sent to a public counter service.',
       builtPublic: 'Built in public',
-      ref: id => 'TRANSMISSION RECEIVED: Reality #' + id + ' sent you here. Someone lived a strange life and thought of you.',
-      keyRef: r => ['A FRIEND SENT YOU THEIR REALITY', r.title, '> ' + r.verdict, 'Yours will be different. Enter your birth date below.'],
+      ref: id => 'TRANSMISSION RECEIVED: Reality #' + id + ' sent you here.',
+      keyRef: r => ['A FRIEND SENT YOU THEIR MIRROR', r.title, r.tension.short, 'Yours will be different. Enter your birth date below.'],
       spawned: n => 'YOUR REALITIES HAVE SPAWNED ' + n + ' NEW ' + (n === 1 ? 'ONE' : 'ONES') + '.',
-      errEmpty: 'Enter a birth date to generate the seed.', errBad: 'That date does not compute. Try again.',
+      errEmpty: 'Enter a birth date.', errBad: 'That date does not compute. Try again.',
       reality: 'REALITY',
       alt: (tt, id) => 'Character card: ' + tt + ', reality #' + id,
-      shareText: tt => 'I simulated a life I haven\'t lived yet and became ' + tt + '. Here is my card — yours will be different:',
+      shareText: r => 'BORN WEIRD showed me my main inner tension: ' + r.tension.short + '. I am ' + r.archetype + '. Yours will be different:',
       tCopied: 'Copied. Send it to one specific person.', tLink: 'Link copied.', tNoArt: 'Card unavailable on this device.',
       tSeed: 'Seed text copied. Paste it into any AI.', tSeedFail: 'Copy was blocked. Use DOWNLOAD or the AI buttons above.',
-      art: { cls: 'CLASS', buff: 'BUFF', debuff: 'DEBUFF', boss: 'BOSS', rare: n => 'RARITY: 1 IN ' + n, event: y => 'EVENT LOG // ' + y,
-        path: n => 'LIFE PATH ' + n, note: 'NOT A PREDICTION. A LIFE YOU HAVEN\'T LIVED YET.' },
+      art: { arch: 'ARCHETYPE', path: n => 'LIFE PATH ' + n, tension: 'MAIN TENSION', plus: 'PLUS', shadow: 'SHADOW', bridge: 'BRIDGE', rare: n => 'RARITY: 1 IN ' + n, note: 'A MIRROR, NOT A PREDICTION.' },
     },
     ru: {
-      tagline: 'Симулятор жизней, которых у тебя ещё не было.',
-      subline: 'Дата рождения превращается в символическое зерно · 5 выборов · ~3 минуты · карточка персонажа из реальности, которой не было · готовый следующий шаг с твоим ИИ.',
-      dobLabel: 'ВВЕДИ ДАТУ РОЖДЕНИЯ, ЧТОБЫ СОЗДАТЬ ЗЕРНО:',
-      start: 'НАЧАТЬ СИМУЛЯЦИЮ',
-      privacy: 'Дата рождения не покидает это устройство и нигде не хранится. Она расшифровывается в символы (нумерология, знаки), которые служат игровым зерном, — это не предсказание. Рождение задаёт зерно. Выборы создают хронологию.',
-      decodeBar: 'ЗЕРНО РОЖДЕНИЯ РАСШИФРОВАНО', enter: 'ВОЙТИ В ХРОНОЛОГИЮ',
-      decode: d => [
-        'ДАТА ' + d.dateShown + '  →  ' + d.lifePathSteps.join('  →  '),
-        ['ЧИСЛО ПУТИ ' + d.lifePath + ' → СТАРТОВЫЙ КЛАСС: ' + d.startClass, d.bonuses[0]],
-        'ЗНАК: ' + d.zodiac + ' · стихия ' + d.element + ' · ВОСТОЧНЫЙ ГОД: ' + d.eastern + ' · ДЕНЬ НЕДЕЛИ: ' + d.weekday,
-        'ДНЕЙ ПРОЖИТО: ' + d.daysAlive.toLocaleString('ru-RU'),
-        '',
-        'Загрузка ' + d.earth + ': мир, где ' + d.worldFact + '.',
-        '',
-        'Эти символы — игровое зерно, а не предсказание. Число пути даёт стартовые очки и выбирает первый вопрос. Знаки — просто лор твоего зерна: на результат они не влияют. Дальше решают выборы — и каждый весит больше предыдущего.',
-      ],
+      tagline: 'Зеркало для жизней, которых у тебя ещё не было.',
+      subline: '3 минуты · 8 ситуаций · узнай, какие ценности тянут тебя в разные стороны, где слепая зона и насколько близок тебе ты-через-10-лет. В конце — квест на 7 дней и пиксельная карточка персонажа.',
+      dobLabel: 'ВВЕДИ ДАТУ РОЖДЕНИЯ:', start: 'НАЧАТЬ',
+      privacy: 'Дата рождения не покидает это устройство и нигде не хранится. Она даёт реальные факты о твоём времени (их видишь только ты) и одно открыто символическое число. Это не предсказание.',
+      birthBar: 'ТВОЁ ВРЕМЯ',
+      weeks: n => 'ПРОЖИТО НЕДЕЛЬ: ' + n.toLocaleString('ru-RU'),
+      lifeCaption: a => 'Каждая клетка — год 90-летней жизни. Ты здесь: ' + (a + 1) + '-й год. Пустые клетки ещё можно раскрасить по-другому.',
+      milestone: m => (m.kind === 'gsec' ? 'Через ' + m.inDays + ' ' + BW.plural(m.inDays, ['день', 'дня', 'дней']) + ' тебе исполнится ' + m.k + ' ' + BW.plural(m.k, ['миллиард', 'миллиарда', 'миллиардов']) + ' секунд (' + m.date + ').'
+        : 'Через ' + m.inDays + ' ' + BW.plural(m.inDays, ['день', 'дня', 'дней']) + ' — твой ' + m.day.toLocaleString('ru-RU') + '-й день жизни (' + m.date + ').'),
+      milestoneWhy: 'Исследования «эффекта нового старта» (Dai, Milkman, Riis): после личных вех вроде этой люди чаще начинают новое. Хороший день для старта.',
+      stage: s => 'Психолог Эрик Эриксон называл этот этап жизни «' + s.name + '». Его главный вопрос: ' + s.q,
+      symbolHead: 'СИМВОЛ (ЛОР, НЕ ПРОГНОЗ)',
+      symbol: d => 'Дата ' + d.dateShown + ' → ' + d.lifePathSteps.join(' → ') + '\nЧисло пути ' + d.lifePath + ' — ' + d.lp.name + '\n+ ' + d.lp.plus + '\n− ' + d.lp.shadow + '\n? ' + d.lp.q + '\nЗнак: ' + d.zodiac + ' — просто для красоты.',
+      motto: 'Цифры — факты. Архетип — метафора. Выбор — твой.',
+      toModel: 'ДАЛЬШЕ: ЧТО МЫ ИЗУЧАЕМ →',
+      modelBar: 'ЧТО МЫ ИЗУЧАЕМ', modelHead: 'Какие ценности тянут тебя в разные стороны — и насколько своим ощущается ты-через-10-лет.',
+      axisO: 'СВОБОДА ↔ ОПОРА', axisE: 'ВЕС ↔ ЗАБОТА',
+      howTo: 'В каждой из 8 ситуаций сначала отметь, что ВЫБЕРЕШЬ, потом — что ТОЧНО НЕТ. Правильных ответов нет: у каждого варианта своя цена.',
+      caveat: 'Это зеркало сегодняшних выборов — не тест и не диагноз. По мотивам теории базовых ценностей Шварца и исследований Хершфилда о будущем себе; формулировки наши и не валидированы. 8 ситуаций показывают только порядок твоих ценностей, а не сравнение с другими людьми.',
+      begin: 'НАЧАТЬ',
       byBirth: n => 'ТВОЁ ЧИСЛО ' + n + ' ВЫБРАЛО ЭТОТ ВОПРОС',
-      next: 'ДАЛЬШЕ →', toResult: 'СОБРАТЬ МОЮ РЕАЛЬНОСТЬ →',
-      compileBar: 'СБОРКА РЕАЛЬНОСТИ', compileText: 'Схлопываем варианты будущего…',
+      pickBest: 'Отметь, что ВЫБЕРЕШЬ', pickWorst: 'Теперь отметь, что ТОЧНО НЕТ', mkBest: '✓ ВЫБЕРУ', mkWorst: '✗ ТОЧНО НЕТ',
+      next: 'ДАЛЬШЕ →', toBridge: 'ОДИН ВОПРОС О ТЕБЕ →', toResult: 'ПОКАЗАТЬ МОЁ ЗЕРКАЛО →',
+      bridgeBar: 'МОСТ К БУДУЩЕМУ СЕБЕ',
+      compileBar: 'СБОРКА ЗЕРКАЛА', compileText: 'Сортируем ценности, измеряем напряжения…',
       share: 'ОТПРАВИТЬ ССЫЛКУ-КЛЮЧ', save: 'СОХРАНИТЬ КАРТИНКУ', copyLink: 'СКОПИРОВАТЬ ССЫЛКУ',
-      keyExplain: 'Ссылка-ключ открывает у друга твою карточку. Если он пройдёт свою — вырастет счётчик реальностей, которые породила твоя.',
-      hintIOS: 'Совет: удерживай карточку пальцем → «Сохранить в Фото».', hintOther: 'Совет: удерживай карточку пальцем или нажми правую кнопку мыши, чтобы сохранить.',
-      hBuild: 'ТВОЯ СБОРКА', hAI: 'ПРОДОЛЖИТЬ С ИИ',
-      aiExplain: 'Одно нажатие — и твой ИИ откроется с готовым запросом по этой карточке. (Нужен вход в аккаунт этого ИИ.)',
-      aiPlan: '▸ ПЛАН КВЕСТА НА 7 ДНЕЙ', aiFuture: '▸ РАЗГОВОР СО МНОЙ ИЗ ', aiDebuff: '▸ РАЗОБРАТЬ МОЙ ДЕБАФФ',
-      seedMore: 'Полное зерно реальности (файл для любого ИИ)',
-      seedDesc: 'Файл, описывающий эту хронологию. Вставь его в любой ИИ — и он спросит: «Что ты хочешь сделать с этой реальностью?»',
+      keyExplain: 'Ссылка-ключ открывает у друга твою карточку. Если он пройдёт своё зеркало — вырастет счётчик реальностей, которые породила твоя.',
+      hintIOS: 'Совет: удерживай карточку пальцем → «Сохранить в Фото».', hintOther: 'Совет: удерживай карточку (или правый клик), чтобы сохранить.',
+      hProfile: 'ТВОЙ ПОРЯДОК ЦЕННОСТЕЙ', hTension: 'ГЛАВНОЕ НАПРЯЖЕНИЕ', hBlind: 'СЛЕПАЯ ЗОНА', bridgeHead: n => 'МОСТ К БУДУЩЕМУ СЕБЕ: ' + n + '/7', hQuest: 'КВЕСТ НА 7 ДНЕЙ',
+      start2: m => 'Хороший день для старта: ' + m.date + ' (через ' + m.inDays + ' ' + BW.plural(m.inDays, ['день', 'дня', 'дней']) + ') — твоя личная веха.',
+      hAI: 'ПРОДОЛЖИТЬ С ИИ', aiExplain: 'Одно нажатие — и твой ИИ откроется с готовым запросом по этому результату. (Нужен вход в аккаунт этого ИИ.)',
+      aiPlan: '▸ ПРЕВРАТИТЬ КВЕСТ В ПЛАН НА 7 ДНЕЙ', aiTension: '▸ РАЗОБРАТЬ МОЁ ГЛАВНОЕ НАПРЯЖЕНИЕ', aiFuture: '▸ ПОГОВОРИТЬ С СОБОЙ ЧЕРЕЗ 10 ЛЕТ',
+      seedMore: 'Полное зерно реальности (файл для любого ИИ)', seedDesc: 'Файл с этим результатом. Вставь его в любой ИИ.',
       copySeed: 'СКОПИРОВАТЬ ТЕКСТ ЗЕРНА', dlSeed: 'СКАЧАТЬ .weird.md',
-      hFuture: 'ВОЗМОЖНОЕ БУДУЩЕЕ',
-      build: { cls: 'КЛАСС', buff: 'БАФФ', debuff: 'ДЕБАФФ', boss: 'БОСС', quest: 'КВЕСТ НА 7 ДНЕЙ', rare: 'РЕДКОСТЬ', rareText: n => '1 из ' + n + ' реальностей' },
-      fbWorth: 'СТОИЛО ЛИ ЭТО ТВОЕГО ВРЕМЕНИ?', fbFeel: 'И КАК ТЕБЕ?', fbSend: 'ХОЧЕТСЯ ПОКАЗАТЬ ЭТО КОМУ-ТО КОНКРЕТНОМУ?',
-      fbThanks: 'Записано анонимно. Компания это читает.', again: 'ПРОЖИТЬ ДРУГУЮ ЖИЗНЬ',
-      feel: ['ТАК СЕБЕ', 'СТРАННО', 'ЧТО ЭТО БЫЛО?!'], yesno: ['ДА', 'НЕТ'],
+      retake: d => 'ПРОЙДИ СНОВА ' + d + ' — проверь, покажет ли зеркало то же самое. Ценности устойчивы, настроение — нет.',
+      myChoices: 'Мои 8 выборов',
+      fbWorth: 'СТОИЛО ЛИ ЭТО ТВОЕГО ВРЕМЕНИ?', fbTrue: 'ГЛАВНОЕ НАПРЯЖЕНИЕ — ПРО ТЕБЯ?', fbSend: 'ХОЧЕТСЯ ПОКАЗАТЬ ЭТО КОМУ-ТО КОНКРЕТНОМУ?',
+      trueOpts: ['СОВСЕМ НЕТ', 'ОТЧАСТИ', 'В ТОЧКУ'], yesno: ['ДА', 'НЕТ'],
+      fbThanks: 'Записано анонимно. Компания это читает.', again: 'ПРОЙТИ ЕЩЁ РАЗ',
       soundOn: 'ЗВУК: ВКЛ', soundOff: 'ЗВУК: ВЫКЛ',
-      footer: 'BORN WEIRD — эксперимент, который ведёт компания из ИИ-агентов. Ничто здесь не является предсказанием или наукой. Без аккаунтов, без cookies, без сторонних трекеров (браузер хранит только ID созданных тобой реальностей); в публичный сервис уходят только анонимные счётчики событий (например, «симуляция пройдена»).',
+      footer: 'BORN WEIRD — эксперимент, который ведёт компания из ИИ-агентов. Не тест, не предсказание, не наука. Без аккаунтов, без cookies, без сторонних трекеров (браузер хранит только ID созданных тобой реальностей и какие ситуации уже были); в публичный сервис уходят только анонимные счётчики событий.',
       builtPublic: 'Строится в открытую',
-      ref: id => 'ПЕРЕДАЧА ПОЛУЧЕНА: реальность #' + id + ' отправила тебя сюда. Кто-то прожил странную жизнь и вспомнил о тебе.',
-      keyRef: r => ['ТЕБЕ ПРИСЛАЛИ РЕАЛЬНОСТЬ', r.title, '> ' + r.verdict, 'Твоя будет другой. Введи дату рождения ниже.'],
+      ref: id => 'ПЕРЕДАЧА ПОЛУЧЕНА: реальность #' + id + ' отправила тебя сюда.',
+      keyRef: r => ['ТЕБЕ ПРИСЛАЛИ ЗЕРКАЛО', r.title, r.tension.short, 'Твоё будет другим. Введи дату рождения ниже.'],
       spawned: n => 'ТВОИ РЕАЛЬНОСТИ УЖЕ ПОРОДИЛИ НОВЫХ: ' + n + '.',
-      errEmpty: 'Введи дату рождения, чтобы создать зерно.', errBad: 'Эта дата не вычисляется. Попробуй ещё раз.',
+      errEmpty: 'Введи дату рождения.', errBad: 'Эта дата не вычисляется. Попробуй ещё раз.',
       reality: 'РЕАЛЬНОСТЬ',
       alt: (tt, id) => 'Карточка персонажа: ' + tt + ', реальность #' + id,
-      shareText: tt => 'Мне выпала жизнь, которой у меня ещё не было: ' + tt + '. Вот моя карточка — у тебя будет другая:',
+      shareText: r => 'BORN WEIRD показал моё главное внутреннее напряжение: ' + r.tension.short + '. Мой архетип — ' + r.archetype + '. У тебя будет другое:',
       tCopied: 'Скопировано. Отправь одному конкретному человеку.', tLink: 'Ссылка скопирована.', tNoArt: 'Карточка недоступна на этом устройстве.',
       tSeed: 'Текст зерна скопирован. Вставь его в любой ИИ.', tSeedFail: 'Браузер не дал скопировать. Используй СКАЧАТЬ или кнопки ИИ выше.',
-      art: { cls: 'КЛАСС', buff: 'БАФФ', debuff: 'ДЕБАФФ', boss: 'БОСС', rare: n => 'РЕДКОСТЬ: 1 ИЗ ' + n, event: y => 'ЖУРНАЛ СОБЫТИЙ // ' + y,
-        path: n => 'ЧИСЛО ПУТИ ' + n, note: 'НЕ ПРЕДСКАЗАНИЕ. ЖИЗНЬ, КОТОРОЙ ЕЩЁ НЕ БЫЛО.' },
+      art: { arch: 'АРХЕТИП', path: n => 'ЧИСЛО ПУТИ ' + n, tension: 'ГЛАВНОЕ НАПРЯЖЕНИЕ', plus: 'ПЛЮС', shadow: 'ТЕНЬ', bridge: 'МОСТ', rare: n => 'РЕДКОСТЬ: 1 ИЗ ' + n, note: 'ЗЕРКАЛО, А НЕ ПРЕДСКАЗАНИЕ.' },
     },
   };
-  // Language: ?lang= > entry page (/ru/ sets data-lang) > saved choice > browser language > English.
   const RU_LOCALES = /^(ru|uk|be|kk)\b/i;
   let lang = (function () {
     const q = params.get('lang');
@@ -391,11 +412,9 @@
       } catch (e) {}
     }
     return {
-      get on() { return on; },
-      set(v) { on = v; store.set('bw_snd', v ? '1' : '0'); },
-      tick() { tone(1700, 0.01, 0, 'square', 0.01); },
-      blip() { tone(660, 0.05); tone(990, 0.06, 0.05); },
-      up() { [523, 659, 784].forEach((f, i) => tone(f, 0.07, i * 0.07)); },
+      get on() { return on; }, set(v) { on = v; store.set('bw_snd', v ? '1' : '0'); },
+      tick() { tone(1700, 0.01, 0, 'square', 0.01); }, blip() { tone(660, 0.05); tone(990, 0.06, 0.05); },
+      no() { tone(330, 0.06); tone(220, 0.08, 0.06); }, up() { [523, 659, 784].forEach((f, i) => tone(f, 0.07, i * 0.07)); },
       boot() { [220, 330, 440, 660, 880].forEach((f, i) => tone(f, 0.05, i * 0.05)); },
       fanfare() { [523, 659, 784, 1047, 784, 1047].forEach((f, i) => tone(f, 0.09, i * 0.09, 'square', 0.035)); },
       err() { tone(140, 0.2, 0, 'sawtooth', 0.04); },
@@ -403,7 +422,6 @@
   })();
 
   // ---------- analytics: anonymous counters only ----------
-  // No identifiers, no birth dates, no cookies. Each event increments a public counter.
   const NS = 'bw-x7q2-p0';
   if (params.get('founder') === '1') store.set('bw_founder', '1');
   if (params.get('founder') === '0') store.del('bw_founder');
@@ -411,17 +429,17 @@
   if (params.get('qa') === '0') store.del('bw_qa');
   const isFounder = store.get('bw_founder') === '1';
   const isQA = store.get('bw_qa') === '1'; // test traffic: never counted
-  const FAST = isQA && params.get('fast') === '1'; // automated QA: skip typing animations
+  const FAST = isQA && params.get('fast') === '1'; // automated QA: skip animations
   const fired = new Set();
   // Only events that operations/metrics.mjs reads for the RU segment get a ru_ copy.
-  const RU_TRACKED = /^(landing_view|referred_visit|key_landing_view|simulation_started|decode_viewed|simulation_completed|referred_simulation_completed|artifact_generated|share_completed|link_copied|artifact_saved|reality_seed_copied|reality_seed_downloaded|ai_open_\w+|choice_selected_\d|fb_worth_\d|fb_send_(yes|no))$/;
+  const RU_TRACKED = /^(landing_view|referred_visit|key_landing_view|simulation_started|birth_viewed|model_viewed|bridge_answered|simulation_completed|referred_simulation_completed|artifact_generated|share_completed|link_copied|artifact_saved|reality_seed_copied|reality_seed_downloaded|ai_open_\w+|item_answered_\d|fb_worth_\d|fb_true_\w+|fb_send_(yes|no))$/;
   const sendQ = []; let pumping = false;
   function hit(key) { try { fetch('https://abacus.jasoncameron.dev/hit/' + NS + '/' + key, { mode: 'cors', keepalive: true }).catch(() => {}); } catch (e) {} }
   function track(ev, opts) {
     opts = opts || {};
     if (isQA) return;
     const keys = [ev];
-    if (lang === 'ru' && RU_TRACKED.test(ev)) keys.push('ru_' + ev); // language segment for EXP-002
+    if (lang === 'ru' && RU_TRACKED.test(ev)) keys.push('ru_' + ev);
     keys.forEach(k0 => {
       const key = isFounder ? 'founder_' + k0 : k0;
       if (!opts.repeat) { if (fired.has(key)) return; fired.add(key); }
@@ -432,64 +450,60 @@
   // Counter service allows 30 requests / 10 s: one request per 400 ms (25/10 s) leaves room for the few GETs.
   function pump() {
     if (pumping || !sendQ.length) return;
-    pumping = true;
-    hit(sendQ.shift());
+    pumping = true; hit(sendQ.shift());
     setTimeout(() => { pumping = false; pump(); }, 400);
   }
-  // On tab close, flush whatever is still queued (keepalive lets these outlive the page).
   window.addEventListener('pagehide', () => { let n = 0; while (sendQ.length && n++ < 5) hit(sendQ.shift()); });
 
-  // ---------- referral: ?k=KEY (v0.3) or legacy ?from=ID ----------
+  // ---------- referral: ?k=KEY or legacy ?from=ID ----------
   const ownIds = () => { try { return JSON.parse(store.get('bw_own') || '[]'); } catch (e) { return []; } };
   function rememberOwn(id) { const a = ownIds().filter(v => v !== id).concat(id).slice(-50); store.set('bw_own', JSON.stringify(a)); }
+  const seenSits = () => { try { return JSON.parse(store.get('bw_seen') || '[]'); } catch (e) { return []; } };
+  function rememberSeen(ids) { store.set('bw_seen', JSON.stringify(seenSits().concat(ids).slice(-24))); }
   const keyParam = params.get('k');
   const keyRes = keyParam ? BW.fromKey(keyParam, lang) : null;
   const fromParam = (keyRes ? keyRes.id : (params.get('from') || '')).toUpperCase();
-  const validRef = /^[0-9A-F]{4}-[0-9A-F]{4}$/.test(fromParam);
-  if (validRef && ownIds().indexOf(fromParam) === -1) store.set('bw_from', fromParam, true); // your own link is not a referral
+  if (/^[0-9A-F]{4}-[0-9A-F]{4}$/.test(fromParam) && ownIds().indexOf(fromParam) === -1) store.set('bw_from', fromParam, true);
   const referredBy = store.get('bw_from', true);
   const isOwnKey = !!keyRes && ownIds().indexOf(keyRes.id) !== -1;
-  // Site root regardless of entry page (/born-weird/ or /born-weird/ru/)
   const siteRoot = location.origin + location.pathname.replace(/(index\.html)?$/, '').replace(/ru\/$/, '');
   const langBase = () => siteRoot + (lang === 'ru' ? 'ru/' : '');
   const isIOS = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
   // ---------- state ----------
-  let run = null, result = null, pngBlob = null, compiling = false, stageIdx = 0;
+  let run = null, result = null, pngBlob = null, compiling = false, itemIdx = 0, pick = { best: null, worst: null };
   let aiProvider = store.get('bw_ai') === 'claude' ? 'claude' : 'chatgpt';
 
   function show(id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('on'));
     $(id).classList.add('on');
-    $('langBox').hidden = id !== 's-intro'; // language switch only before a run starts
+    $('langBox').hidden = id !== 's-intro';
     window.scrollTo(0, 0);
     const f = $(id).querySelector('h2[tabindex]');
     if (f) setTimeout(() => f.focus({ preventScroll: true }), 30);
   }
-  function toast(msg) {
-    const el = $('toast'); el.textContent = msg; el.style.display = 'block';
-    clearTimeout(toast._t); toast._t = setTimeout(() => { el.style.display = 'none'; }, 2800);
-  }
+  function toast(msg) { const el = $('toast'); el.textContent = msg; el.style.display = 'block'; clearTimeout(toast._t); toast._t = setTimeout(() => { el.style.display = 'none'; }, 2800); }
   async function copyText(text) {
     try { if (navigator.clipboard && window.isSecureContext) { await navigator.clipboard.writeText(text); return true; } } catch (e) {}
-    // Fallback for in-app browsers: an offscreen readonly textarea with an explicit selection range.
     const ta = document.createElement('textarea');
     ta.value = text; ta.setAttribute('readonly', ''); ta.style.cssText = 'position:fixed;top:0;left:-9999px;font-size:16px;';
     document.body.appendChild(ta); ta.focus(); ta.select(); ta.setSelectionRange(0, text.length);
     let ok = false; try { ok = document.execCommand('copy'); } catch (e) {}
     ta.remove(); return ok;
   }
-  function renderHud(box) {
-    if (!run) return;
-    const max = Math.max(...BW.DIMS.map(d => run.scores[d]), 6);
-    box.innerHTML = '';
-    BW.DIMS.forEach(d => {
-      const name = document.createElement('span'); name.textContent = BW.CONTENT[lang].dims[d].label;
-      const bar = document.createElement('i'); const fill = document.createElement('b');
-      fill.style.width = Math.round(run.scores[d] / max * 100) + '%';
-      bar.appendChild(fill); box.appendChild(name); box.appendChild(bar);
-    });
+  let typeToken = 0;
+  function typeInto(el, text, done) {
+    const token = ++typeToken;
+    if (FAST) { el.textContent = text; done && done(); return; }
+    el.textContent = ''; let i = 0, n = 0;
+    const step = () => {
+      if (token !== typeToken) return;
+      i += 3; el.textContent = text.slice(0, i);
+      if (++n % 4 === 0) SND.tick();
+      if (i < text.length) setTimeout(step, 14); else done && done();
+    };
+    step();
   }
 
   function applyLang() {
@@ -507,18 +521,17 @@
   const today = new Date();
   const iso = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
   $('dob').max = iso(today);
-
   let keyCardUrl = null, refToken = 0;
   async function renderRefBanner() {
     const b = $('refBanner');
     if (keyRes && !isOwnKey) {
       const token = ++refToken;
-      const shown = BW.fromKey(keyParam, lang); // re-render in the current language
-      const [head, title, verdict, cta] = t('keyRef')(shown);
+      const shown = BW.fromKey(keyParam, lang);
+      const [head, title, tension, cta] = t('keyRef')(shown);
       b.innerHTML = '';
       const h = document.createElement('div'); h.textContent = head;
       const ti = document.createElement('b'); ti.textContent = title;
-      const v = document.createElement('div'); v.textContent = verdict;
+      const v = document.createElement('div'); v.textContent = tension;
       const img = document.createElement('img'); img.alt = t('alt')(shown.title, shown.id);
       const c = document.createElement('div'); c.textContent = cta;
       b.append(h, ti, v, img, c); b.hidden = false;
@@ -528,142 +541,155 @@
         if (keyCardUrl) URL.revokeObjectURL(keyCardUrl);
         keyCardUrl = URL.createObjectURL(blob); img.src = keyCardUrl;
       } catch (e) { img.remove(); }
-    } else if (referredBy) {
-      b.textContent = t('ref')(referredBy); b.hidden = false;
-    }
+    } else if (referredBy) { b.textContent = t('ref')(referredBy); b.hidden = false; }
   }
   function switchLang(l) {
     if (l === lang) return;
-    lang = l;
-    store.set('bw_lang', l);
-    applyLang();
+    lang = l; store.set('bw_lang', l); applyLang();
     track('lang_switch_' + l);
-    track('landing_view'); if (referredBy) track('referred_visit'); // base keys are deduped; counts the visit in the new language segment
+    track('landing_view'); if (referredBy) track('referred_visit');
   }
   $('langEn').addEventListener('click', () => switchLang('en'));
   $('langRu').addEventListener('click', () => switchLang('ru'));
-  $('btnSound').addEventListener('click', () => {
-    SND.set(!SND.on); applyLang();
-    if (SND.on) SND.blip(); else track('sound_off');
-  });
+  $('btnSound').addEventListener('click', () => { SND.set(!SND.on); applyLang(); if (SND.on) SND.blip(); else track('sound_off'); });
   applyLang();
   track('landing_view');
   if (referredBy) track('referred_visit');
   if (keyRes && !isOwnKey) track('key_landing_view');
   if (RU_LOCALES.test(navigator.language || '')) track('locale_ru');
 
-  // How many new realities did my realities spawn? (read-only GETs for my last 3 realities)
   (async function spawnStat() {
     if (isQA) return;
-    const ids = ownIds().slice(-3);
-    if (!ids.length) return;
+    const ids = ownIds().slice(-3); if (!ids.length) return;
     let total = 0;
     for (const id of ids) {
-      try {
-        const r = await fetch('https://abacus.jasoncameron.dev/get/' + NS + '/ref_' + id, { mode: 'cors' });
-        if (r.ok) { const j = await r.json(); total += Math.max(0, j.value || 0); }
-      } catch (e) {}
+      try { const r = await fetch('https://abacus.jasoncameron.dev/get/' + NS + '/ref_' + id, { mode: 'cors' }); if (r.ok) { const j = await r.json(); total += Math.max(0, j.value || 0); } } catch (e) {}
     }
     if (total > 0) { const s = $('spawnStat'); s.textContent = t('spawned')(total); s.hidden = false; }
   })();
 
   $('btnStart').addEventListener('click', () => {
     const v = $('dob').value;
-    const salt = Math.floor(Math.random() * 4294967296);
-    try {
-      run = BW.newRun(v, salt, lang);
-    } catch (e) {
-      errKey = v ? 'errBad' : 'errEmpty';
-      $('dobErr').textContent = t(errKey);
-      SND.err();
-      return;
-    }
+    try { run = BW.newRun(v, Math.floor(Math.random() * 4294967296), lang, undefined, seenSits()); }
+    catch (e) { errKey = v ? 'errBad' : 'errEmpty'; $('dobErr').textContent = t(errKey); SND.err(); return; }
     $('dobErr').textContent = ''; errKey = null; compiling = false;
     SND.boot();
     track('simulation_started');
     if (referredBy) track('referred_simulation_started');
-    track('birth_seed_created');
-    showDecode(v);
+    showBirth(v);
   });
 
-  // ---------- decode screen ----------
-  let typeToken = 0;
-  function typeInto(el, text, done) {
-    const token = ++typeToken;
-    if (FAST) { el.textContent = text; el.classList.remove('cursor'); done && done(); return; }
-    el.textContent = ''; el.classList.add('cursor');
-    let i = 0, n = 0;
-    const step = () => {
-      if (token !== typeToken) return; // a newer animation took over
-      i += 3; el.textContent = text.slice(0, i);
-      if (++n % 4 === 0) SND.tick();
-      if (i < text.length) setTimeout(step, 14); else { el.classList.remove('cursor'); done && done(); }
-    };
-    step();
+  // ---------- your time (private) ----------
+  function showBirth(dateStr) {
+    show('s-birth');
+    const d = run.decoded;
+    const [y, m, dd] = dateStr.split('-');
+    $('birthWeeks').textContent = t('weeks')(d.weeksLived);
+    const grid = $('lifeGrid'); grid.innerHTML = '';
+    for (let i = 0; i < 90; i++) { const c = document.createElement('i'); if (i < d.age) c.className = 'on'; if (i === d.age) c.className = 'now'; grid.appendChild(c); }
+    $('lifeCaption').textContent = t('lifeCaption')(d.age);
+    $('milestone').textContent = t('milestone')(d.milestone);
+    $('stage').textContent = t('stage')(d.stage);
+    $('world').textContent = d.world;
+    $('symbol').className = 'box type';
+    $('symbol').textContent = t('symbol')(Object.assign({ dateShown: dd + '.' + m + '.' + y }, d));
+    track('birth_viewed');
   }
-  function showDecode(dateStr) {
-    show('s-decode');
-    $('btnDecode').disabled = true;
-    const [y, m, d] = dateStr.split('-');
-    const w = BW.world(run);
-    const info = Object.assign({}, run.decoded, { dateShown: d + '.' + m + '.' + y, earth: w.earth, worldFact: w.worldFact });
-    const lines = t('decode')(info).map(l => (Array.isArray(l) ? l[0] + '   +' + l[1].value + ' ' + l[1].label : l));
-    $('hudDecode').innerHTML = '';
-    typeInto($('decodeText'), lines.join('\n'), () => {
-      renderHud($('hudDecode'));
-      SND.up();
-      $('btnDecode').disabled = false;
+  $('btnBirth').addEventListener('click', () => {
+    const box = $('poles'); box.innerHTML = '';
+    const P = BW.CONTENT[lang];
+    [['axisO', ['FREEDOM', 'ANCHOR']], ['axisE', ['WEIGHT', 'CARE']]].forEach(([ax, ps]) => {
+      const a = document.createElement('div'); a.className = 'axis'; a.textContent = t(ax); box.appendChild(a);
+      ps.forEach(p => { const row = document.createElement('div'); const b = document.createElement('b'); b.textContent = P.poles[p].label; row.append(b, document.createTextNode(' — ' + P.poles[p].meaning)); box.appendChild(row); });
     });
-    track('decode_viewed');
-  }
-  $('btnDecode').addEventListener('click', () => showStage(0));
+    const a = document.createElement('div'); a.className = 'axis'; a.textContent = P.bridge.label; box.appendChild(a);
+    const r = document.createElement('div'); r.textContent = P.bridge.meaning; box.appendChild(r);
+    show('s-model'); SND.blip(); track('model_viewed');
+  });
+  $('btnModel').addEventListener('click', () => { SND.blip(); showItem(0); });
 
-  // ---------- stages ----------
-  function showStage(i) {
-    stageIdx = i;
-    const st = BW.stage(run, i);
-    show('s-stage');
-    $('stageBar').textContent = '[' + (i + 1) + '/' + st.total + '] T+' + st.label;
-    $('stageBirth').hidden = !st.byBirth;
-    if (st.byBirth) $('stageBirth').textContent = t('byBirth')(run.lifePath);
-    $('stagePrompt').textContent = st.prompt;
-    $('stageOutcome').hidden = true;
-    const box = $('stageOpts'); box.innerHTML = '';
-    st.options.forEach((text, j) => {
-      const b = document.createElement('button');
-      b.className = 'opt'; b.textContent = text;
-      b.addEventListener('click', () => choose(i, j, b), { once: true });
+  // ---------- situations ----------
+  function renderHud() {
+    const sc = BW.score(run), box = $('hud'); box.innerHTML = '';
+    BW.POLES.forEach((p, i) => {
+      const name = document.createElement('span'); name.textContent = BW.CONTENT[lang].poles[p].label;
+      const bar = document.createElement('i'); const fill = document.createElement('b');
+      fill.style.width = Math.round((sc.net[i] + 8) / 16 * 100) + '%';
+      bar.appendChild(fill); box.append(name, bar);
+    });
+  }
+  function showItem(k) {
+    itemIdx = k; pick = { best: null, worst: null };
+    const it = BW.item(run, k);
+    show('s-item');
+    $('itemBar').textContent = '[' + (k + 1) + '/' + it.total + '] ' + it.horizon;
+    $('itemBirth').hidden = !it.byBirth;
+    if (it.byBirth) $('itemBirth').textContent = t('byBirth')(run.lifePath);
+    $('itemPrompt').textContent = it.prompt;
+    $('itemHint').textContent = t('pickBest');
+    $('itemOut').hidden = true;
+    const box = $('itemOpts'); box.innerHTML = '';
+    it.options.forEach((o, pos) => {
+      const b = document.createElement('button'); b.className = 'opt'; b.type = 'button';
+      const mk = document.createElement('span'); mk.className = 'mk';
+      b.append(mk, document.createTextNode(o.text));
+      b.addEventListener('click', () => tapOption(k, pos, b));
       box.appendChild(b);
     });
-    track('choice_presented_' + (i + 1));
+    track('item_presented_' + (k + 1));
   }
-  function choose(i, j, btn) {
-    if (!run || run.choices.length !== i) return; // already chosen (double tap)
-    $('stageOpts').querySelectorAll('button').forEach(b => { b.disabled = true; });
-    btn.classList.add('chosen');
-    SND.blip();
-    const out = BW.choose(run, i, j);
-    track('choice_selected_' + (i + 1));
-    $('stageOutcome').hidden = false;
-    const main = $('s-stage'); main.classList.remove('glitch'); void main.offsetWidth; main.classList.add('glitch');
-    $('outcomeDeltas').textContent = '';
-    $('hudStage').innerHTML = '';
-    const next = $('btnNext');
-    next.disabled = true;
-    next.textContent = i + 1 < BW.STAGE_META.length ? t('next') : t('toResult');
-    typeInto($('outcomeText'), out.text, () => {
-      const dl = $('outcomeDeltas'); dl.innerHTML = '';
-      out.deltas.forEach(d => { const s = document.createElement('span'); s.textContent = '+' + d.value + ' ' + d.label; dl.appendChild(s); });
-      renderHud($('hudStage'));
-      SND.up();
-      next.disabled = false;
+  function tapOption(k, pos, btn) {
+    if (!run || run.answers.length !== k || itemIdx !== k) return;
+    if (pick.best === null) {
+      pick.best = pos; btn.classList.add('best'); btn.querySelector('.mk').textContent = t('mkBest');
+      $('itemHint').textContent = t('pickWorst'); SND.blip(); return;
+    }
+    if (pos === pick.best) { // undo the first pick
+      pick.best = null; btn.classList.remove('best'); btn.querySelector('.mk').textContent = ''; $('itemHint').textContent = t('pickBest'); return;
+    }
+    pick.worst = pos; btn.classList.add('worst'); btn.querySelector('.mk').textContent = t('mkWorst'); SND.no();
+    $('itemOpts').querySelectorAll('button').forEach(b => { b.disabled = true; });
+    $('itemHint').textContent = '';
+    const out = BW.answer(run, k, pick.best, pick.worst);
+    track('item_answered_' + (k + 1));
+    const main = $('s-item'); main.classList.remove('glitch'); void main.offsetWidth; main.classList.add('glitch');
+    $('itemOut').hidden = false; $('itemDeltas').innerHTML = ''; $('hud').innerHTML = '';
+    const next = $('btnNext'); next.disabled = true;
+    next.textContent = k === BW.BRIDGE_AFTER ? t('toBridge') : (k + 1 < BW.PLAN.length ? t('next') : t('toResult'));
+    typeInto($('itemReact'), out.reaction, () => {
+      out.deltas.forEach(d => { const s = document.createElement('span'); s.className = d.value > 0 ? 'okc' : 'noc'; s.textContent = (d.value > 0 ? '+1 ' : '−1 ') + d.label; $('itemDeltas').appendChild(s); });
+      renderHud(); SND.up(); next.disabled = false;
       next.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
     });
   }
   $('btnNext').addEventListener('click', () => {
-    if (!run || run.choices.length !== stageIdx + 1) return;
-    if (stageIdx + 1 < BW.STAGE_META.length) showStage(stageIdx + 1); else compile();
+    if (!run || run.answers.length !== itemIdx + 1) return;
+    if (itemIdx === BW.BRIDGE_AFTER && run.bridge == null) return showBridge();
+    if (itemIdx + 1 < BW.PLAN.length) showItem(itemIdx + 1); else compile();
   });
+
+  // ---------- bridge (future self-continuity) ----------
+  function circles(v) {
+    const gap = 46 - (v - 1) * 7.5; // 1: apart … 7: same circle
+    return '<svg viewBox="0 0 80 50" aria-hidden="true"><circle cx="' + (40 - gap / 2) + '" cy="25" r="16" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="' + (40 + gap / 2) + '" cy="25" r="16" fill="none" stroke="#ffff55" stroke-width="3"/></svg>';
+  }
+  function showBridge() {
+    const Q = BW.CONTENT[lang].bridgeQ;
+    show('s-bridge');
+    $('bridgePrompt').textContent = Q.prompt; $('bridgeLow').textContent = Q.low; $('bridgeHigh').textContent = Q.high;
+    const box = $('bridgeOpts'); box.innerHTML = '';
+    for (let v = 1; v <= 7; v++) {
+      const b = document.createElement('button'); b.type = 'button'; b.setAttribute('aria-label', String(v));
+      b.innerHTML = circles(v) + '<span class="n">' + v + '</span>';
+      b.addEventListener('click', () => {
+        if (run.bridge != null) return;
+        BW.setBridge(run, v); SND.up(); track('bridge_answered'); track('bridge_' + v);
+        box.querySelectorAll('button').forEach(x => { x.disabled = true; }); b.style.background = 'var(--fg)'; b.style.color = '#000';
+        setTimeout(() => showItem(itemIdx + 1), FAST ? 0 : 350);
+      });
+      box.appendChild(b);
+    }
+  }
 
   // ---------- compile ----------
   async function compile() {
@@ -674,83 +700,74 @@
     requestAnimationFrame(() => requestAnimationFrame(() => { $('compileBar').style.width = '100%'; }));
     [0, 300, 600, 900, 1200].forEach(ms => setTimeout(() => SND.tick(), ms));
     result = BW.finish(run);
-    rememberOwn(result.id);
+    rememberOwn(result.id); rememberSeen(result.sitIds);
     track('simulation_completed');
+    track('tension_' + (result.tension.kind === 'clear' ? 'clear' : result.tension.axis));
     if (referredBy) {
       track('referred_simulation_completed');
-      if (!store.get('bw_ref_sent_' + referredBy, true)) { // once per referrer per tab session, even across reloads
-        store.set('bw_ref_sent_' + referredBy, '1', true);
-        track('ref_' + referredBy); // per-reality counter: "your reality spawned N realities"
-      }
+      if (!store.get('bw_ref_sent_' + referredBy, true)) { store.set('bw_ref_sent_' + referredBy, '1', true); track('ref_' + referredBy); }
     }
     track('artifact_generation_started');
     const minWait = new Promise(r => setTimeout(r, FAST ? 0 : 1500));
-    try {
-      pngBlob = await renderArtifact(result);
-      track('artifact_generated');
-    } catch (e) {
-      pngBlob = null;
-      track('artifact_generation_failed');
-    }
+    try { pngBlob = await renderArtifact(result); track('artifact_generated'); }
+    catch (e) { pngBlob = null; track('artifact_generation_failed'); }
     await minWait;
     showResult();
   }
 
   // ---------- result ----------
   function shareUrl() { return langBase() + '?k=' + result.key; }
-  function shareText() { return t('shareText')(result.title); }
-  function aiUrl(prompt) {
-    const q = encodeURIComponent(prompt);
-    return aiProvider === 'claude' ? 'https://claude.ai/new?q=' + q : 'https://chatgpt.com/?q=' + q;
-  }
+  function shareText() { return t('shareText')(result); }
+  function aiUrl(prompt) { const q = encodeURIComponent(prompt); return aiProvider === 'claude' ? 'https://claude.ai/new?q=' + q : 'https://chatgpt.com/?q=' + q; }
   function renderAI() {
     const p = BW.aiPrompts(result);
     $('aiChatgpt').setAttribute('aria-pressed', String(aiProvider === 'chatgpt'));
     $('aiClaude').setAttribute('aria-pressed', String(aiProvider === 'claude'));
+    $('aiChatgpt').style.cssText = aiProvider === 'chatgpt' ? 'background:var(--fg);color:#000' : '';
+    $('aiClaude').style.cssText = aiProvider === 'claude' ? 'background:var(--fg);color:#000' : '';
     $('aiPlan').textContent = t('aiPlan'); $('aiPlan').href = aiUrl(p.plan);
-    $('aiFuture').textContent = t('aiFuture') + result.finalYear; $('aiFuture').href = aiUrl(p.future);
-    $('aiDebuff').textContent = t('aiDebuff'); $('aiDebuff').href = aiUrl(p.debuff);
+    $('aiTension').textContent = t('aiTension'); $('aiTension').href = aiUrl(p.tension);
+    $('aiFuture').textContent = t('aiFuture'); $('aiFuture').href = aiUrl(p.future);
   }
-  [['aiChatgpt', 'chatgpt'], ['aiClaude', 'claude']].forEach(([id, pv]) => $(id).addEventListener('click', () => {
-    aiProvider = pv; store.set('bw_ai', pv); renderAI(); SND.blip();
-  }));
-  [['aiPlan', 'plan'], ['aiFuture', 'future'], ['aiDebuff', 'debuff']].forEach(([id, kind]) => $(id).addEventListener('click', () => {
-    track('ai_open_' + kind + '_' + aiProvider);
-  }));
+  [['aiChatgpt', 'chatgpt'], ['aiClaude', 'claude']].forEach(([id, pv]) => $(id).addEventListener('click', () => { aiProvider = pv; store.set('bw_ai', pv); renderAI(); SND.blip(); }));
+  [['aiPlan', 'plan'], ['aiTension', 'tension'], ['aiFuture', 'future']].forEach(([id, kind]) => $(id).addEventListener('click', () => track('ai_open_' + kind + '_' + aiProvider)));
 
   function showResult() {
-    show('s-result');
-    SND.fanfare();
-    const B = t('build');
+    show('s-result'); SND.fanfare();
     $('resBar').textContent = t('reality') + ' #' + result.id + ' · ' + result.earth;
     $('resTitle').textContent = result.title;
-    $('resVerdict').textContent = '> ' + result.verdict;
+    $('resPlus').textContent = result.plus; $('resShadow').textContent = result.shadow;
     const img = $('artifact');
     if (img.src && img.src.startsWith('blob:')) URL.revokeObjectURL(img.src);
     if (pngBlob) { img.src = URL.createObjectURL(pngBlob); img.alt = t('alt')(result.title, result.id); img.hidden = false; } else img.hidden = true;
     $('saveHint').textContent = isIOS ? t('hintIOS') : t('hintOther');
-    const build = $('resBuild'); build.innerHTML = '';
-    [[B.cls, result.startClass + ' → ' + result.title], [B.buff, result.buff], [B.debuff, result.debuff], [B.boss, result.boss],
-      [B.quest, result.experiment]].concat(result.rarity ? [[B.rare, B.rareText(result.rarity)]] : []).forEach(([k, v]) => {
-      const row = document.createElement('div'); const b = document.createElement('b'); b.textContent = k;
-      row.appendChild(b); row.appendChild(document.createTextNode(' ' + v)); build.appendChild(row);
+    $('resOrder').textContent = result.orderText;
+    const pr = $('resProfile'); pr.innerHTML = '';
+    result.rank.forEach((p, i) => {
+      const row = result.profile.find(x => x.pole === p);
+      const name = document.createElement('span'); name.textContent = row.label; if (i === 0) name.className = 'top1';
+      const bar = document.createElement('i'); const fill = document.createElement('b'); fill.style.width = row.bar * 10 + '%'; bar.appendChild(fill);
+      const mean = document.createElement('span'); mean.className = 'small muted'; mean.textContent = '✓' + row.best + ' ✗' + row.worst;
+      pr.append(name, bar, mean);
+      const m = document.createElement('span'); m.className = 'small muted'; m.style.gridColumn = '1 / -1'; m.textContent = result.meanings[p]; pr.appendChild(m);
     });
+    $('resTensionShort').textContent = result.tension.short; $('resTension').textContent = result.tension.text;
+    $('resBlind').textContent = result.blind;
+    $('resBridgeHead').textContent = t('bridgeHead')(result.bridge); $('resBridge').textContent = result.bridgeText;
+    $('resQuest').textContent = result.tension.quest;
+    $('resStart').textContent = run && run.decoded ? t('start2')(run.decoded.milestone) : '';
+    $('retake').textContent = t('retake')(run && run.decoded ? run.decoded.retakeDate : '');
     renderAI();
-    $('resFuture').textContent = result.future;
-    const ol = $('resEvents'); ol.innerHTML = '';
-    result.events.forEach(e => {
-      const li = document.createElement('li');
-      const b = document.createElement('b'); b.textContent = e.stage + ' · ' + e.year + ' — ';
-      li.appendChild(b); li.appendChild(document.createTextNode(e.text));
-      ol.appendChild(li);
+    const ol = $('resChoices'); ol.innerHTML = '';
+    result.choices.forEach(c => {
+      const li = document.createElement('li'); const b = document.createElement('b'); b.textContent = c.horizon + ' — ';
+      li.append(b, document.createTextNode(c.prompt + ' ✓ ' + c.best + ' · ✗ ' + c.worst)); ol.appendChild(li);
     });
     $('seedPre').textContent = BW.realitySeedMarkdown(result);
-    track('reality_seed_viewed');
     buildFeedback();
   }
 
   const isAbort = e => e && e.name === 'AbortError';
-  // Primary share: the key link (works everywhere, carries the referral, opens the card for the friend).
   $('btnShare').addEventListener('click', async () => {
     track('share_clicked'); SND.blip();
     const url = shareUrl(), text = shareText();
@@ -758,103 +775,74 @@
       try { await navigator.share({ title: 'BORN WEIRD', text, url }); track('share_completed'); return; }
       catch (e) { if (isAbort(e)) { track('share_cancelled'); return; } }
     }
-    if (await copyText(text + ' ' + url)) { track('link_copied'); toast(t('tCopied')); }
-    else toast(url);
+    if (await copyText(text + ' ' + url)) { track('link_copied'); toast(t('tCopied')); } else toast(url);
   });
-  $('btnCopyLink').addEventListener('click', async () => {
-    if (await copyText(shareText() + ' ' + shareUrl())) { track('link_copied'); toast(t('tLink')); } else toast(shareUrl());
-  });
-  // Save image: phones get the system share sheet with the file only (iOS: "Save Image"); desktop downloads.
+  $('btnCopyLink').addEventListener('click', async () => { if (await copyText(shareText() + ' ' + shareUrl())) { track('link_copied'); toast(t('tLink')); } else toast(shareUrl()); });
   $('btnSave').addEventListener('click', async () => {
     if (!pngBlob) return toast(t('tNoArt'));
     const file = new File([pngBlob], 'born-weird-' + result.id + '.png', { type: 'image/png' });
     if (isTouch && navigator.canShare && navigator.canShare({ files: [file] })) {
-      try { await navigator.share({ files: [file], title: '' }); track('artifact_saved'); return; }
-      catch (e) { if (isAbort(e)) return; }
+      try { await navigator.share({ files: [file], title: '' }); track('artifact_saved'); return; } catch (e) { if (isAbort(e)) return; }
     }
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(pngBlob); a.download = file.name;
-    document.body.appendChild(a); a.click(); a.remove();
-    setTimeout(() => URL.revokeObjectURL(a.href), 4000);
-    track('artifact_saved');
-    if (isIOS) toast(t('hintIOS'));
+    const a = document.createElement('a'); a.href = URL.createObjectURL(pngBlob); a.download = file.name;
+    document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+    track('artifact_saved'); if (isIOS) toast(t('hintIOS'));
   });
-  $('btnCopySeed').addEventListener('click', async () => {
-    if (await copyText(BW.realitySeedMarkdown(result))) { track('reality_seed_copied'); toast(t('tSeed')); }
-    else toast(t('tSeedFail'));
-  });
+  $('btnCopySeed').addEventListener('click', async () => { if (await copyText(BW.realitySeedMarkdown(result))) { track('reality_seed_copied'); toast(t('tSeed')); } else toast(t('tSeedFail')); });
   $('btnDlSeed').addEventListener('click', async () => {
-    const md = BW.realitySeedMarkdown(result);
-    const name = 'timeline_' + result.id + '.weird.md';
-    const file = new File([md], name, { type: 'text/markdown' });
+    const name = 'mirror_' + result.id + '.weird.md';
+    const file = new File([BW.realitySeedMarkdown(result)], name, { type: 'text/markdown' });
     if (isTouch && navigator.canShare && navigator.canShare({ files: [file] })) {
-      try { await navigator.share({ files: [file], title: '' }); track('reality_seed_downloaded'); return; }
-      catch (e) { if (isAbort(e)) return; }
+      try { await navigator.share({ files: [file], title: '' }); track('reality_seed_downloaded'); return; } catch (e) { if (isAbort(e)) return; }
     }
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(file); a.download = name;
-    document.body.appendChild(a); a.click(); a.remove();
-    setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+    const a = document.createElement('a'); a.href = URL.createObjectURL(file); a.download = name;
+    document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
     track('reality_seed_downloaded');
   });
   $('btnAgain').addEventListener('click', () => {
     track('restart_clicked');
-    fired.forEach(k => { if (/^(founder_)?(ru_)?(simulation_|referred_simulation_|birth_seed|decode_|choice_|artifact_|reality_seed_|share_|link_copied|ai_open_|fb_|feedback_|restart_)/.test(k)) fired.delete(k); });
-    run = null; result = null;
-    show('s-intro');
+    fired.forEach(k => { if (/^(founder_)?(ru_)?(simulation_|referred_simulation_|birth_|model_|item_|bridge_|tension_|artifact_|reality_seed_|share_|link_copied|ai_open_|fb_|feedback_|restart_)/.test(k)) fired.delete(k); });
+    run = null; result = null; show('s-intro');
   });
 
   function buildFeedback() {
-    const worth = $('fbWorth'), feel = $('fbFeel'), send = $('fbSend');
-    worth.innerHTML = ''; feel.innerHTML = ''; send.innerHTML = ''; $('fbThanks').hidden = true;
-    const done = { w: false, f: false, s: false };
+    const done = {};
     const mk = (box, label, ev, k) => {
       const b = document.createElement('button'); b.textContent = label;
       b.addEventListener('click', () => {
-        if (done[k]) return; done[k] = true;
-        SND.blip();
+        if (done[k]) return; done[k] = true; SND.blip();
         track(ev); track('feedback_submitted');
         box.querySelectorAll('button').forEach(x => { x.disabled = x !== b; });
-        b.style.background = 'var(--fg)'; b.style.color = '#000';
-        $('fbThanks').hidden = false;
+        b.style.background = 'var(--fg)'; b.style.color = '#000'; $('fbThanks').hidden = false;
       });
       box.appendChild(b);
     };
-    [1, 2, 3, 4, 5].forEach(n => mk(worth, String(n), 'fb_worth_' + n, 'w'));
-    ['meh', 'weird', 'wtf'].forEach((v, i) => mk(feel, t('feel')[i], 'fb_feel_' + v, 'f'));
-    ['yes', 'no'].forEach((v, i) => mk(send, t('yesno')[i], 'fb_send_' + v, 's'));
+    ['fbWorth', 'fbTrue', 'fbSend'].forEach(id => { $(id).innerHTML = ''; }); $('fbThanks').hidden = true;
+    [1, 2, 3, 4, 5].forEach(n => mk($('fbWorth'), String(n), 'fb_worth_' + n, 'w'));
+    ['no', 'partly', 'yes'].forEach((v, i) => mk($('fbTrue'), t('trueOpts')[i], 'fb_true_' + v, 't'));
+    ['yes', 'no'].forEach((v, i) => mk($('fbSend'), t('yesno')[i], 'fb_send_' + v, 's'));
   }
 
-  // ---------- character card renderer (1080×1920, story format) ----------
+  // ---------- character card (1080×1920) ----------
   const PALETTES = {
-    AUTONOMY:   { sky: ['#1a0533', '#3d0a5c', '#7a1f6b', '#c2410c', '#f59e0b'], m: ['#2b0b3f', '#1a0626', '#0c0212'], g: '#140419', sun: '#ffdd55', acc: '#ff8855' },
-    SECURITY:   { sky: ['#000814', '#001d3d', '#003566', '#0a4d68', '#088395'], m: ['#023047', '#011f2e', '#000c14'], g: '#00111a', sun: '#e0fbfc', acc: '#55ffff' },
-    CURIOSITY:  { sky: ['#000a05', '#022c22', '#065f46', '#10b981', '#6ee7b7'], m: ['#052e1c', '#021c11', '#000d07'], g: '#001208', sun: '#ccffee', acc: '#55ff99' },
-    CREATION:   { sky: ['#12001f', '#3b0764', '#86198f', '#db2777', '#22d3ee'], m: ['#2e0640', '#1a0326', '#0a0010'], g: '#0e0016', sun: '#ffffff', acc: '#ff55ff' },
-    CONNECTION: { sky: ['#1c0a00', '#431407', '#9a3412', '#ea580c', '#fdba74'], m: ['#3b1206', '#240a03', '#120400'], g: '#160600', sun: '#fff1b8', acc: '#ffcc55' },
-    POWER:      { sky: ['#0a0000', '#2a0000', '#5c0a0a', '#991b1b', '#ef4444'], m: ['#260303', '#160101', '#080000'], g: '#0a0000', sun: '#ffeeee', acc: '#ff5555' },
+    FREEDOM: { sky: ['#1a0533', '#3d0a5c', '#7a1f6b', '#c2410c', '#f59e0b'], m: ['#2b0b3f', '#1a0626', '#0c0212'], g: '#140419', sun: '#ffdd55', acc: '#ff8855' },
+    ANCHOR: { sky: ['#000814', '#001d3d', '#003566', '#0a4d68', '#088395'], m: ['#023047', '#011f2e', '#000c14'], g: '#00111a', sun: '#e0fbfc', acc: '#55ffff' },
+    WEIGHT: { sky: ['#0a0000', '#2a0000', '#5c0a0a', '#991b1b', '#ef4444'], m: ['#260303', '#160101', '#080000'], g: '#0a0000', sun: '#ffeeee', acc: '#ff5555' },
+    CARE: { sky: ['#1c0a00', '#431407', '#9a3412', '#ea580c', '#fdba74'], m: ['#3b1206', '#240a03', '#120400'], g: '#160600', sun: '#fff1b8', acc: '#ffcc55' },
   };
-
   function fontReady(l) {
     if (!document.fonts || !document.fonts.load) return Promise.resolve();
-    const f = l === 'ru' ? Promise.all([document.fonts.load('600 40px Plex', 'АБВ ABC'), document.fonts.load('400 40px Plex', 'АБВ ABC'), document.fonts.load('40px VT323')])
-      : document.fonts.load('40px VT323');
+    const f = l === 'ru' ? Promise.all([document.fonts.load('600 40px Plex', 'АБВ ABC'), document.fonts.load('400 40px Plex', 'АБВ ABC'), document.fonts.load('40px VT323')]) : document.fonts.load('40px VT323');
     return Promise.race([f, new Promise(r => setTimeout(r, 1500))]).catch(() => {});
   }
-
   function drawScene(res) {
-    const W = 180, H = 110;
+    const W = 180, H = 110, HZ = 88;
     const c = document.createElement('canvas'); c.width = W; c.height = H;
     const x = c.getContext('2d', { willReadFrequently: true });
-    const r = BW.rng(res.artSeed);
-    const P = PALETTES[res.primary];
-    const HZ = 88; // horizon
-    const bands = P.sky.length;
-    for (let i = 0; i < bands; i++) {
-      x.fillStyle = P.sky[i];
-      const y0 = Math.floor(i * 70 / bands), y1 = Math.floor((i + 1) * 70 / bands);
-      x.fillRect(0, y0, W, y1 - y0 + 1);
-      x.fillStyle = P.sky[Math.min(i + 1, bands - 1)];
+    const r = BW.rng(res.artSeed), P = PALETTES[res.top];
+    for (let i = 0; i < 5; i++) {
+      x.fillStyle = P.sky[i]; const y0 = Math.floor(i * 14), y1 = Math.floor((i + 1) * 14);
+      x.fillRect(0, y0, W, y1 - y0 + 1); x.fillStyle = P.sky[Math.min(i + 1, 4)];
       for (let px = (i % 2); px < W; px += 2) x.fillRect(px, y1 - 1, 1, 1);
     }
     const nStars = 30 + Math.floor(r() * 50);
@@ -867,22 +855,14 @@
       if (!k && r() < 0.6) { x.fillStyle = P.sky[2]; for (let s = 2; s < rad; s += 3) x.fillRect(cx - rad, cy + s, rad * 2 + 1, 1); }
     }
     function ridge(base, amp, rough) {
-      const pts = new Array(W + 1).fill(0);
-      let step = 64;
+      const pts = new Array(W + 1).fill(0); let step = 64;
       for (let i = 0; i <= W; i += step) pts[i] = base + (r() - .5) * amp;
       if (!pts[W]) pts[W] = base;
       let a = amp;
-      while (step > 1) {
-        const h = step / 2;
-        for (let i = h; i <= W; i += step) { const L = pts[i - h], R = pts[Math.min(i + h, W)] || L; pts[i] = (L + R) / 2 + (r() - .5) * a; }
-        a *= rough; step = h;
-      }
+      while (step > 1) { const h = step / 2; for (let i = h; i <= W; i += step) { const L = pts[i - h], R = pts[Math.min(i + h, W)] || L; pts[i] = (L + R) / 2 + (r() - .5) * a; } a *= rough; step = h; }
       return pts.map(v => Math.round(v));
     }
-    [ridge(62, 22, 0.55), ridge(73, 15, 0.5), ridge(82, 8, 0.5)].forEach((pts, li) => {
-      x.fillStyle = P.m[li];
-      for (let i = 0; i < W; i++) x.fillRect(i, pts[i], 1, H - pts[i]);
-    });
+    [ridge(62, 22, 0.55), ridge(73, 15, 0.5), ridge(82, 8, 0.5)].forEach((pts, li) => { x.fillStyle = P.m[li]; for (let i = 0; i < W; i++) x.fillRect(i, pts[i], 1, H - pts[i]); });
     x.fillStyle = P.g; x.fillRect(0, HZ, W, H - HZ);
     x.fillStyle = P.acc;
     for (let gy = HZ, k = 1; gy < H; gy += k, k++) x.fillRect(0, gy, W, 1);
@@ -890,32 +870,24 @@
     const lx = 110 + Math.floor(r() * 50), ly = HZ;
     const S = (dx, dy, w, h, col) => { x.fillStyle = col; x.fillRect(lx + dx, ly + dy, w, h); };
     const dark = '#000000', lit = P.acc;
-    switch (res.primary) {
-      case 'POWER': S(-4, -46, 9, 46, dark); S(-2, -54, 5, 8, dark); S(0, -60, 1, 6, lit); for (let w = -40; w < -2; w += 5) { S(-2, w, 1, 2, lit); S(2, w, 1, 2, lit); } break;
-      case 'SECURITY': S(-10, -14, 21, 14, dark); S(-6, -18, 13, 4, dark); S(-1, -8, 3, 8, lit); S(-12, -2, 25, 2, dark); break;
-      case 'CURIOSITY': S(-3, -36, 7, 36, dark); S(-5, -40, 11, 4, dark); S(-2, -38, 5, 2, lit); x.fillStyle = lit; for (let b = 1; b < 60; b++) x.fillRect(lx + 4 + b, ly - 39 + Math.round(b * -0.25), 1, 1); break;
-      case 'CREATION': S(-8, -10, 17, 10, dark); S(-3, -24, 7, 14, dark); S(-12, -30, 2, 30, dark); S(-12, -30, 14, 2, dark); S(1, -20, 2, 2, lit); S(-6, -6, 2, 2, lit); S(4, -6, 2, 2, lit); break;
-      case 'CONNECTION': for (let h = -24; h <= 16; h += 10) { S(h, -8, 8, 8, dark); S(h + 1, -11, 6, 3, dark); S(h + 3, -5, 2, 2, lit); } S(-26, -1, 50, 1, lit); break;
-      case 'AUTONOMY': x.fillStyle = dark; for (let i = 0; i < 9; i++) x.fillRect(lx - i, ly - 4 - i, 2 * i + 1, 1); S(0, -3, 1, 3, lit); x.fillStyle = lit; for (let rd = 0; rd < 22; rd++) x.fillRect(lx - 30 + rd * 2, H - 1 - Math.floor(rd * 0.9), 2, 1); break;
+    switch (res.top) {
+      case 'WEIGHT': S(-4, -46, 9, 46, dark); S(-2, -54, 5, 8, dark); S(0, -60, 1, 6, lit); for (let w = -40; w < -2; w += 5) { S(-2, w, 1, 2, lit); S(2, w, 1, 2, lit); } break;
+      case 'ANCHOR': S(-10, -14, 21, 14, dark); S(-6, -18, 13, 4, dark); S(-1, -8, 3, 8, lit); S(-12, -2, 25, 2, dark); S(-3, -36, 7, 22, dark); S(-2, -38, 5, 2, lit); break;
+      case 'CARE': for (let h = -24; h <= 16; h += 10) { S(h, -8, 8, 8, dark); S(h + 1, -11, 6, 3, dark); S(h + 3, -5, 2, 2, lit); } S(-26, -1, 50, 1, lit); break;
+      case 'FREEDOM': x.fillStyle = dark; for (let i = 0; i < 9; i++) x.fillRect(lx - i, ly - 4 - i, 2 * i + 1, 1); S(0, -3, 1, 3, lit); x.fillStyle = lit; for (let rd = 0; rd < 22; rd++) x.fillRect(lx - 30 + rd * 2, H - 1 - Math.floor(rd * 0.9), 2, 1); break;
     }
     const px = lx - 26 - Math.floor(r() * 20), py = HZ;
     x.fillStyle = '#ffffff'; x.fillRect(px, py - 7, 2, 2); x.fillStyle = P.acc; x.fillRect(px - 1, py - 5, 4, 3);
     x.fillStyle = '#ffffff'; x.fillRect(px, py - 2, 1, 2); x.fillRect(px + 2, py - 2, 1, 2);
     const glitches = 2 + Math.floor(r() * 4);
-    for (let i = 0; i < glitches; i++) {
-      const gy = 46 + Math.floor(r() * (H - 46)), gh = 1 + Math.floor(r() * 3), off = Math.floor((r() - .5) * 24);
-      const row = x.getImageData(0, gy, W, gh); x.putImageData(row, off, gy);
-    }
+    for (let i = 0; i < glitches; i++) { const gy = 46 + Math.floor(r() * (H - 46)), gh = 1 + Math.floor(r() * 3), off = Math.floor((r() - .5) * 24); x.putImageData(x.getImageData(0, gy, W, gh), off, gy); }
     return c;
   }
-
   function wrap(ctx, text, maxW) {
     const words = String(text).split(' '), lines = []; let cur = '';
     words.forEach(w => { const tt = cur ? cur + ' ' + w : w; if (ctx.measureText(tt).width > maxW && cur) { lines.push(cur); cur = w; } else cur = tt; });
-    if (cur) lines.push(cur);
-    return lines;
+    if (cur) lines.push(cur); return lines;
   }
-  // Draw text wrapped to at most opt.lines lines, shrinking the font until it fits. Returns the y below the block.
   function block(x, text, opt) {
     let size = opt.size, lines;
     for (; size >= opt.min; size -= 2) { x.font = opt.font(size); lines = wrap(x, text, opt.w); if (lines.length <= opt.lines) break; }
@@ -930,6 +902,7 @@
     });
     return opt.y + lines.length * lh;
   }
+  const firstSentence = s => { const m = String(s).match(/^[^.!?]*[.!?]/); return m ? m[0] : s; };
 
   async function renderArtifact(res) {
     const L = res.lang === 'ru' ? 'ru' : 'en', A = UI[L].art;
@@ -937,93 +910,73 @@
     const W = 1080, H = 1920;
     const c = document.createElement('canvas'); c.width = W; c.height = H;
     const x = c.getContext('2d');
-    const P = PALETTES[res.primary];
-    // EN: VT323 everywhere. RU: IBM Plex Mono (Cyrillic) for text, VT323 for Latin-only HUD strings.
+    const P = PALETTES[res.top];
     const VT = px => px + 'px VT323, ui-monospace, monospace';
     const T = L === 'ru' ? px => '600 ' + Math.round(px * 0.62) + 'px Plex, ui-monospace, monospace' : VT;
     const Tn = L === 'ru' ? px => '400 ' + Math.round(px * 0.68) + 'px Plex, ui-monospace, monospace' : VT;
     x.fillStyle = '#000'; x.fillRect(0, 0, W, H);
-
-    // title bar
     x.fillStyle = '#0000aa'; x.fillRect(0, 0, W, 70);
     x.fillStyle = '#ffffff'; x.font = VT(44); x.textBaseline = 'middle';
-    x.fillText('BORN_WEIRD.EXE', 26, 37);
-    x.textAlign = 'right'; x.fillText(res.protocol + ' // ' + res.earth, W - 26, 37); x.textAlign = 'left';
+    x.fillText('BORN_WEIRD.EXE', 26, 37); x.textAlign = 'right'; x.fillText(res.protocol + ' // ' + res.earth, W - 26, 37); x.textAlign = 'left';
     x.textBaseline = 'top';
-
-    // scene + class label + title over the sky
-    const scene = drawScene(res);
-    x.imageSmoothingEnabled = false;
-    x.drawImage(scene, 0, 70, W, 660);
-    const label = A.cls + ' // ' + A.path(res.lifePath) + ' · ' + res.startClass;
+    x.imageSmoothingEnabled = false; x.drawImage(drawScene(res), 0, 70, W, 660);
+    const label = A.arch + ' // ' + A.path(res.lifePath) + ' · ' + res.lp.name;
     x.font = T(40);
     x.fillStyle = 'rgba(0,0,0,0.75)'; x.fillRect(40, 100, Math.min(W - 80, x.measureText(label).width + 28), L === 'ru' ? 40 : 46);
     x.fillStyle = P.acc; x.fillText(label, 54, L === 'ru' ? 108 : 104);
     block(x, res.title, { x: 50, y: 170, w: W - 100, size: 104, min: 60, lines: 4, lh: 1.0, font: T, color: '#ffff55', shadow: true, center: true });
 
-    // panel
     const py = 740;
     x.strokeStyle = P.acc; x.lineWidth = 5; x.strokeRect(14, py, W - 28, H - py - 16);
     x.lineWidth = 2; x.strokeRect(26, py + 12, W - 52, H - py - 40);
-
-    // verdict
-    let y = block(x, '> ' + res.verdict, { x: 60, y: py + 40, w: W - 120, size: 52, min: 30, lines: L === 'ru' ? 2 : 1, font: T, color: '#55ffff' });
-
-    // stats
-    y += 26;
+    let y = block(x, res.orderText, { x: 60, y: py + 40, w: W - 120, size: 52, min: 30, lines: 1, font: T, color: '#55ffff' });
+    y += 22;
+    // profile bars in rank order
     x.font = T(50);
-    const labelW = Math.max(...res.scores.map(s => x.measureText(s.label).width)) + 28;
+    const labelW = Math.max(...res.profile.map(p => x.measureText(p.label).width)) + 28;
     const barX = 60 + labelW, step = Math.floor((W - 80 - barX) / 10);
-    res.scores.forEach((s, i) => {
-      const sy = y + i * 52;
-      x.font = T(50);
-      x.fillStyle = s.dim === res.primary ? '#ffff55' : s.dim === res.rejected ? '#777' : '#c8ffc8';
-      x.fillText(s.label, 60, sy + (L === 'ru' ? 8 : 0));
-      const n = Math.max(0, Math.round(s.norm * 10));
-      for (let b = 0; b < 10; b++) { x.fillStyle = b < n ? (s.dim === res.primary ? '#ffff55' : P.acc) : '#222'; x.fillRect(barX + b * step, sy + 8, step - 6, 30); }
+    res.rank.forEach((p, i) => {
+      const row = res.profile.find(z => z.pole === p), sy = y + i * 56;
+      x.font = T(50); x.fillStyle = i === 0 ? '#ffff55' : i === 3 ? '#777' : '#c8ffc8';
+      x.fillText(row.label, 60, sy + (L === 'ru' ? 8 : 0));
+      for (let b = 0; b < 10; b++) { x.fillStyle = b < row.bar ? (i === 0 ? '#ffff55' : P.acc) : '#222'; x.fillRect(barX + b * step, sy + 8, step - 6, 32); }
     });
-    y += 6 * 52 + 20;
-
-    // build box (measured first, so its height always fits the rows)
-    const rows = [[A.buff, res.buff, '#55ff99'], [A.debuff, res.debuff, '#ff7777'], [A.boss, res.boss, '#ff55ff']];
-    const rowOpt = (v, yy, dry) => ({ x: 290, y: yy + (L === 'ru' ? 4 : 0), w: W - 380, size: 40, min: 30, lines: 2, lh: 1.1, font: Tn, color: '#ffffff', dry });
-    let ry = y + 22;
-    rows.forEach(([, v]) => { ry = Math.max(ry + 48, block(x, v, rowOpt(v, ry, true))) + 10; });
-    const boxH = ry - y + (res.rarity ? 50 : 8);
-    x.fillStyle = '#0a0a0a'; x.fillRect(50, y, W - 100, boxH);
-    x.strokeStyle = '#444'; x.lineWidth = 2; x.strokeRect(50, y, W - 100, boxH);
-    ry = y + 22;
+    y += 4 * 56 + 24;
+    // tension box
+    const tBody = firstSentence(res.tension.text);
+    const tOpt = (yy, dry) => ({ x: 82, y: yy, w: W - 164, size: 40, min: 28, lines: 3, lh: 1.15, font: Tn, color: '#ffffff', dry });
+    let ty = y + 26; x.font = T(36); ty += 44;
+    const shortOpt = (yy, dry) => ({ x: 82, y: yy, w: W - 164, size: 50, min: 32, lines: 2, font: T, color: '#ffff55', dry });
+    ty = block(x, res.tension.short, shortOpt(ty, true)) + 8;
+    ty = block(x, tBody, tOpt(ty, true)) + 20;
+    const tH = ty - y;
+    x.fillStyle = '#0000aa'; x.fillRect(50, y, W - 100, tH);
+    x.strokeStyle = '#ffffff'; x.lineWidth = 3; x.strokeRect(58, y + 8, W - 116, tH - 16);
+    x.font = T(36); x.fillStyle = '#55ffff'; x.fillText(A.tension, 82, y + 26);
+    let yy = block(x, res.tension.short, shortOpt(y + 70, false)) + 8;
+    block(x, tBody, tOpt(yy, false));
+    y += tH + 22;
+    // plus / shadow / bridge
+    const rows = [[A.plus, res.plus, '#55ff99'], [A.shadow, res.shadow, '#ff7777']];
     rows.forEach(([k, v, col]) => {
-      x.font = T(40); x.fillStyle = col; x.fillText(k, 74, ry + (L === 'ru' ? 6 : 0));
-      ry = Math.max(ry + 48, block(x, v, rowOpt(v, ry, false))) + 10;
+      x.font = T(40); x.fillStyle = col; x.fillText(k, 60, y + (L === 'ru' ? 6 : 0));
+      y = Math.max(y + 48, block(x, v, { x: 280, y: y + (L === 'ru' ? 4 : 0), w: W - 340, size: 40, min: 28, lines: 2, lh: 1.1, font: Tn, color: '#ffffff' })) + 8;
     });
-    if (res.rarity) { x.font = T(40); x.fillStyle = '#ffff55'; x.fillText(A.rare(res.rarity), 74, ry); }
-    y += boxH + 22;
-
-    // event log (the 10-year outcome)
-    const footerTop = H - 30 - 104;
-    const evH = Math.max(140, Math.min(240, footerTop - 20 - y));
-    x.fillStyle = '#0000aa'; x.fillRect(50, y, W - 100, evH);
-    x.strokeStyle = '#ffffff'; x.lineWidth = 3; x.strokeRect(58, y + 8, W - 116, evH - 16);
-    x.font = T(36); x.fillStyle = '#55ffff'; x.fillText(A.event(res.events[3].year), 82, y + 28);
-    block(x, res.highlight, { x: 82, y: y + 72, w: W - 164, size: 40, min: 24, lines: Math.max(2, Math.floor((evH - 86) / (L === 'ru' ? 32 : 42))), lh: 1.15, font: Tn, color: '#ffffff' });
-    y = Math.max(y + evH + 20, footerTop);
-
-    // footer
-    x.font = VT(42); x.fillStyle = '#c8ffc8';
-    x.fillText('REALITY #' + res.id, 60, y);
-    x.textAlign = 'right'; x.fillStyle = '#ffff55'; x.fillText('dimacloud.github.io/born-weird' + (L === 'ru' ? '/ru' : ''), W - 60, y); x.textAlign = 'left';
-    x.font = Tn(34); x.fillStyle = '#8fb08f'; x.fillText(A.note, 60, y + 52);
-    if (y + 100 > H - 30) console.warn('card overflow', y);
-
-    // scanlines
-    x.fillStyle = 'rgba(0,0,0,0.16)';
-    for (let yy = 0; yy < H; yy += 4) x.fillRect(0, yy, W, 2);
-
+    x.font = T(40); x.fillStyle = '#55ffff'; x.fillText(A.bridge, 60, y + (L === 'ru' ? 6 : 0));
+    for (let i = 0; i < 7; i++) { x.strokeStyle = '#55ffff'; x.lineWidth = 3; x.fillStyle = i < res.bridge ? '#55ffff' : '#000'; x.fillRect(280 + i * 52, y + 6, 40, 32); x.strokeRect(280 + i * 52, y + 6, 40, 32); }
+    x.font = VT(44); x.fillStyle = '#ffffff'; x.fillText(res.bridge + '/7', 280 + 7 * 52 + 14, y + 2);
+    y += 56;
+    if (res.rarity) { x.font = T(40); x.fillStyle = '#ffff55'; x.fillText(A.rare(res.rarity), 60, y); y += 50; }
+    // footer pinned to the bottom
+    const fy = Math.max(y + 10, H - 30 - 104);
+    x.font = VT(42); x.fillStyle = '#c8ffc8'; x.fillText('REALITY #' + res.id, 60, fy);
+    x.textAlign = 'right'; x.fillStyle = '#ffff55'; x.fillText('dimacloud.github.io/born-weird' + (L === 'ru' ? '/ru' : ''), W - 60, fy); x.textAlign = 'left';
+    x.font = Tn(34); x.fillStyle = '#8fb08f'; x.fillText(A.note, 60, fy + 52);
+    if (fy + 100 > H - 30) console.warn('card overflow', fy);
+    x.fillStyle = 'rgba(0,0,0,0.16)'; for (let s = 0; s < H; s += 4) x.fillRect(0, s, W, 2);
     return await new Promise((resolve, reject) => c.toBlob(b => (b ? resolve(b) : reject(new Error('toBlob failed'))), 'image/png'));
   }
 
-  // exposed for QA / OG rendering only
   window.__bw = { renderArtifact };
 })();
 </script>

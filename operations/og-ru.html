@@ -6,10 +6,10 @@
 h1{font-family:VT323,monospace;font-size:118px;line-height:.85;margin:0;color:#ffff55;text-shadow:6px 6px 0 #ff55ff;font-weight:normal}
 p{font-size:28px;font-weight:600;margin:28px 0 0}.c{color:#55ffff}.d{color:#6a8f6a;font-size:24px}
 body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(#0000 0 2px,#0004 2px 3px)}</style></head>
-<body><img id="a"><div class="t"><h1>BORN<br>WEIRD</h1><p class="c">Симулятор жизней, которых у тебя ещё не было.</p><p>Дата рождения → зерно.<br>5 выборов. 3 минуты.<br>Карточка персонажа<br>из реальности, которой не было.</p><p class="d">dimacloud.github.io/born-weird/ru</p></div>
+<body><img id="a"><div class="t"><h1>BORN<br>WEIRD</h1><p class="c">Зеркало для жизней, которых у тебя ещё не было.</p><p>8 ситуаций. 3 минуты.<br>Какие ценности тянут тебя<br>в разные стороны — и что<br>с этим делать.</p><p class="d">dimacloud.github.io/born-weird/ru</p></div>
 <iframe id="f" src="/born-weird/ru/?qa=1" style="display:none"></iframe>
 <script>
 (async()=>{const f=document.getElementById('f');let w;for(let i=0;i<100;i++){w=f.contentWindow;if(w&&w.__bw&&w.BW)break;await new Promise(r=>setTimeout(r,50));}
-const res=w.BW.simulate('1987-07-09',[1,1,0,2,3],{salt:42,lang:'ru'});
+const res=w.BW.simulate('1987-07-09',[[0,1],[2,3],[1,0],[3,2],[0,2],[1,3],[2,0],[3,1]],{salt:42,bridge:5,lang:'ru'});
 const blob=await w.__bw.renderArtifact(res);document.getElementById('a').src=URL.createObjectURL(blob);document.title='ready';})();
 </script></body></html>
