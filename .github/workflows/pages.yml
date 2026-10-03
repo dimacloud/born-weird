@@ -3,7 +3,7 @@ name: deploy-site
 on:
   push:
     branches: [main]
-    paths: ['product/site/**', '.github/workflows/pages.yml']
+    paths: ['product/site/**', 'product/test/**', 'operations/build-ru.mjs', '.github/workflows/pages.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -19,6 +19,7 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: 24 }
       - run: node --test 'product/test/*.test.mjs'
+      - run: node operations/build-ru.mjs
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with: { path: product/site }

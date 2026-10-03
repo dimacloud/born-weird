@@ -14,8 +14,10 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23000'/%3E%3Crect x='3' y='3' width='4' height='4' fill='%23ffff55'/%3E%3Crect x='9' y='9' width='4' height='4' fill='%2355ffff'/%3E%3C/svg%3E">
 <link rel="preload" href="VT323.woff2" as="font" type="font/woff2" crossorigin>
 <style>
-  /* VT323 by Peter Hull, SIL Open Font License 1.1 — self-hosted, no third-party font requests */
+  /* VT323 (Peter Hull) and Tiny5 (Tiny5 Project Authors), SIL Open Font License 1.1 — self-hosted, no third-party font requests */
   @font-face { font-family: 'VT323'; src: url('VT323.woff2') format('woff2'); font-display: swap; }
+  @font-face { font-family: 'Tiny5'; src: url('Tiny5-latin.woff2') format('woff2'); font-display: swap; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2212; }
+  @font-face { font-family: 'Tiny5'; src: url('Tiny5-cyrillic.woff2') format('woff2'); font-display: swap; unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
   :root {
     --bg: #000;
     --fg: #c8ffc8;
@@ -86,6 +88,19 @@
   .glitch { animation: glitch .5s steps(5); }
   @keyframes glitch { 0% { transform: translateX(0); filter: hue-rotate(0); } 25% { transform: translateX(-6px); filter: hue-rotate(90deg); } 50% { transform: translateX(5px); } 75% { transform: translateX(-2px); filter: hue-rotate(200deg); } 100% { transform: none; filter: none; } }
   footer { margin-top: 40px; font-size: 16px; color: var(--dim); }
+  .lang { display: flex; justify-content: flex-end; gap: 6px; margin: 0 0 8px; }
+  .lang button { width: auto; min-width: 48px; min-height: 44px; margin: 0; padding: 4px 12px; font-size: 18px; text-align: center; border-color: var(--line); color: var(--dim); }
+  .lang button[aria-pressed=true] { border-color: var(--hi); color: var(--hi); }
+  /* Russian: Tiny5 has Cyrillic; it is wider, so sizes are scaled down */
+  html[lang=ru] body { font-family: 'Tiny5', 'VT323', ui-monospace, monospace; font-size: 16px; line-height: 1.45; }
+  html[lang=ru] h1 { font-size: 50px; line-height: 1.05; letter-spacing: 1px; }
+  html[lang=ru] h2 { font-size: 20px; line-height: 1.35; }
+  html[lang=ru] button { font-size: 17px; line-height: 1.35; }
+  html[lang=ru] .lang button { font-size: 14px; }
+  html[lang=ru] input[type=date] { font-size: 20px; }
+  html[lang=ru] .small { font-size: 13px; }
+  html[lang=ru] pre.seed { font-size: 12px; }
+  html[lang=ru] footer { font-size: 12px; }
   footer a { color: var(--dim); }
 </style>
 </head>
@@ -93,21 +108,25 @@
 <main id="app">
 
   <section class="screen on" id="s-intro">
+    <div class="lang" role="group" aria-label="Language / Язык">
+      <button type="button" id="langEn" lang="en">EN</button>
+      <button type="button" id="langRu" lang="ru">RU</button>
+    </div>
     <div class="ref" id="refBanner" hidden></div>
     <h1>BORN<br>WEIRD</h1>
-    <p class="tag">A simulator for lives you haven't lived yet.</p>
-    <p class="muted">5 choices · ~2 minutes · 1 artifact from a reality that never existed · a portable seed for your AI.</p>
-    <label for="dob">ENTER BIRTH DATE TO GENERATE SEED:</label>
+    <p class="tag" data-i18n="tagline"></p>
+    <p class="muted" data-i18n="subline"></p>
+    <label for="dob" data-i18n="dobLabel"></label>
     <input type="date" id="dob" min="1900-01-01" autocomplete="bday">
     <div class="err" id="dobErr" role="alert"></div>
-    <button class="primary" id="btnStart">BEGIN SIMULATION</button>
-    <p class="small muted">Your birth date never leaves this device and is never stored. It's a random seed, not a prediction. Birth creates the seed. Choices create the timeline.</p>
+    <button class="primary" id="btnStart" data-i18n="start"></button>
+    <p class="small muted" data-i18n="privacy"></p>
   </section>
 
   <section class="screen" id="s-seed">
-    <span class="bar">BIRTH SEED ACCEPTED</span>
+    <span class="bar" data-i18n="seedBar"></span>
     <div class="type cursor" id="seedText"></div>
-    <button class="primary" id="btnSeed" disabled>ENTER THE TIMELINE</button>
+    <button class="primary" id="btnSeed" disabled data-i18n="enter"></button>
   </section>
 
   <section class="screen" id="s-stage">
@@ -117,59 +136,59 @@
   </section>
 
   <section class="screen" id="s-compile">
-    <span class="bar">COMPILING REALITY</span>
-    <p id="compileText">Collapsing possible futures…</p>
+    <span class="bar" data-i18n="compileBar"></span>
+    <p id="compileText" data-i18n="compileText"></p>
     <div class="progress"><i id="compileBar"></i></div>
   </section>
 
   <section class="screen" id="s-result">
     <span class="bar" id="resBar"></span>
     <h2 id="resTitle" tabindex="-1"></h2>
-    <img class="artifact" id="artifact" alt="Your BORN WEIRD artifact">
-    <p class="small muted">Unique to this run. Nobody else will get this exact reality.</p>
-    <button class="primary" id="btnShare">SEND THIS TO ONE PERSON</button>
+    <img class="artifact" id="artifact" alt="BORN WEIRD">
+    <p class="small muted" data-i18n="unique"></p>
+    <button class="primary" id="btnShare" data-i18n="share"></button>
     <div class="row">
-      <button class="ghost" id="btnSave">SAVE IMAGE</button>
-      <button class="ghost" id="btnCopyLink">COPY LINK</button>
+      <button class="ghost" id="btnSave" data-i18n="save"></button>
+      <button class="ghost" id="btnCopyLink" data-i18n="copyLink"></button>
     </div>
 
     <div class="section">
-      <h2>THE POSSIBLE FUTURE</h2>
+      <h2 data-i18n="hFuture"></h2>
       <p id="resFuture"></p>
       <ol class="tl" id="resEvents"></ol>
     </div>
 
     <div class="section">
-      <h2>THE USEFUL PART</h2>
-      <p><span class="tag">POSSIBLE PROJECT:</span> <span id="resProject"></span></p>
-      <p><span class="tag">FIRST EXPERIMENT (7 DAYS):</span> <span id="resExperiment"></span></p>
+      <h2 data-i18n="hUseful"></h2>
+      <p><span class="tag" data-i18n="project"></span> <span id="resProject"></span></p>
+      <p><span class="tag" data-i18n="experiment"></span> <span id="resExperiment"></span></p>
     </div>
 
     <div class="section">
-      <h2>REALITY SEED</h2>
-      <p class="muted">A portable file describing this timeline. Paste it into ChatGPT, Claude or any AI and it will ask you: <span class="tag">“What do you want to do with this reality?”</span></p>
+      <h2 data-i18n="hSeed"></h2>
+      <p class="muted"><span data-i18n="seedDesc"></span> <span class="tag" data-i18n="seedQ"></span></p>
       <div class="row">
-        <button id="btnCopySeed">COPY SEED</button>
-        <button id="btnDlSeed">DOWNLOAD .weird.md</button>
+        <button id="btnCopySeed" data-i18n="copySeed"></button>
+        <button id="btnDlSeed" data-i18n="dlSeed"></button>
       </div>
       <pre class="seed" id="seedPre"></pre>
     </div>
 
     <div class="section" id="fb">
-      <h2>WAS THIS WORTH YOUR TIME?</h2>
+      <h2 data-i18n="fbWorth"></h2>
       <div class="row" id="fbWorth"></div>
-      <h2 style="margin-top:16px">HOW DID THAT FEEL?</h2>
+      <h2 style="margin-top:16px" data-i18n="fbFeel"></h2>
       <div class="row" id="fbFeel"></div>
-      <h2 style="margin-top:16px">WOULD YOU SEND THIS TO ONE SPECIFIC PERSON?</h2>
+      <h2 style="margin-top:16px" data-i18n="fbSend"></h2>
       <div class="row" id="fbSend"></div>
-      <p class="muted small" id="fbThanks" hidden>Logged anonymously. The company reads this.</p>
+      <p class="muted small" id="fbThanks" hidden data-i18n="fbThanks"></p>
     </div>
 
-    <button class="ghost" id="btnAgain" style="margin-top:28px">LIVE ANOTHER LIFE</button>
+    <button class="ghost" id="btnAgain" style="margin-top:28px" data-i18n="again"></button>
   </section>
 
   <footer>
-    BORN WEIRD v0.1 is an experiment run by an AI-agent company. Nothing here is prediction or science. No accounts, no cookies, no third-party trackers (your browser keeps only the IDs of realities you made, so your own links don't count as referrals); only anonymous event counts (e.g. “a simulation was completed”) are sent to a public counter service. <a href="https://github.com/dimacloud/born-weird" rel="noopener">Built in public</a>.
+    <span data-i18n="footer"></span> <a href="https://github.com/dimacloud/born-weird" rel="noopener" data-i18n="builtPublic"></a>.
   </footer>
 </main>
 <div class="toast" id="toast"></div>
@@ -181,6 +200,98 @@
   const BW = window.BW;
   const $ = id => document.getElementById(id);
   const params = new URLSearchParams(location.search);
+
+  // ---------- i18n ----------
+  const UI = {
+    en: {
+      tagline: 'A simulator for lives you haven\'t lived yet.',
+      subline: '5 choices · ~2 minutes · 1 artifact from a reality that never existed · a portable seed for your AI.',
+      dobLabel: 'ENTER BIRTH DATE TO GENERATE SEED:',
+      start: 'BEGIN SIMULATION',
+      privacy: 'Your birth date never leaves this device and is never stored. It\'s a random seed, not a prediction. Birth creates the seed. Choices create the timeline.',
+      seedBar: 'BIRTH SEED ACCEPTED', enter: 'ENTER THE TIMELINE',
+      compileBar: 'COMPILING REALITY', compileText: 'Collapsing possible futures…',
+      unique: 'Unique to this run. Nobody else will get this exact reality.',
+      share: 'SEND THIS TO ONE PERSON', save: 'SAVE IMAGE', copyLink: 'COPY LINK',
+      hFuture: 'THE POSSIBLE FUTURE', hUseful: 'THE USEFUL PART', project: 'POSSIBLE PROJECT:', experiment: 'FIRST EXPERIMENT (7 DAYS):',
+      hSeed: 'REALITY SEED', seedDesc: 'A portable file describing this timeline. Paste it into ChatGPT, Claude or any AI and it will ask you:', seedQ: '“What do you want to do with this reality?”',
+      copySeed: 'COPY SEED', dlSeed: 'DOWNLOAD .weird.md',
+      fbWorth: 'WAS THIS WORTH YOUR TIME?', fbFeel: 'HOW DID THAT FEEL?', fbSend: 'WOULD YOU SEND THIS TO ONE SPECIFIC PERSON?',
+      fbThanks: 'Logged anonymously. The company reads this.', again: 'LIVE ANOTHER LIFE',
+      feel: ['MEH', 'WEIRD', 'WTF'], yesno: ['YES', 'NO'],
+      footer: 'BORN WEIRD is an experiment run by an AI-agent company. Nothing here is prediction or science. No accounts, no cookies, no third-party trackers (your browser keeps only the IDs of realities you made, so your own links don\'t count as referrals); only anonymous event counts (e.g. “a simulation was completed”) are sent to a public counter service.',
+      builtPublic: 'Built in public',
+      ref: id => 'TRANSMISSION RECEIVED: Reality #' + id + ' sent you here. Someone lived a strange life and thought of you.',
+      errEmpty: 'Enter a birth date to generate the seed.', errBad: 'That date does not compute. Try again.',
+      seedText: b => 'You arrived on a ' + b.weekday + ', under the symbolic sign of ' + b.sign + '.\n\n' +
+        'At that exact moment, ' + b.anomaly + '.\n\n' +
+        'You have been alive for ' + b.daysAlive.toLocaleString('en-US') + ' days.\n\n' +
+        'Loading ' + b.earth + ': a world where ' + b.worldFact + '.\n\n' +
+        'Five moments are waiting. Choose fast. Choose honestly. Choices matter more the further you go.',
+      reality: 'REALITY',
+      alt: (t, id) => 'Artifact: ' + t + ', reality #' + id,
+      shareText: t => 'I simulated a life I haven\'t lived yet. I became ' + t + '. Yours will be different:',
+      tCopied: 'Copied. Paste it to one specific person.', tLink: 'Link copied.', tNoArt: 'Artifact unavailable on this device.',
+      tSeed: 'Reality Seed copied. Paste it into any AI.', tSeedFail: 'Copy blocked by the browser. Use DOWNLOAD instead.',
+      art: { child: y => 'YEAR ' + y + ' — A CHILD ASKS WHAT YOU DID.', kept: (a, b) => 'KEPT CHOOSING: ' + a + ' · REJECTED: ' + b,
+        born: d => 'BORN ON A ' + d.toUpperCase(), note: 'NOT A PREDICTION. A LIFE YOU HAVEN\'T LIVED YET.' },
+    },
+    ru: {
+      tagline: 'Симулятор жизней, которых у тебя ещё не было.',
+      subline: '5 выборов · ~2 минуты · 1 артефакт из реальности, которой никогда не было · переносное зерно для твоего ИИ.',
+      dobLabel: 'ВВЕДИ ДАТУ РОЖДЕНИЯ, ЧТОБЫ СОЗДАТЬ ЗЕРНО:',
+      start: 'НАЧАТЬ СИМУЛЯЦИЮ',
+      privacy: 'Дата рождения не покидает это устройство и нигде не хранится. Это случайное зерно, а не предсказание. Рождение задаёт зерно. Выборы создают хронологию.',
+      seedBar: 'ЗЕРНО РОЖДЕНИЯ ПРИНЯТО', enter: 'ВОЙТИ В ХРОНОЛОГИЮ',
+      compileBar: 'СБОРКА РЕАЛЬНОСТИ', compileText: 'Схлопываем варианты будущего…',
+      unique: 'Уникально для этого запуска. Больше ни у кого не будет именно такой реальности.',
+      share: 'ОТПРАВИТЬ ОДНОМУ ЧЕЛОВЕКУ', save: 'СОХРАНИТЬ КАРТИНКУ', copyLink: 'СКОПИРОВАТЬ ССЫЛКУ',
+      hFuture: 'ВОЗМОЖНОЕ БУДУЩЕЕ', hUseful: 'ПОЛЕЗНАЯ ЧАСТЬ', project: 'ВОЗМОЖНЫЙ ПРОЕКТ:', experiment: 'ПЕРВЫЙ ЭКСПЕРИМЕНТ (7 ДНЕЙ):',
+      hSeed: 'ЗЕРНО РЕАЛЬНОСТИ', seedDesc: 'Файл, описывающий эту хронологию. Вставь его в ChatGPT, Claude или любой другой ИИ — и он спросит:', seedQ: '«Что ты хочешь сделать с этой реальностью?»',
+      copySeed: 'СКОПИРОВАТЬ ЗЕРНО', dlSeed: 'СКАЧАТЬ .weird.md',
+      fbWorth: 'СТОИЛО ЛИ ЭТО ТВОЕГО ВРЕМЕНИ?', fbFeel: 'И КАК ТЕБЕ?', fbSend: 'ХОЧЕТСЯ ПОКАЗАТЬ ЭТО КОМУ-ТО КОНКРЕТНОМУ?',
+      fbThanks: 'Записано анонимно. Компания это читает.', again: 'ПРОЖИТЬ ДРУГУЮ ЖИЗНЬ',
+      feel: ['ТАК СЕБЕ', 'СТРАННО', 'ЧТО ЭТО БЫЛО?!'], yesno: ['ДА', 'НЕТ'],
+      footer: 'BORN WEIRD — эксперимент, который ведёт компания из ИИ-агентов. Ничто здесь не является предсказанием или наукой. Без аккаунтов, без cookies, без сторонних трекеров (браузер хранит только ID созданных тобой реальностей, чтобы твои же ссылки не считались приглашениями); в публичный сервис уходят только анонимные счётчики событий (например, «симуляция пройдена»).',
+      builtPublic: 'Строится в открытую',
+      ref: id => 'ПЕРЕДАЧА ПОЛУЧЕНА: реальность #' + id + ' отправила тебя сюда. Кто-то прожил странную жизнь и вспомнил о тебе.',
+      errEmpty: 'Введи дату рождения, чтобы создать зерно.', errBad: 'Эта дата не вычисляется. Попробуй ещё раз.',
+      seedText: b => 'День недели рождения — ' + b.weekdayNom.toLowerCase() + ', под символическим знаком ' + b.sign + '.\n\n' +
+        'В этот самый момент ' + b.anomaly + '.\n\n' +
+        'Дней прожито: ' + b.daysAlive.toLocaleString('ru-RU') + '.\n\n' +
+        'Загрузка ' + b.earth + ': мир, где ' + b.worldFact + '.\n\n' +
+        'Впереди пять моментов. Выбирай быстро. Выбирай честно. Чем дальше, тем больше значат выборы.',
+      reality: 'РЕАЛЬНОСТЬ',
+      alt: (t, id) => 'Артефакт: ' + t + ', реальность #' + id,
+      shareText: t => 'Мне выпала жизнь, которой у меня ещё не было: ' + t + '. У тебя будет другая:',
+      tCopied: 'Скопировано. Отправь одному конкретному человеку.', tLink: 'Ссылка скопирована.', tNoArt: 'Артефакт недоступен на этом устройстве.',
+      tSeed: 'Зерно скопировано. Вставь его в любой ИИ.', tSeedFail: 'Браузер не дал скопировать. Используй СКАЧАТЬ.',
+      art: { child: y => y + ' ГОД — РЕБЁНОК СПРАШИВАЕТ, ЧТО ЭТО БЫЛО.', kept: (a, b) => 'ГЛАВНОЕ: ' + a + ' · ОТВЕРГНУТО: ' + b,
+        born: (d, nom) => 'РОЖДЕНИЕ: ' + nom, note: 'НЕ ПРЕДСКАЗАНИЕ. ЖИЗНЬ, КОТОРОЙ ЕЩЁ НЕ БЫЛО.' },
+    },
+  };
+  // Language: ?lang= > entry page (/ru/ sets data-lang) > saved choice > browser language > English.
+  const store0 = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+  const RU_LOCALES = /^(ru|uk|be|kk)\b/i;
+  let lang = (function () {
+    const q = params.get('lang');
+    if (q === 'en' || q === 'ru') return q;
+    const entry = document.documentElement.getAttribute('data-lang');
+    if (entry === 'en' || entry === 'ru') return entry;
+    const saved = store0('bw_lang');
+    if (saved === 'en' || saved === 'ru') return saved;
+    return RU_LOCALES.test(navigator.language || '') ? 'ru' : 'en';
+  })();
+  const t = k => UI[lang][k];
+  function applyLang() {
+    document.documentElement.lang = lang;
+    document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = UI[lang][el.getAttribute('data-i18n')]; });
+    $('langEn').setAttribute('aria-pressed', String(lang === 'en'));
+    $('langRu').setAttribute('aria-pressed', String(lang === 'ru'));
+    if (referredBy) $('refBanner').textContent = t('ref')(referredBy);
+    if (errKey) $('dobErr').textContent = t(errKey);
+  }
+  let errKey = null;
 
   // ---------- storage (best effort) ----------
   const store = {
@@ -202,12 +313,30 @@
   function track(ev, opts) {
     opts = opts || {};
     if (isQA) return;
-    const key = isFounder ? 'founder_' + ev : ev;
-    if (!opts.repeat) { if (fired.has(key)) return; fired.add(key); }
-    try {
-      fetch('https://abacus.jasoncameron.dev/hit/' + NS + '/' + key, { mode: 'cors', keepalive: true }).catch(() => {});
-    } catch (e) {}
+    const keys = [ev];
+    if (lang === 'ru' && RU_TRACKED.test(ev)) keys.push('ru_' + ev); // language segment for EXP-002
+    keys.forEach(k0 => {
+      const key = isFounder ? 'founder_' + k0 : k0;
+      if (!opts.repeat) { if (fired.has(key)) return; fired.add(key); }
+      sendQ.push(key);
+    });
+    pump();
   }
+  // Only events that operations/metrics.mjs reads for the RU segment get a ru_ copy.
+  const RU_TRACKED = /^(landing_view|referred_visit|simulation_started|simulation_completed|referred_simulation_completed|artifact_generated|share_completed|link_copied|reality_seed_copied|reality_seed_downloaded|choice_selected_\d|fb_worth_\d|fb_send_(yes|no))$/;
+  // Counter service allows 30 requests / 10 s: send one request per 350 ms at most.
+  const sendQ = []; let pumping = false;
+  function pump() {
+    if (pumping || !sendQ.length) return;
+    pumping = true;
+    const key = sendQ.shift();
+    try { fetch('https://abacus.jasoncameron.dev/hit/' + NS + '/' + key, { mode: 'cors', keepalive: true }).catch(() => {}); } catch (e) {}
+    setTimeout(() => { pumping = false; pump(); }, 350);
+  }
+  // On tab close, flush whatever is still queued (keepalive lets these outlive the page).
+  window.addEventListener('pagehide', () => {
+    while (sendQ.length) { const key = sendQ.shift(); try { fetch('https://abacus.jasoncameron.dev/hit/' + NS + '/' + key, { mode: 'cors', keepalive: true }).catch(() => {}); } catch (e) {} }
+  });
 
   // ---------- referral ----------
   const fromParam = (params.get('from') || '').toUpperCase();
@@ -215,7 +344,9 @@
   let ownList = []; try { ownList = JSON.parse(store.get('bw_own') || '[]'); } catch (e) {}
   if (validRef && ownList.indexOf(fromParam) === -1) store.set('bw_from', fromParam, true); // opening your own link is not a referral
   const referredBy = store.get('bw_from', true);
-  const shareBase = location.origin + location.pathname;
+  // Site root regardless of entry page (/born-weird/ or /born-weird/ru/)
+  const siteRoot = location.origin + location.pathname.replace(/(index\.html)?$/, '').replace(/ru\/$/, '');
+  const langBase = () => siteRoot + (lang === 'ru' ? 'ru/' : '');
 
   // ---------- state ----------
   let birthStr = null, birth = null, choices = [], result = null, pngBlob = null, runNo = 0, salt = 0, compiling = false;
@@ -246,24 +377,33 @@
   const today = new Date();
   const iso = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
   $('dob').max = iso(today);
-  track(referredBy ? 'referred_visit' : 'landing_view');
-  if (referredBy) {
-    track('landing_view');
-    const b = $('refBanner'); b.hidden = false;
-    b.textContent = 'TRANSMISSION RECEIVED: Reality #' + referredBy + ' sent you here. Someone lived a strange life and thought of you.';
+  if (referredBy) $('refBanner').hidden = false;
+  applyLang();
+  function switchLang(l) {
+    if (l === lang) return;
+    lang = l;
+    try { localStorage.setItem('bw_lang', l); } catch (e) {}
+    applyLang();
+    track('lang_switch_' + l);
+    track('landing_view'); if (referredBy) track('referred_visit'); // base keys are deduped; counts the visit in the new language segment
   }
-  if ((navigator.language || '').toLowerCase().startsWith('ru')) track('locale_ru');
+  $('langEn').addEventListener('click', () => switchLang('en'));
+  $('langRu').addEventListener('click', () => switchLang('ru'));
+  track(referredBy ? 'referred_visit' : 'landing_view');
+  if (referredBy) track('landing_view');
+  if (RU_LOCALES.test(navigator.language || '')) track('locale_ru');
 
   $('btnStart').addEventListener('click', () => {
     const v = $('dob').value;
     salt = Math.floor(Math.random() * 4294967296);
     try {
-      birth = BW.birthSeed(v, undefined, salt);
+      birth = BW.birthSeed(v, undefined, salt, lang);
     } catch (e) {
-      $('dobErr').textContent = v ? 'That date does not compute. Try again.' : 'Enter a birth date to generate the seed.';
+      errKey = v ? 'errBad' : 'errEmpty';
+      $('dobErr').textContent = t(errKey);
       return;
     }
-    $('dobErr').textContent = '';
+    $('dobErr').textContent = ''; errKey = null;
     birthStr = v; choices = []; runNo++; compiling = false;
     track('simulation_started');
     if (referredBy) track('referred_simulation_started');
@@ -284,20 +424,15 @@
   function showSeed() {
     show('s-seed');
     $('btnSeed').disabled = true;
-    const t = 'You arrived on a ' + birth.weekday + ', under the symbolic sign of ' + birth.sign + '.\n\n' +
-      'At that exact moment, ' + birth.anomaly + '.\n\n' +
-      'You have been alive for ' + birth.daysAlive.toLocaleString('en-US') + ' days.\n\n' +
-      'Loading ' + birth.earth + ': a world where ' + birth.worldFact + '.\n\n' +
-      'Five moments are waiting. Choose fast. Choose honestly. Choices matter more the further you go.';
-    typeInto($('seedText'), t, () => { $('btnSeed').disabled = false; });
+    typeInto($('seedText'), t('seedText')(birth), () => { $('btnSeed').disabled = false; });
   }
   $('btnSeed').addEventListener('click', () => showStage(0));
 
   // ---------- stages ----------
   function showStage(i) {
-    const st = BW.STAGES[i];
+    const all = BW.stages(lang), st = all[i];
     show('s-stage');
-    $('stageBar').textContent = '[' + (i + 1) + '/' + BW.STAGES.length + '] T+' + st.label;
+    $('stageBar').textContent = '[' + (i + 1) + '/' + all.length + '] T+' + st.label;
     $('stagePrompt').textContent = st.prompt;
     const box = $('stageOpts'); box.innerHTML = '';
     st.options.forEach((o, j) => {
@@ -315,7 +450,7 @@
     track('choice_selected_' + (i + 1));
     const main = $('s-stage'); main.classList.remove('glitch'); void main.offsetWidth; main.classList.add('glitch');
     setTimeout(() => {
-      if (i + 1 < BW.STAGES.length) showStage(i + 1); else compile();
+      if (i + 1 < BW.STAGE_META.length) showStage(i + 1); else compile();
     }, 380);
   }
 
@@ -326,7 +461,7 @@
     show('s-compile');
     $('compileBar').style.width = '0';
     requestAnimationFrame(() => requestAnimationFrame(() => { $('compileBar').style.width = '100%'; }));
-    result = BW.simulate(birthStr, choices, { salt });
+    result = BW.simulate(birthStr, choices, { salt, lang });
     rememberOwn(result.id);
     track('simulation_completed');
     if (referredBy) track('referred_simulation_completed');
@@ -344,16 +479,16 @@
   }
 
   // ---------- result ----------
-  function shareUrl() { return shareBase + '?from=' + result.id; }
-  function shareText() { return 'I simulated a life I haven\'t lived yet. I became ' + result.title + '. Yours will be different:'; }
+  function shareUrl() { return langBase() + '?from=' + result.id; }
+  function shareText() { return t('shareText')(result.title); }
 
   function showResult() {
     show('s-result');
-    $('resBar').textContent = 'REALITY #' + result.id + ' · ' + result.earth;
+    $('resBar').textContent = t('reality') + ' #' + result.id + ' · ' + result.earth;
     $('resTitle').textContent = result.title;
     const img = $('artifact');
     if (img.src && img.src.startsWith('blob:')) URL.revokeObjectURL(img.src);
-    if (pngBlob) { img.src = URL.createObjectURL(pngBlob); img.alt = 'Artifact: ' + result.title + ', reality #' + result.id; img.hidden = false; } else img.hidden = true;
+    if (pngBlob) { img.src = URL.createObjectURL(pngBlob); img.alt = t('alt')(result.title, result.id); img.hidden = false; } else img.hidden = true;
     $('resFuture').textContent = result.future;
     const ol = $('resEvents'); ol.innerHTML = '';
     result.events.forEach(e => {
@@ -386,14 +521,14 @@
       try { await navigator.share({ title: 'BORN WEIRD', text, url }); track('share_completed'); return; }
       catch (e) { if (isAbort(e)) { track('share_cancelled'); return; } }
     }
-    if (await copyText(text + ' ' + url)) { track('link_copied'); toast('Copied. Paste it to one specific person.'); }
+    if (await copyText(text + ' ' + url)) { track('link_copied'); toast(t('tCopied')); }
     else toast(url);
   });
   $('btnCopyLink').addEventListener('click', async () => {
-    if (await copyText(shareText() + ' ' + shareUrl())) { track('link_copied'); toast('Link copied.'); } else toast(shareUrl());
+    if (await copyText(shareText() + ' ' + shareUrl())) { track('link_copied'); toast(t('tLink')); } else toast(shareUrl());
   });
   $('btnSave').addEventListener('click', () => {
-    if (!pngBlob) return toast('Artifact unavailable on this device.');
+    if (!pngBlob) return toast(t('tNoArt'));
     const a = document.createElement('a');
     a.href = URL.createObjectURL(pngBlob); a.download = 'born-weird-' + result.id + '.png';
     document.body.appendChild(a); a.click(); a.remove();
@@ -401,8 +536,8 @@
     track('artifact_saved');
   });
   $('btnCopySeed').addEventListener('click', async () => {
-    if (await copyText(BW.realitySeedMarkdown(result, shareUrl()))) { track('reality_seed_copied'); toast('Reality Seed copied. Paste it into any AI.'); }
-    else toast('Copy blocked by the browser. Use DOWNLOAD instead.');
+    if (await copyText(BW.realitySeedMarkdown(result, shareUrl()))) { track('reality_seed_copied'); toast(t('tSeed')); }
+    else toast(t('tSeedFail'));
   });
   $('btnDlSeed').addEventListener('click', () => {
     const blob = new Blob([BW.realitySeedMarkdown(result, shareUrl())], { type: 'text/markdown' });
@@ -413,7 +548,7 @@
   });
   $('btnAgain').addEventListener('click', () => {
     track('restart_clicked');
-    fired.forEach(k => { if (/^(founder_)?(simulation_|referred_simulation_|birth_seed|choice_|artifact_|reality_seed_|share_|link_copied|fb_|feedback_|restart_)/.test(k)) fired.delete(k); });
+    fired.forEach(k => { if (/^(founder_)?(ru_)?(simulation_|referred_simulation_|birth_seed|choice_|artifact_|reality_seed_|share_|link_copied|fb_|feedback_|restart_)/.test(k)) fired.delete(k); });
     show('s-intro');
   });
 
@@ -434,8 +569,8 @@
       box.appendChild(b);
     };
     [1, 2, 3, 4, 5].forEach(n => mk(worth, String(n), 'fb_worth_' + n, 'w'));
-    ['MEH', 'WEIRD', 'WTF'].forEach(v => mk(feel, v, 'fb_feel_' + v.toLowerCase(), 'f'));
-    ['YES', 'NO'].forEach(v => mk(send, v, 'fb_send_' + v.toLowerCase(), 's'));
+    ['meh', 'weird', 'wtf'].forEach((v, i) => mk(feel, t('feel')[i], 'fb_feel_' + v, 'f'));
+    ['yes', 'no'].forEach((v, i) => mk(send, t('yesno')[i], 'fb_send_' + v, 's'));
   }
 
   // ---------- artifact renderer: LOST DOS GAME protocol ----------
@@ -448,9 +583,10 @@
     POWER:      { sky: ['#0a0000', '#2a0000', '#5c0a0a', '#991b1b', '#ef4444'], m: ['#260303', '#160101', '#080000'], g: '#0a0000', sun: '#ffeeee', acc: '#ff5555' },
   };
 
-  function fontReady() {
+  function fontReady(l) {
     if (!document.fonts || !document.fonts.load) return Promise.resolve();
-    return Promise.race([document.fonts.load('40px VT323'), new Promise(r => setTimeout(r, 1500))]).catch(() => {});
+    const f = l === 'ru' ? document.fonts.load('40px Tiny5', 'АБВ ABC') : document.fonts.load('40px VT323');
+    return Promise.race([f, new Promise(r => setTimeout(r, 1500))]).catch(() => {});
   }
 
   function drawScene(res) {
@@ -557,12 +693,14 @@
   }
 
   async function renderArtifact(res) {
-    await fontReady();
+    const L = res.lang === 'ru' ? 'ru' : 'en', A = UI[L].art;
+    await fontReady(L);
     const W = 1080, H = 1350;
     const c = document.createElement('canvas'); c.width = W; c.height = H;
     const x = c.getContext('2d');
     const P = PALETTES[res.primary];
-    const F = (px) => px + 'px VT323, ui-monospace, Menlo, monospace';
+    // Tiny5 (Cyrillic) is ~1.5x wider than VT323, so Russian sizes are scaled down.
+    const F = L === 'ru' ? (px) => Math.round(px * 0.68) + 'px Tiny5, VT323, ui-monospace, monospace' : (px) => px + 'px VT323, ui-monospace, Menlo, monospace';
     x.fillStyle = '#000'; x.fillRect(0, 0, W, H);
 
     // title bar
@@ -578,13 +716,14 @@
 
     // title over the sky
     x.font = F(92); x.textBaseline = 'top';
-    const tl = wrap(x, res.title, W - 120);
+    const tl = wrap(x, res.title, W - 120).slice(0, 4);
     let ty = 104;
+    const lh = L === 'ru' ? 76 : 82;
     tl.forEach(line => {
       const tw = x.measureText(line).width, tx = (W - tw) / 2;
       x.fillStyle = '#000'; x.fillText(line, tx + 6, ty + 6);
       x.fillStyle = '#ffff55'; x.fillText(line, tx, ty);
-      ty += 82;
+      ty += lh;
     });
 
     // panel
@@ -595,37 +734,40 @@
 
     // stats
     x.font = F(36); x.textBaseline = 'top';
+    const labelW = Math.max(...res.scores.map(s => x.measureText(s.label).width)) + 22;
+    const barX = Math.max(200, labelW);
     res.scores.forEach((s, i) => {
       const col = i % 2, row = Math.floor(i / 2);
       const sx = 60 + col * 500, sy = py + 54 + row * 50;
       x.fillStyle = s.dim === res.primary ? '#ffff55' : s.dim === res.rejected ? '#666' : '#c8ffc8';
-      x.fillText(s.dim.padEnd(11, ' '), sx, sy);
+      x.fillText(s.label, sx, sy + (L === 'ru' ? 6 : 0));
       const n = Math.max(0, Math.round(s.norm * 10));
+      const step = Math.min(22, Math.floor((470 - barX) / 10));
       for (let b = 0; b < 10; b++) {
         x.fillStyle = b < n ? (s.dim === res.primary ? '#ffff55' : P.acc) : '#222';
-        x.fillRect(sx + 200 + b * 22, sy + 8, 18, 22);
+        x.fillRect(sx + barX + b * step, sy + 8, step - 4, 22);
       }
     });
 
     // dialog box
     const dy = py + 220;
-    x.fillStyle = '#0000aa'; x.fillRect(60, dy, W - 120, 250);
-    x.strokeStyle = '#ffffff'; x.lineWidth = 3; x.strokeRect(68, dy + 8, W - 136, 234);
+    x.fillStyle = '#0000aa'; x.fillRect(60, dy, W - 120, 236);
+    x.strokeStyle = '#ffffff'; x.lineWidth = 3; x.strokeRect(68, dy + 8, W - 136, 220);
     x.fillStyle = '#55ffff'; x.font = F(34);
     const last = res.events[res.events.length - 1];
-    x.fillText('YEAR ' + last.year + ' — A CHILD ASKS WHAT YOU DID.', 92, dy + 28);
+    x.fillText(A.child(last.year), 92, dy + 28);
     x.fillStyle = '#ffffff'; x.font = F(44);
-    wrap(x, '> ' + res.finalLine, W - 200).slice(0, 2).forEach((l, i) => x.fillText(l, 92, dy + 76 + i * 46));
+    wrap(x, '> ' + res.finalLine, W - 200).slice(0, 2).forEach((l, i) => x.fillText(l, 92, dy + 76 + i * (L === 'ru' ? 40 : 46)));
     x.fillStyle = '#ffff55'; x.font = F(32);
-    x.fillText('KEPT CHOOSING: ' + res.primary + ' · REJECTED: ' + res.rejected, 92, dy + 190);
+    x.fillText(A.kept(res.labels[res.primary], res.labels[res.rejected]), 92, dy + 176);
 
     // footer
     x.font = F(34); x.fillStyle = '#c8ffc8';
-    x.fillText('REALITY #' + res.id + '   BORN ON A ' + res.birth.weekday.toUpperCase(), 60, H - 136);
+    x.fillText(UI[L].reality + ' #' + res.id + '   ' + A.born(res.birth.weekday, res.birth.weekdayNom), 60, H - 152);
     x.fillStyle = '#6a8f6a'; x.font = F(30);
-    x.fillText('NOT A PREDICTION. A LIFE YOU HAVEN\'T LIVED YET.', 60, H - 96);
-    x.textAlign = 'right'; x.fillStyle = '#ffff55';
-    x.fillText('dimacloud.github.io/born-weird', W - 60, H - 96); x.textAlign = 'left';
+    x.fillText(A.note, 60, H - 112);
+    x.fillStyle = '#ffff55'; x.font = F(30);
+    x.fillText('dimacloud.github.io/born-weird' + (L === 'ru' ? '/ru' : ''), 60, H - 74);
 
     // scanlines
     x.fillStyle = 'rgba(0,0,0,0.18)';

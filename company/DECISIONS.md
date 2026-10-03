@@ -3,7 +3,7 @@
 All decisions below are owned by CEO-001, are reversible unless stated otherwise, and were made without Founder input except where noted.
 
 ---
-## DECISION #001 — Initial launch language
+## DECISION #001 — Initial launch language — SUPERSEDED by #012 (2026-10-03)
 - **DECISION:** English only for v0.1. Count Russian-locale visitors (`locale_ru` counter).
 - **ALTERNATIVES:** Russian only; bilingual with auto-detect.
 - **EVIDENCE:** The Founder wrote Genesis and BOOT in English. A share loop benefits from the widest-reach language. Bilingual doubles copy work and QA surface before any user exists. Counter-evidence: the Founder's personal network (the likely first 3–5 users) may be Russian-speaking; their mid-session message was in Russian.
@@ -74,3 +74,19 @@ All decisions below are owned by CEO-001, are reversible unless stated otherwise
 - **DECISION:** The whole company folder (Genesis, company state, decisions, ledger, code) is pushed to the public repo `dimacloud/born-weird`, per Genesis §1 ("develop publicly").
 - **SAFEGUARDS:** no secrets exist; no personal data beyond the Founder's GitHub handle; `.claude/` excluded.
 - **REVERSIBILITY:** medium (published content may be cached). **REVISIT WHEN:** any sensitive data needs to enter company files. Then split into a private ops repo.
+
+## DECISION #012 — Languages: bilingual EN + RU, one product, two entry links
+- **TRIGGER:** Founder input (2026-10-03): the first humans are a Russian-speaking community, and many may not read English. This is the #001 revisit condition, met with evidence before launch.
+- **DECISION:**
+  1. One product, two language packs (EN, RU) with identical structure. The same seed gives the same reality in both languages, so metrics stay comparable and nothing forks.
+  2. Two entry links: `/born-weird/` (EN) and `/born-weird/ru/` (RU). The RU entry is a generated copy with Russian `<meta>`/`og:image`, because Telegram/WhatsApp link previews don't run JS. A single URL would show an English card in a Russian chat.
+  3. Language resolution: `?lang=` > entry page > saved choice > browser language (ru/uk/be/kk → RU) > EN.
+  4. A small EN/RU switch on the start screen only. It covers Russians with English-language phones and vice versa. It isn't shown mid-run, to avoid half-translated states.
+  5. Share links inherit the sharer's language (a RU user shares a `/ru/` link), so a chain inside a Russian community stays Russian. The recipient can still switch.
+  6. Russian copy uses «ты» and present tense so the text is gender-neutral (the user's gender is unknown; past tense in Russian is gendered).
+  7. Russian uses the Tiny5 pixel font (VT323 has no Cyrillic; Pixelify Sans was rejected for missing glyphs). It is self-hosted, OFL.
+- **ALTERNATIVES:** RU-only (loses the international loop); EN + auto-detect without a switch (breaks for RU speakers on EN phones); separate RU product (forks code and metrics); LLM translation at runtime (cost, latency, keys).
+- **TEAM:** CEO-001 (decision, RU copy, build). Independent: QA-EVAL-001 (regression and i18n), RU-EDITOR-001 (temporary, native-quality copy review). Builder ≠ evaluator.
+- **COST:** $0 cash. **REVERSIBILITY:** high. **CONFIDENCE:** high.
+- **MEASURE:** EXP-002 (RU vs EN completion and share).
+- **REVISIT WHEN:** a third language reaches ≥15% of visits (`navigator.language` sampling is not collected; use the switch and entry counters), or the RU share rate is <½ of EN after 20 RU completions (copy problem).

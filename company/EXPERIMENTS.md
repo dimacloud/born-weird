@@ -13,3 +13,13 @@
 - **SAMPLE:** target 5–30 non-Founder completions.
 - **RESULT / UNCERTAINTY / DECISION / LEARNING:** pending.
 - **STOP CONDITION:** 0 shares after 10 completions. Then the artifact or the share prompt is the bottleneck; iterate on the artifact protocol first.
+
+## EXP-002 — Does native-language copy change completion and sharing?
+- **BOTTLENECK:** B-002 (first humans are Russian-speaking; EN-only risked silent drop-off).
+- **OWNER:** CEO-001 · **EVALUATION:** ANALYST-SCRIPT-001 (`by_language` block in metrics.json)
+- **HYPOTHESIS:** RU speakers given a RU entry link complete at ≥70% and share at a rate within 0.5–1.5× of EN users.
+- **CONTROL:** EN flow · **VARIANT:** RU flow (same engine, same seed → same reality).
+- **PRIMARY METRIC:** completion rate and share rate per language (`ru_*` counters vs total − ru).
+- **GUARDRAILS:** artifact_generation_failed = 0 in both; no untranslated strings reported.
+- **START:** RU deploy · **END:** 20 RU completions or 14 days.
+- **RESULT:** pending.

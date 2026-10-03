@@ -9,7 +9,7 @@ body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradie
 <body><img id="a"><div class="t"><h1>BORN<br>WEIRD</h1><p class="c">A simulator for lives you haven't lived yet.</p><p>5 choices. 2 minutes.<br>1 artifact from a reality<br>that never existed.</p><p class="d">dimacloud.github.io/born-weird</p></div>
 <iframe id="f" src="/born-weird/?qa=1" style="display:none"></iframe>
 <script>
-document.getElementById('f').onload=async()=>{const w=document.getElementById('f').contentWindow;
+(async()=>{const f=document.getElementById('f');let w;for(let i=0;i<100;i++){w=f.contentWindow;if(w&&w.__bw&&w.BW)break;await new Promise(r=>setTimeout(r,50));}
 const res=w.BW.simulate('1987-07-09',[1,1,0,2,3],{salt:42});
-const blob=await w.__bw.renderArtifact(res);document.getElementById('a').src=URL.createObjectURL(blob);document.title='ready';};
+const blob=await w.__bw.renderArtifact(res);document.getElementById('a').src=URL.createObjectURL(blob);document.title='ready';})();
 </script></body></html>

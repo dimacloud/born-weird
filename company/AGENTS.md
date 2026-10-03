@@ -75,6 +75,17 @@ CEO-001 ── runs: BUILDER-001 (mode), PRODUCT (merged)
 - **EST. OPERATING COST:** $0 (about 70 HTTP GETs per run).
 - **UPGRADE TRIGGER:** becomes an LLM ANALYST agent only when qualitative feedback exists that a script cannot summarize.
 
+### RU-EDITOR-001
+- **ROLE:** Russian-language editor (temporary)
+- **STATUS:** TEMPORARY. Lifetime: the v0.2 RU copy review; retires on delivery.
+- **MISSION:** Make the Russian read as if natively written: grammar, gender-neutrality, humour, rhythm.
+- **REPORTS TO:** CEO-001
+- **TOOLS:** Claude Code sub-agent; node (to generate sample outputs).
+- **WRITE ACCESS:** Russian strings only (`CONTENT.ru` in engine.js, `UI.ru` in index.html). No code, no English, no array shapes.
+- **DEPLOY / FINANCIAL AUTHORITY:** none.
+- **SUCCESS:** native-quality score ≥4/5; no RU-specific complaints from users.
+- **EST. COST:** ~100–200k tokens once (non-cash).
+
 ### PROPOSED (not instantiated)
 | Role | Why not now | Instantiate when |
 |---|---|---|
@@ -91,3 +102,4 @@ CEO-001 ── runs: BUILDER-001 (mode), PRODUCT (merged)
 | 2026-10-03 | PRODUCT merged into CEO-001; BUILDER-001 defined as mode of the primary session | One surface, zero data; coordination cost > benefit |
 | 2026-10-03 | QA-EVAL-001 spawned (temporary) | Independent evaluation before deploy (Genesis §30) |
 | 2026-10-03 | ANALYST implemented as a script | Deterministic counter math; agent not justified (§57) |
+| 2026-10-03 | RU-EDITOR-001 spawned (temporary, retires after RU review) | Builder should not be the only judge of its own translation; native-quality copy is a share-rate risk |

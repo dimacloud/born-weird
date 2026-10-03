@@ -1,0 +1,15 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Tiny5&display=swap" rel="stylesheet">
+<style>html,body{margin:0;width:1200px;height:630px;background:#000;overflow:hidden;font-family:Tiny5,monospace;color:#c8ffc8}
+#a{position:absolute;left:40px;top:25px;height:580px;border:3px solid #55ffff}
+.t{position:absolute;left:560px;top:70px;width:600px}
+h1{font-size:104px;line-height:.85;margin:0;color:#ffff55;text-shadow:6px 6px 0 #ff55ff;font-weight:normal}
+p{font-size:30px;margin:28px 0 0}.c{color:#55ffff}.d{color:#6a8f6a;font-size:24px}
+body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(#0000 0 2px,#0004 2px 3px)}</style></head>
+<body><img id="a"><div class="t"><h1>BORN<br>WEIRD</h1><p class="c">Симулятор жизней, которых у тебя ещё не было.</p><p>5 выборов. 2 минуты.<br>Артефакт из реальности,<br>которой никогда не было.</p><p class="d">dimacloud.github.io/born-weird/ru</p></div>
+<iframe id="f" src="/born-weird/ru/?qa=1" style="display:none"></iframe>
+<script>
+(async()=>{const f=document.getElementById('f');let w;for(let i=0;i<100;i++){w=f.contentWindow;if(w&&w.__bw&&w.BW)break;await new Promise(r=>setTimeout(r,50));}
+const res=w.BW.simulate('1987-07-09',[1,1,0,2,3],{salt:42,lang:'ru'});
+const blob=await w.__bw.renderArtifact(res);document.getElementById('a').src=URL.createObjectURL(blob);document.title='ready';})();
+</script></body></html>

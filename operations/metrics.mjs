@@ -15,8 +15,12 @@ const EVENTS = [
   'share_clicked', 'share_completed', 'share_cancelled', 'link_copied',
   'reality_seed_viewed', 'reality_seed_copied', 'reality_seed_downloaded',
   'feedback_submitted', ...[1, 2, 3, 4, 5].map(n => 'fb_worth_' + n), 'fb_feel_meh', 'fb_feel_weird', 'fb_feel_wtf', 'fb_send_yes', 'fb_send_no',
-  'restart_clicked',
+  'restart_clicked', 'lang_switch_en', 'lang_switch_ru',
 ];
+// Russian-language segment (EXP-002): every event is also counted as ru_<event> when the UI is in Russian.
+const RU_EVENTS = ['landing_view', 'referred_visit', 'simulation_started', 'simulation_completed', 'referred_simulation_completed',
+  'artifact_generated', 'share_completed', 'link_copied', 'reality_seed_copied', 'reality_seed_downloaded',
+  ...[1, 2, 3, 4, 5].map(i => 'choice_selected_' + i), ...[1, 2, 3, 4, 5].map(n => 'fb_worth_' + n), 'fb_send_yes', 'fb_send_no'];
 
 async function get(key) {
   try {
@@ -34,6 +38,12 @@ for (const e of EVENTS) {
   counts[e] = await get(e);
   founder[e] = await get('founder_' + e);
   await new Promise(r => setTimeout(r, 400)); // 2 GETs per 400 ms = 5/s, under the 30 req/10 s limit
+}
+
+const ru = {};
+for (const e of RU_EVENTS) {
+  ru[e] = await get('ru_' + e);
+  await new Promise(r => setTimeout(r, 200));
 }
 
 const c = counts;
@@ -65,7 +75,21 @@ const metrics = {
   alive_signal: (c.referred_simulation_completed || 0) >= 1
     ? 'LIKELY: a referred visitor completed a simulation (needs human confirmation it was a non-Founder)'
     : ((c.share_completed || 0) + (c.link_copied || 0)) >= 1 ? 'PARTIAL: share actions recorded, no referred completion yet' : 'NOT YET',
+  by_language: {
+    ru: {
+      visits: ru.landing_view, started: ru.simulation_started, completed: ru.simulation_completed,
+      completion: pct(ru.simulation_completed, ru.simulation_started),
+      share_rate: pct((ru.share_completed || 0) + (ru.link_copied || 0), ru.simulation_completed),
+      referred_completed: ru.referred_simulation_completed,
+    },
+    en: {
+      visits: (c.landing_view || 0) - (ru.landing_view || 0), started: (c.simulation_started || 0) - (ru.simulation_started || 0),
+      completed: (c.simulation_completed || 0) - (ru.simulation_completed || 0),
+    },
+    switches: { to_en: c.lang_switch_en, to_ru: c.lang_switch_ru },
+  },
   raw: counts,
+  raw_ru: ru,
   founder_raw: Object.fromEntries(Object.entries(founder).filter(([, v]) => v)),
 };
 

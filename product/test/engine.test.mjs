@@ -133,3 +133,96 @@ test('PRIVACY: Reality Seed and result contain no date, year of birth or day cou
   const md = BW.realitySeedMarkdown(r, 'https://x');
   assert.ok(!/1990|05-17|17 May|May 17/.test(md));
 });
+
+// ---------- i18n (added by CEO-001 for v0.2; QA to extend) ----------
+test('i18n: RU and EN packs have identical shapes (same rng consumption)', () => {
+  const en = BW.CONTENT.en, ru = BW.CONTENT.ru;
+  for (const k of ['anomalies', 'worldFacts', 'places', 'weekdays']) assert.equal(ru[k].length, en[k].length, k);
+  en.stages.forEach((s, i) => s.options.forEach((o, j) => {
+    const r = ru.stages[i].options[j];
+    assert.deepEqual(Object.keys(r.vars || {}).sort(), Object.keys(o.vars || {}).sort(), `vars ${i}/${j}`);
+    for (const k in o.vars) {
+      assert.equal(r.vars[k].length, o.vars[k].length, `len ${i}/${j}/${k}`);
+      if (typeof o.vars[k][0] === 'number') assert.deepEqual(r.vars[k], o.vars[k], `range ${i}/${j}/${k}`);
+    }
+  }));
+  for (const d of BW.DIMS) for (const k of ['nouns', 'adjs']) assert.equal(ru.dims[d][k].length, en.dims[d][k].length, d + k);
+});
+test('i18n: same date+choices+salt gives the same reality in both languages', () => {
+  for (let s = 0; s < 50; s++) {
+    const c = [s % 3, (s >> 1) % 3, s % 4, (s >> 2) % 4, s % 6];
+    const a = BW.simulate('1993-08-21', c, { salt: s, now: NOW, lang: 'en' });
+    const b = BW.simulate('1993-08-21', c, { salt: s, now: NOW, lang: 'ru' });
+    assert.equal(a.id, b.id); assert.equal(a.primary, b.primary); assert.equal(a.rejected, b.rejected);
+    assert.equal(a.earth, b.earth); assert.equal(a.artSeed, b.artSeed);
+  }
+});
+test('i18n: all 864 RU paths fill every placeholder and use correct plurals', () => {
+  const rx = /\{[^}]*\}|undefined|NaN/;
+  for (let a = 0; a < 3; a++) for (let b = 0; b < 3; b++) for (let c = 0; c < 4; c++) for (let d = 0; d < 4; d++) for (let e = 0; e < 6; e++) {
+    for (const salt of [0, 3, 12345]) {
+      const r = BW.simulate('1995-07-14', [a, b, c, d, e], { salt, now: NOW, lang: 'ru' });
+      for (const ev of r.events) assert.ok(!rx.test(ev.text), ev.text);
+      assert.ok(!rx.test(r.title + r.future + r.kept));
+      assert.ok(!/ 1 часов| 2 часов| 5 часа| 21 копий| 11 копия/.test(r.events.map(x => x.text).join(' ')));
+    }
+  }
+});
+test('i18n: plural helper', () => {
+  const f = ['час', 'часа', 'часов'];
+  assert.deepEqual([1, 2, 5, 11, 12, 21, 22, 25, 111, 104].map(n => BW.plural(n, f)),
+    ['час', 'часа', 'часов', 'часов', 'часов', 'час', 'часа', 'часов', 'часов', 'часа']);
+});
+test('i18n: RU Reality Seed keeps canonical headings, disclaimer and RU AI instruction', () => {
+  const r = BW.simulate('1990-05-17', [0, 1, 2, 3, 4], { salt: 5, now: NOW, lang: 'ru' });
+  const md = BW.realitySeedMarkdown(r, 'https://x/ru/?from=' + r.id);
+  for (const h of ['TIMELINE', 'BIRTH SEED', 'THE WORLD', 'THE POSSIBLE FUTURE', 'CHOICES THAT CREATED IT', 'WHAT I KEPT CHOOSING',
+    'WHAT I KEPT REJECTING', 'IMPORTANT EVENTS', 'POSSIBLE PROJECT', 'FIRST EXPERIMENT', 'VISUAL LANGUAGE', 'OPEN QUESTIONS', 'INSTRUCTIONS FOR AN AI'])
+    assert.ok(md.includes('(' + h + ')'), h);
+  assert.ok(md.includes('не объективную правду')); assert.ok(md.includes('по-русски')); assert.ok(!/1990|17 мая/.test(md));
+});
+test('i18n: unknown language falls back to English', () => {
+  const r = BW.simulate('1990-05-17', [0, 0, 0, 0, 0], { salt: 1, now: NOW, lang: 'xx' });
+  assert.equal(r.lang, 'en');
+});
+
+// ---------- v0.2 i18n page-level guarantees (QA-EVAL-001) ----------
+import { readFileSync, existsSync } from 'node:fs';
+const PAGE = readFileSync(new URL('../site/index.html', import.meta.url), 'utf8');
+const RU_PAGE_PATH = new URL('../site/ru/index.html', import.meta.url);
+
+test('i18n page: siteRoot/langBase resolve for prod and localhost, EN and RU entries', () => {
+  const expr = /const siteRoot = (location\.origin \+ location\.pathname[^;]+);/.exec(PAGE)[1];
+  const root = (origin, pathname) => new Function('location', 'return ' + expr)({ origin, pathname });
+  const P = 'https://dimacloud.github.io';
+  for (const p of ['/born-weird/', '/born-weird/index.html', '/born-weird/ru/', '/born-weird/ru/index.html'])
+    assert.equal(root(P, p), P + '/born-weird/', p);
+  for (const p of ['/', '/index.html', '/ru/', '/ru/index.html'])
+    assert.equal(root('http://localhost:8417', p), 'http://localhost:8417/', p);
+});
+
+test('i18n page: restart regex clears ru_ and founder_ru_ funnel keys but keeps landing/lang keys', () => {
+  const re = new RegExp(/fired\.forEach\(k => \{ if \(\/(.+?)\/\.test\(k\)\)/.exec(PAGE)[1]);
+  for (const k of ['ru_simulation_started', 'founder_ru_choice_selected_3', 'ru_fb_worth_5', 'founder_ru_feedback_submitted', 'ru_restart_clicked', 'simulation_completed'])
+    assert.ok(re.test(k), k);
+  for (const k of ['landing_view', 'ru_landing_view', 'lang_switch_ru', 'founder_lang_switch_en', 'locale_ru'])
+    assert.ok(!re.test(k), k);
+});
+
+test('i18n page: every UI key exists in both languages with the same type', () => {
+  const src = /const UI = (\{[\s\S]*?\n  \});/.exec(PAGE)[1];
+  const UI = new Function('return ' + src)();
+  assert.deepEqual(Object.keys(UI.ru).sort(), Object.keys(UI.en).sort());
+  for (const k of Object.keys(UI.en)) assert.equal(typeof UI.ru[k], typeof UI.en[k], k);
+  for (const m of PAGE.matchAll(/data-i18n="([^"]+)"/g)) assert.ok(m[1] in UI.ru && m[1] in UI.en, m[1]);
+});
+
+test('i18n page: generated ru/index.html has doctype first, base href, Russian meta, og-ru.png', { skip: !existsSync(RU_PAGE_PATH) }, () => {
+  const ru = readFileSync(RU_PAGE_PATH, 'utf8');
+  assert.ok(ru.startsWith('<!doctype html>'));
+  assert.match(ru, /<html lang="ru" data-lang="ru">/);
+  assert.match(ru, /<head>\n<base href="\.\.\/">/);
+  assert.match(ru, /og:image" content="[^"]*og-ru\.png"/);
+  assert.match(ru, /og:title" content="[^"]*[А-Яа-я]/);
+  assert.ok(existsSync(new URL('../site/og-ru.png', import.meta.url)));
+});
