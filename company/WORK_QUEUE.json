@@ -128,10 +128,11 @@
       "cost": "$0",
       "risk": "low",
       "metric": "completion among RU",
-      "status": "DISCOVERED",
+      "status": "DONE",
       "dependencies": [
         "DECISION-001 revisit trigger"
-      ]
+      ],
+      "result": "v0.2 EN+RU live; decision #012; EXP-002 measuring"
     },
     {
       "id": "W-009",

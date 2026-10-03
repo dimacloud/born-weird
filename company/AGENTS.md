@@ -77,7 +77,7 @@ CEO-001 ── runs: BUILDER-001 (mode), PRODUCT (merged)
 
 ### RU-EDITOR-001
 - **ROLE:** Russian-language editor (temporary)
-- **STATUS:** TEMPORARY. Lifetime: the v0.2 RU copy review; retires on delivery.
+- **STATUS:** RETIRED 2026-10-03 (delivered; ~30 edits; native-feel 3.5 → 4/5).
 - **MISSION:** Make the Russian read as if natively written: grammar, gender-neutrality, humour, rhythm.
 - **REPORTS TO:** CEO-001
 - **TOOLS:** Claude Code sub-agent; node (to generate sample outputs).

@@ -1,19 +1,25 @@
 {
-  "updated_at": "2026-10-03T06:22:00Z",
+  "updated_at": "2026-10-03T06:56:00Z",
   "phase": "PHASE_0_BECOME_ALIVE",
   "level": 0,
-  "status": "LIVE_AWAITING_FIRST_HUMANS",
+  "status": "LIVE_V0.2_EN_RU_AWAITING_FIRST_HUMANS",
   "primary_bottleneck": {
     "id": "B-002",
     "statement": "Zero non-Founder humans have seen the product. Agents may not send unsolicited messages, so first exposure needs the Founder to personally send the link to 3-5 people (HUMAN REQUEST #002).",
     "next_bottleneck": "B-003: share rate / referred completion (EXP-001)"
   },
-  "current_experiment": "EXP-001",
+  "current_experiment": [
+    "EXP-001",
+    "EXP-002"
+  ],
   "product": {
-    "version": "0.1",
+    "version": "0.2",
     "url": "https://dimacloud.github.io/born-weird/",
     "deployed": true,
-    "language": "en",
+    "language": [
+      "en",
+      "ru"
+    ],
     "loop": [
       "birth_date",
       "5_choices",
@@ -22,8 +28,9 @@
       "reality_seed_md",
       "share_link_with_from_param"
     ],
-    "deployed_at": "2026-10-03T06:20:00Z",
-    "repo": "https://github.com/dimacloud/born-weird"
+    "deployed_at": "2026-10-03T06:53:00Z",
+    "repo": "https://github.com/dimacloud/born-weird",
+    "url_ru": "https://dimacloud.github.io/born-weird/ru/"
   },
   "agents": [
     {
@@ -49,6 +56,12 @@
       "status": "ACTIVE",
       "kind": "deterministic script",
       "path": "operations/metrics.mjs"
+    },
+    {
+      "id": "RU-EDITOR-001",
+      "status": "RETIRED",
+      "kind": "temporary subagent",
+      "note": "delivered RU copy review 2026-10-03, native-feel 4/5"
     }
   ],
   "treasury": {
@@ -73,7 +86,7 @@
     }
   },
   "founder": {
-    "minutes": 10,
+    "minutes": 12,
     "approvals": 0,
     "overrides": 1,
     "credential_actions_done": 1,
@@ -87,7 +100,7 @@
   "alive": false,
   "qa": {
     "verdict": "PASS",
-    "tests": "15/15",
-    "blockers_caught_pre_deploy": 2
+    "tests": "25/25",
+    "blockers_caught_pre_deploy": 3
   }
 }

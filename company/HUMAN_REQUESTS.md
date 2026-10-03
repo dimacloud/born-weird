@@ -16,4 +16,4 @@
 - **COST:** $0, ~5 minutes. **RISK:** low (no data collected; the product says it is an experiment).
 - **ALTERNATIVES:** posting on Founder social accounts via Buffer/Metricool (reputational and public, needs explicit approval); waiting for organic discovery (≈0).
 - **RECOMMENDATION:** personal message, not a broadcast. Send it to people likely to forward weird things. Do not tell them what to do after the result; sharing must be voluntary to count.
-- **ONE ACTION REQUIRED:** send `https://dimacloud.github.io/born-weird/` to 3–5 specific people (without `?founder=1`), with one line like "made a weird thing, takes 2 minutes".
+- **ONE ACTION REQUIRED:** send `https://dimacloud.github.io/born-weird/ru/` (RU community) or `https://dimacloud.github.io/born-weird/` (others) to 3–5 specific people, without `?founder=1`, with one line like «сделал странную штуку, 2 минуты».
