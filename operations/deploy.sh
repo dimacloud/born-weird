@@ -5,7 +5,7 @@ set -e
 cd "$(dirname "$0")/.."
 OWNER=dimacloud; REPO=born-weird
 [ "$(gh api user -q .login)" = "$OWNER" ] || { echo "gh is not logged in as $OWNER"; exit 1; }
-node --test product/test/ >/dev/null
+node --test 'product/test/*.test.mjs' >/dev/null
 if ! gh repo view "$OWNER/$REPO" >/dev/null 2>&1; then
   gh repo create "$OWNER/$REPO" --public --description "BORN WEIRD — a simulator for lives you haven't lived yet. Built by an AI-agent company, in public." --homepage "https://$OWNER.github.io/$REPO/"
 fi
