@@ -17,3 +17,13 @@
 - **ALTERNATIVES:** posting on Founder social accounts via Buffer/Metricool (reputational and public, needs explicit approval); waiting for organic discovery (≈0).
 - **RECOMMENDATION:** personal message, not a broadcast. Send it to people likely to forward weird things. Do not tell them what to do after the result; sharing must be voluntary to count.
 - **ONE ACTION REQUIRED:** send `https://dimacloud.github.io/born-weird/ru/` (RU community) or `https://dimacloud.github.io/born-weird/` (others) to 3–5 specific people, without `?founder=1`, with one line like «сделал странную штуку, 2 минуты».
+
+## HUMAN REQUEST #003 — OPTIONAL / GATED (do not act yet unless you want AI generation now)
+- **NEED:** Runtime AI generation (unique questions and future from symbolic birth data and choices), the Founder's original intent.
+- **GATE:** EXP-003 shows ≥15% AI-handoff clicks per completion, or the Founder decides to proceed anyway (their financial call).
+- **COST:** $5 prepaid (hard ceiling, auto-reload OFF) ≈ 450 AI realities on Claude Haiku 4.5. Cloudflare Workers free tier.
+- **RISK:** an abuse-prone public endpoint. Mitigated by prepaid cap + monthly workspace limit + daily cap (~150 calls) + per-IP limit + Turnstile + fallback to the deterministic engine.
+- **ONE SITTING (~10 min):**
+  1. console.anthropic.com → account → buy $5 credits (auto-reload OFF) → workspace `born-weird`, monthly limit $5 → create an API key.
+  2. dash.cloudflare.com → free account.
+  3. In the project folder: `npx wrangler login`, then `npx wrangler secret put ANTHROPIC_API_KEY` and paste the key. Never send the key to anyone, including the agents.

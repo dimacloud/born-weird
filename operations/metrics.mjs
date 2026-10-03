@@ -16,10 +16,14 @@ const EVENTS = [
   'reality_seed_viewed', 'reality_seed_copied', 'reality_seed_downloaded',
   'feedback_submitted', ...[1, 2, 3, 4, 5].map(n => 'fb_worth_' + n), 'fb_feel_meh', 'fb_feel_weird', 'fb_feel_wtf', 'fb_send_yes', 'fb_send_no',
   'restart_clicked', 'lang_switch_en', 'lang_switch_ru',
+  // v0.3
+  'key_landing_view', 'decode_viewed', 'sound_off',
+  ...['plan', 'future', 'debuff'].flatMap(k => ['chatgpt', 'claude'].map(p => 'ai_open_' + k + '_' + p)),
 ];
 // Russian-language segment (EXP-002): every event is also counted as ru_<event> when the UI is in Russian.
-const RU_EVENTS = ['landing_view', 'referred_visit', 'simulation_started', 'simulation_completed', 'referred_simulation_completed',
-  'artifact_generated', 'share_completed', 'link_copied', 'reality_seed_copied', 'reality_seed_downloaded',
+const RU_EVENTS = ['landing_view', 'referred_visit', 'key_landing_view', 'simulation_started', 'decode_viewed', 'simulation_completed', 'referred_simulation_completed',
+  'artifact_generated', 'share_completed', 'link_copied', 'artifact_saved', 'reality_seed_copied', 'reality_seed_downloaded',
+  ...['plan', 'future', 'debuff'].flatMap(k => ['chatgpt', 'claude'].map(p => 'ai_open_' + k + '_' + p)),
   ...[1, 2, 3, 4, 5].map(i => 'choice_selected_' + i), ...[1, 2, 3, 4, 5].map(n => 'fb_worth_' + n), 'fb_send_yes', 'fb_send_no'];
 
 async function get(key) {
@@ -71,6 +75,10 @@ const metrics = {
     RRR: pct(c.referred_simulation_completed, c.simulation_completed),
     stage_dropoff: [1, 2, 3, 4, 5].map(i => c['choice_selected_' + i]),
   },
+  ai_handoff: (() => {
+    const opens = ['plan', 'future', 'debuff'].flatMap(k => ['chatgpt', 'claude'].map(p => c['ai_open_' + k + '_' + p] || 0)).reduce((x, y) => x + y, 0);
+    return { opens, rate_per_completion: pct(opens, c.simulation_completed), note: 'EXP-003 trigger: >15% → propose runtime AI (HR-003)' };
+  })(),
   satisfaction: { worth_avg: worthAvg && Math.round(worthAvg * 100) / 100, worth_n: worthN, feel: { meh: c.fb_feel_meh, weird: c.fb_feel_weird, wtf: c.fb_feel_wtf } },
   alive_signal: (c.referred_simulation_completed || 0) >= 1
     ? 'LIKELY: a referred visitor completed a simulation (needs human confirmation it was a non-Founder)'

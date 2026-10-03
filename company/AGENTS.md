@@ -86,6 +86,14 @@ CEO-001 ── runs: BUILDER-001 (mode), PRODUCT (merged)
 - **SUCCESS:** native-quality score ≥4/5; no RU-specific complaints from users.
 - **EST. COST:** ~100–200k tokens once (non-cash).
 
+### Temporary agents of 2026-10-03 (v0.3 value audit). All delivered and retired.
+| ID | Mission | Output | Status |
+|---|---|---|---|
+| RESEARCH-001 | Comparable products: what creates value and sharing at low cost | 8 ranked mechanics; iOS image-save facts; AI deep-link facts | RETIRED |
+| UX-AUDIT-001 | Independent end-user walkthrough (RU, mobile) | Scorecard; top-7 problems; root causes of the save/copy bugs | RETIRED |
+| AI-ARCH-001 | Cost and architecture of runtime LLM | Haiku 4.5 ≈ $0.011/reality; staged plan; HR-003 draft; guardrails | RETIRED |
+| RU-EDITOR-002 | Russian copy review of v0.3 | (pending) | TEMPORARY |
+
 ### PROPOSED (not instantiated)
 | Role | Why not now | Instantiate when |
 |---|---|---|
@@ -103,3 +111,5 @@ CEO-001 ── runs: BUILDER-001 (mode), PRODUCT (merged)
 | 2026-10-03 | QA-EVAL-001 spawned (temporary) | Independent evaluation before deploy (Genesis §30) |
 | 2026-10-03 | ANALYST implemented as a script | Deterministic counter math; agent not justified (§57) |
 | 2026-10-03 | RU-EDITOR-001 spawned (temporary, retires after RU review) | Builder should not be the only judge of its own translation; native-quality copy is a share-rate risk |
+| 2026-10-03 | RESEARCH-001, UX-AUDIT-001, AI-ARCH-001 spawned in parallel, then retired | Founder asked for a value audit. Three independent lenses (market, user, cost) in ~2 min wall-clock, ~370k tokens total |
+| 2026-10-03 | RU-EDITOR-002 spawned (temporary) | New v0.3 Russian copy needs an independent native read |

@@ -83,10 +83,11 @@
       "cost": "~3 Founder minutes",
       "risk": "low",
       "metric": "founder_simulation_completed >= 1",
-      "status": "APPROVED",
+      "status": "DONE",
       "dependencies": [
         "W-004"
-      ]
+      ],
+      "result": "Founder smoke test 2026-10-03 → value audit → v0.3"
     },
     {
       "id": "W-006",
@@ -147,6 +148,37 @@
       "status": "DISCOVERED",
       "dependencies": [
         "ALIVE"
+      ]
+    },
+    {
+      "id": "W-010",
+      "title": "v0.3 Character card: decoding, varied questions, instant outcomes, card, key, AI handoff, fixes",
+      "owner": "CEO-001",
+      "why": "Founder smoke test: value unclear",
+      "bottleneck": "B-002b: value / share impulse",
+      "expected_value": "recognition, utility and share impulse from 2 to 4 (audit scale)",
+      "cost": "$0",
+      "risk": "low",
+      "metric": "EXP-001/002/003",
+      "status": "REVIEW",
+      "dependencies": [
+        "W-005"
+      ]
+    },
+    {
+      "id": "W-011",
+      "title": "Runtime AI hybrid (Haiku 4.5 via Cloudflare Worker) behind a flag",
+      "owner": "CEO-001",
+      "why": "Founder intent; gated by EXP-003",
+      "bottleneck": "utility",
+      "expected_value": "unique questions and future",
+      "cost": "~$0.011/reality, $5 cap",
+      "risk": "medium",
+      "metric": "A/B completion + share",
+      "status": "PROPOSED",
+      "dependencies": [
+        "EXP-003",
+        "HR-003"
       ]
     }
   ]

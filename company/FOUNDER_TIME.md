@@ -8,7 +8,9 @@
 
 | 4 | 2026-10-03 | INTENT/INPUT | Asked for a Russian version; the first audience is a RU community (valuable input: triggered #001 revisit) | ~2 | no. Audience knowledge only the Founder has |
 
-**Totals:** approvals 0 · overrides 1 · credential actions 1 (done) · Founder minutes ≈ 12
+| 5 | 2026-10-03 | SMOKE TEST + INTENT | Reviewed the RU version on a phone; detailed value feedback (font, birth-date meaning, repetition, image save, copy bug, AI intent, sounds idea) | ~15 | no. This is the W-005 Founder smoke test and the most valuable input so far |
+
+**Totals:** approvals 0 · overrides 1 · credential actions 1 (done) · Founder minutes ≈ 27
 
 **Autonomy ratio (material actions):** 16 autonomous / 19 material actions ≈ 0.84
 

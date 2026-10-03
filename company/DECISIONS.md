@@ -90,3 +90,19 @@ All decisions below are owned by CEO-001, are reversible unless stated otherwise
 - **COST:** $0 cash. **REVERSIBILITY:** high. **CONFIDENCE:** high.
 - **MEASURE:** EXP-002 (RU vs EN completion and share).
 - **REVISIT WHEN:** a third language reaches ≥15% of visits (`navigator.language` sampling is not collected; use the switch and entry counters), or the RU share rate is <½ of EN after 20 RU completions (copy problem).
+
+## DECISION #013 — v0.3 "Character card": raise user value at $0 before adding runtime AI
+- **TRIGGER:** Founder smoke test (2026-10-03). The value was unclear: the birth date seemed pointless, questions were identical, the image wasn't usable on a phone, the AI seed had no practical use, and the RU font was hard to read. A three-agent audit confirmed it (UX-AUDIT-001 scores: curiosity 3, recognition 2, surprise 2, utility 2, share 2).
+- **DECISION (all $0, static):**
+  1. **Visible symbolic birth decoding.** Life path (arithmetic shown), sun sign and element, eastern year, weekday. Each symbol gives a starting stat bonus (+4.0 total vs ~20 from choices), and the life path picks the first question. It is framed explicitly as a game seed, not a prediction (Genesis §6).
+  2. **Question variety.** 3 situations per stage (15 total, 52 option paths per situation set, 243 situation sets), drawn per run.
+  3. **Instant outcome after every choice** with stat deltas and a HUD (UX audit's #1 recommendation).
+  4. **1080×1920 character card.** Start class, title, verdict one-liner, 6 stats, buff / debuff / boss, rarity "1 in N" (honest: share of 200k simulations), event log, key.
+  5. **Player key** (`?k=`). It restores the full result without the birth date. A friend's link opens the sender's card. A per-reality counter shows "your realities spawned N".
+  6. **AI next step in one tap.** ChatGPT/Claude deep links with 3 prompts (7-day quest plan, future-self conversation, debuff debugging), modelled on MIT "Future You". The full seed is kept as a fallback.
+  7. **Fixes.** Readable RU font (IBM Plex Mono). Share sends the link, not the file (iOS dropped files when url/text were attached). "Save" opens the share sheet with the file on phones. Copy is robust. The seed no longer ends with a URL (pasted seeds looked like links).
+  8. **Sound.** PC-speaker beeps synthesized in the browser (WebAudio), with a toggle. Founder suggestion; zero cost, adds the retro feel. Measured via `sound_off`.
+- **REJECTED FOR NOW:** runtime LLM generation (AI-ARCH-001: ~$11/1000 realities on Haiku 4.5, needs 2 accounts and an API key). Gated behind EXP-003 demand evidence; HR-003 prepared.
+- **TEAM:** CEO-001 (decision, build). Temporary agents: RESEARCH-001, UX-AUDIT-001, AI-ARCH-001 (inputs; retired after reports), QA-EVAL-001 and RU-EDITOR-002 (independent evaluation).
+- **COST:** $0 cash. **REVERSIBILITY:** high. **CONFIDENCE:** medium-high (copy and mechanics proven elsewhere; our audience is untested).
+- **REVISIT WHEN:** EXP-001/002/003 data from ≥10 real completions.

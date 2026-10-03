@@ -23,3 +23,10 @@
 - **GUARDRAILS:** artifact_generation_failed = 0 in both; no untranslated strings reported.
 - **START:** RU deploy · **END:** 20 RU completions or 14 days.
 - **RESULT:** pending.
+
+## EXP-003 — Is there demand for AI depth? (gate for runtime AI)
+- **BOTTLENECK:** Utility. Users need a practical next step; runtime AI costs money and requires credentials.
+- **HYPOTHESIS:** If ≥15% of completions click a "continue with AI" deep link, runtime AI personalization is worth its ~$0.011/reality.
+- **METRIC:** `ai_open_*` / `simulation_completed` (metrics.json → `ai_handoff`).
+- **DECISION RULE:** ≥15% after 20 completions → issue HR-003 and build the hybrid (deterministic core + LLM final future and plan, A/B behind a flag). <5% → AI depth is not the bottleneck; invest in the card and sharing instead.
+- **START:** v0.3 deploy · **RESULT:** pending.
