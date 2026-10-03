@@ -47,12 +47,14 @@
   .top { position: sticky; top: 0; z-index: 5; display: flex; align-items: center; gap: 6px; background: var(--blue); color: #fff; padding: 4px 10px; font-size: 18px; }
   html[lang=ru] .top { font-size: 13px; }
   .top .sp { flex: 1; }
+  #langBox { display: inline-flex; gap: 4px; }
+  #langBox[hidden] { display: none; }
   .top button { width: auto; margin: 0; min-height: 44px; min-width: 44px; padding: 2px 10px; font-size: inherit; text-align: center; border: 1px solid #8888ff; color: #fff; background: transparent; }
   .top button[aria-pressed=true] { background: #fff; color: var(--blue); }
   main { max-width: 640px; margin: 0 auto; padding: 18px 16px 64px; }
   .screen { display: none; animation: flick .25s steps(3); }
   .screen.on { display: block; }
-  @keyframes flick { 0% { opacity: 0; } 50% { opacity: .6; } 100% { opacity: 1; } }
+  @keyframes flick { 0% { opacity: .35; } 50% { opacity: .75; } 100% { opacity: 1; } }
   h1 { font-size: 64px; line-height: .95; margin: 6vh 0 8px; color: var(--hi); letter-spacing: 2px; text-shadow: 3px 3px 0 var(--mg); font-weight: normal; font-family: 'VT323', monospace; }
   h2 { font-size: 30px; color: var(--hi); margin: 0 0 12px; font-weight: normal; }
   html[lang=ru] h2 { font-size: 20px; font-weight: 600; line-height: 1.35; }
