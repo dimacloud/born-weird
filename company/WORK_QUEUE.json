@@ -211,6 +211,35 @@
       "dependencies": [
         "first real users"
       ]
+    },
+    {
+      "id": "W-014",
+      "title": "v0.5 Value Compass: 8 Schwartz values, 3 rounds, stars hypothesis, contradiction with evidence, purpose hypothesis, value passport",
+      "owner": "BUILDER-001",
+      "why": "Founder smoke test #3 (DECISION #016)",
+      "bottleneck": "B-002",
+      "expected_value": "recognisable value + purpose for a first-time user",
+      "cost": "$0",
+      "risk": "medium",
+      "metric": "fb_true yes+partly >=70%, purpose yes+almost >=60%",
+      "status": "DEPLOYED",
+      "dependencies": [
+        "W-012"
+      ],
+      "result": "QA PASS WITH FIXES (D1-D9 fixed), RU 37 edits, 23/23 tests"
+    },
+    {
+      "id": "W-015",
+      "title": "Mobile sound fix (unlock on first touch, iOS playback session)",
+      "owner": "BUILDER-001",
+      "why": "Founder: no sound on mobile",
+      "bottleneck": "-",
+      "expected_value": "retro feel on phones",
+      "cost": "$0",
+      "risk": "low",
+      "metric": "sound plays on iPhone",
+      "status": "DEPLOYED",
+      "dependencies": []
     }
   ]
 }

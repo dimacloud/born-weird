@@ -1,4 +1,4 @@
-// Computes result rarity (share of each archetype|tension combination) from N random plays
+// Computes result rarity (share of each top-1|top-2 value combination) from N random plays
 // and writes it into product/site/engine.js (const RARITY). Re-run after changing scoring or content structure.
 // Usage: node operations/rarity.mjs [N=200000]
 import { readFile, writeFile } from 'node:fs/promises';
@@ -12,11 +12,11 @@ const N = +process.argv[2] || 200000;
 const counts = {};
 for (let i = 0; i < N; i++) {
   const run = BW.newRun('1990-01-01', i, 'en', new Date('2026-10-03'));
-  for (let k = 0; k < BW.PLAN.length; k++) {
+  for (let k = 0; k < BW.CHOICE_SCREENS; k++) {
     const b = Math.floor(Math.random() * 4); let w = Math.floor(Math.random() * 3); if (w >= b) w++;
     BW.answer(run, k, b, w);
-    if (k === BW.BRIDGE_AFTER) BW.setBridge(run, 1 + Math.floor(Math.random() * 7));
   }
+  for (let k = BW.CHOICE_SCREENS; k < BW.TOTAL; k++) BW.answerShadow(run, k, Math.floor(Math.random() * 3));
   const r = BW.finish(run);
   counts[r.rarityKey] = (counts[r.rarityKey] || 0) + 1;
 }

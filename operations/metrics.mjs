@@ -23,12 +23,15 @@ const EVENTS = [
   'birth_viewed', 'model_viewed', 'bridge_answered', ...[1, 2, 3, 4, 5, 6, 7].map(n => 'bridge_' + n),
   ...[1, 2, 3, 4, 5, 6, 7, 8].map(i => 'item_answered_' + i), 'tension_O', 'tension_E', 'tension_clear', 'tension_mixed',
   'fb_true_no', 'fb_true_partly', 'fb_true_yes', ...['tension'].flatMap(k => ['chatgpt', 'claude'].map(p => 'ai_open_' + k + '_' + p)),
+  // v0.5
+  ...[9].map(i => 'item_answered_' + i), 'contra_opposite', 'contra_near', 'contra_clear', 'stars_match', 'stars_half', 'stars_miss', 'hidden_found', 'fragile_found',
+  'purpose_yes', 'purpose_almost', 'purpose_no', ...['compass', 'purpose'].flatMap(k => ['chatgpt', 'claude'].map(p => 'ai_open_' + k + '_' + p)),
 ].filter((e, i, a) => a.indexOf(e) === i);
 // Russian-language segment (EXP-002): every event is also counted as ru_<event> when the UI is in Russian.
 const RU_EVENTS = ['landing_view', 'referred_visit', 'key_landing_view', 'simulation_started', 'decode_viewed', 'simulation_completed', 'referred_simulation_completed',
   'artifact_generated', 'share_completed', 'link_copied', 'artifact_saved', 'reality_seed_copied', 'reality_seed_downloaded',
   ...['plan', 'future', 'debuff', 'tension'].flatMap(k => ['chatgpt', 'claude'].map(p => 'ai_open_' + k + '_' + p)),
-  'birth_viewed', 'model_viewed', 'bridge_answered', ...[1, 2, 3, 4, 5, 6, 7, 8].map(i => 'item_answered_' + i), 'fb_true_no', 'fb_true_partly', 'fb_true_yes',
+  'birth_viewed', 'model_viewed', 'bridge_answered', ...[1, 2, 3, 4, 5, 6, 7, 8, 9].map(i => 'item_answered_' + i), 'purpose_yes', 'purpose_almost', 'purpose_no', ...['compass', 'purpose'].flatMap(k => ['chatgpt', 'claude'].map(p => 'ai_open_' + k + '_' + p)), 'fb_true_no', 'fb_true_partly', 'fb_true_yes',
   ...[1, 2, 3, 4, 5].map(i => 'choice_selected_' + i), ...[1, 2, 3, 4, 5].map(n => 'fb_worth_' + n), 'fb_send_yes', 'fb_send_no'];
 
 async function get(key) {
@@ -81,13 +84,20 @@ const metrics = {
     stage_dropoff: [1, 2, 3, 4, 5].map(i => c['choice_selected_' + i]),
   },
   ai_handoff: (() => {
-    const opens = ['plan', 'future', 'debuff', 'tension'].flatMap(k => ['chatgpt', 'claude'].map(p => c['ai_open_' + k + '_' + p] || 0)).reduce((x, y) => x + y, 0);
+    const opens = ['plan', 'future', 'debuff', 'tension', 'compass', 'purpose'].flatMap(k => ['chatgpt', 'claude'].map(p => c['ai_open_' + k + '_' + p] || 0)).reduce((x, y) => x + y, 0);
     return { opens, rate_per_completion: pct(opens, c.simulation_completed), note: 'EXP-003 trigger: >15% → propose runtime AI (HR-003)' };
   })(),
   v04: {
     stage_dropoff: [1, 2, 3, 4, 5, 6, 7, 8].map(i => c['item_answered_' + i]),
     tension_rang_true: { no: c.fb_true_no, partly: c.fb_true_partly, yes: c.fb_true_yes },
     tensions: { O: c.tension_O, E: c.tension_E, clear: c.tension_clear, mixed: c.tension_mixed },
+  },
+  v05: {
+    stage_dropoff: [1, 2, 3, 4, 5, 6, 7, 8, 9].map(i => c['item_answered_' + i]),
+    compass_rang_true: { no: c.fb_true_no, partly: c.fb_true_partly, yes: c.fb_true_yes },
+    purpose_rang_true: { yes: c.purpose_yes, almost: c.purpose_almost, no: c.purpose_no },
+    contradictions: { opposite: c.contra_opposite, near: c.contra_near, clear: c.contra_clear },
+    stars: { match: c.stars_match, half: c.stars_half, miss: c.stars_miss }, hidden_found: c.hidden_found, fragile_found: c.fragile_found,
   },
   satisfaction: { worth_avg: worthAvg && Math.round(worthAvg * 100) / 100, worth_n: worthN, feel: { meh: c.fb_feel_meh, weird: c.fb_feel_weird, wtf: c.fb_feel_wtf } },
   alive_signal: (c.referred_simulation_completed || 0) >= 1

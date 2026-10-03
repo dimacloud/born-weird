@@ -126,3 +126,27 @@ All decisions below are owned by CEO-001, are reversible unless stated otherwise
 - **ALTERNATIVES:** Big Five short forms (weak reliability, no tension to resolve); SDT needs (licensing); runtime LLM first (does not give a model; deferred to v0.5 / HR-003).
 - **COST:** $0. **REVERSIBILITY:** high. **CONFIDENCE:** medium. The model is sound, but 8 items is thin, so we measure perceived accuracy with the new `fb_true_*` question.
 - **SUCCESS SIGNAL:** `fb_true_yes + fb_true_partly` ≥ 70% of feedback, and the share rate higher than v0.3.
+
+## DECISION #016 — v0.5 "Value Compass": the stars guess, the choices test (Founder-approved)
+- **TRIGGER:** Founder smoke test #3 of v0.4: "tension" and "bridge" are unclear; "weight" is unclear; too much text (psychologists' names, "lore"). He liked: weeks lived and the idea of quickly validating your values (values → purpose). He wanted the birth date (numerology + astrology) to give a value hypothesis that the game validates, and to reveal hidden values. Concept: reports/CONCEPT_v0.5.md. Founder: "Да, собирай v0.5".
+- **DECISION:**
+  1. **Model.** 8 values on Schwartz's circle, with plain names: СВОБОДА, НОВИЗНА, УСПЕХ, ВЛИЯНИЕ, НАДЁЖНОСТЬ, КОРНИ, БЛИЗКИЕ, МИР. Stimulation+Hedonism and Tradition+Conformity are merged. BRIDGE (Hershfield) is removed.
+  2. **Mechanics.** 9 screens in 3 rounds.
+     - I INSTINCT: best–worst.
+     - II PRICE: "pay easily" / "never pay".
+     - III SHADOW: an adaptive yes/unsure/no test of the 2 leaders plus a stars value outside the top 3 (hidden-value check).
+     - In rounds I–II every value appears exactly 3 times (a balanced design, rotated per run). Pools: 8 + 8 situations with 8 options each.
+  3. **Stars.** Life path → value, and sun-sign element → value, give a 2-value hypothesis. It is shown before play and judged after ("match / half / awkward"). Scores come from choices only (honest boundary).
+  4. **Output.**
+     - Compass with drives / never give up / give up easily.
+     - Stars vs you; hidden and fragile values.
+     - Main contradiction: opposite pair, then near-opposite, then clear direction with its price. It comes **with evidence from the user's own answers**.
+     - Confidence (what is clear, what is not yet).
+     - Purpose hypothesis with a yes / almost / no check.
+     - 7-day quest; a radar-compass card.
+     - Value passport (.md plus JSON profile, Intent OS-ready).
+     - Three AI deep links.
+  5. **Less text.** Research names, numerology arithmetic, Erikson and world facts move into a collapsed "How this is calculated".
+- **PRIVACY (amends #014):** shareable outputs may now depend on the birth date via life path (9) **and element (4)**, about 1/36 of dates. The zodiac sign name, date, age and milestone are never shared. Tested.
+- **COST:** $0. **REVERSIBILITY:** high (v0.4 in git). **CONFIDENCE:** medium. The model is standard and the mechanics are richer, but 9 screens are still thin, and "unclear" is shown honestly.
+- **SUCCESS SIGNAL:** `fb_true_yes + partly` ≥ 70%, `purpose_yes + almost` ≥ 60%, share rate > v0.4.

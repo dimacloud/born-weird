@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>BORN WEIRD</title>
-<meta name="description" content="A 3-minute mirror: which values pull you in different directions — and how close you feel to your future self. Weird, honest, not a prediction.">
-<meta property="og:title" content="BORN WEIRD — a mirror for lives you haven't lived yet">
-<meta property="og:description" content="8 choices. 3 minutes. Your values, your main inner tension, your bridge to future you — on a pixel character card.">
+<meta name="description" content="The stars make a guess about your values. 9 weird choices test it. A 3-minute value compass — honest, strange, not a prediction.">
+<meta property="og:title" content="BORN WEIRD — the stars guessed your values. Your choices disagree.">
+<meta property="og:description" content="9 weird choices, 3 minutes: your value compass, your main contradiction and what the stars got wrong — on a pixel card.">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://dimacloud.github.io/born-weird/og.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -44,7 +44,7 @@
   h3 { font-size: 24px; color: var(--cy); margin: 18px 0 6px; font-weight: normal; }
   html[lang=ru] h3 { font-size: 15px; font-weight: 600; }
   p { margin: 0 0 12px; }
-  .muted { color: var(--dim); } .tag { color: var(--cy); } .hi { color: var(--hi); } .okc { color: var(--ok); } .noc { color: var(--no); }
+  .muted { color: var(--dim); } .tag { color: var(--cy); } .hi { color: var(--hi); } .okc { color: var(--ok); } .noc { color: var(--no); } .mgc { color: var(--mg); }
   .small { font-size: 18px; } html[lang=ru] .small { font-size: 14px; }
   .bar { background: var(--blue); color: #fff; padding: 2px 8px; display: inline-block; margin-bottom: 14px; }
   .ref { border: 1px dashed var(--mg); color: var(--mg); padding: 10px 12px; margin: 0 0 18px; }
@@ -52,6 +52,10 @@
   .ref b { color: var(--hi); font-weight: normal; display: block; } html[lang=ru] .ref b { font-weight: 600; }
   .stat { border: 1px solid var(--cy); color: var(--cy); padding: 8px 12px; margin: 0 0 16px; }
   .box { border: 1px solid var(--line); padding: 10px 12px; margin: 0 0 14px; }
+  .stars { border: 2px solid var(--mg); padding: 12px; margin: 6px 0 14px; }
+  .stars .v { color: var(--hi); font-size: 30px; display: block; margin: 2px 0; }
+  html[lang=ru] .stars .v { font-size: 20px; font-weight: 600; }
+  .stars .v { line-height: 1.1; margin-bottom: 10px; } .stars .v small { display: block; color: var(--dim); font-size: 18px; margin: 2px 0 0 1.4em; line-height: 1.2; } html[lang=ru] .stars .v small { font-size: 13px; font-weight: 400; }
   label { display: block; margin: 22px 0 6px; color: var(--cy); }
   input[type=date] { font: inherit; font-size: 26px; width: 100%; padding: 10px 12px; background: #001400; color: var(--hi); border: 2px solid var(--fg); border-radius: 0; color-scheme: dark; min-height: 54px; -webkit-appearance: none; appearance: none; display: block; }
   html[lang=ru] input[type=date] { font-size: 20px; }
@@ -75,24 +79,19 @@
   .react { border-left: 3px solid var(--cy); padding: 8px 0 8px 12px; margin: 14px 0 6px; }
   .deltas span { display: inline-block; margin-right: 14px; }
   .hud { display: grid; grid-template-columns: auto 1fr; gap: 3px 10px; margin: 10px 0 14px; font-size: 18px; align-items: center; }
-  html[lang=ru] .hud { font-size: 13px; }
-  .hud i { display: block; height: 10px; background: #1d2d1d; position: relative; }
+  html[lang=ru] .hud { font-size: 12px; }
+  .hud i { display: block; height: 8px; background: #1d2d1d; position: relative; }
   .hud i b { position: absolute; inset: 0 auto 0 0; background: var(--fg); transition: width .4s steps(8); }
   .life { display: grid; grid-template-columns: repeat(18, 1fr); gap: 2px; margin: 8px 0 4px; }
   .life i { aspect-ratio: 1; background: #1d2d1d; }
   .life i.on { background: var(--fg); } .life i.now { background: var(--hi); box-shadow: 0 0 0 2px var(--hi); }
-  .poles div { margin: 0 0 10px; }
-  .poles b { color: var(--hi); font-weight: normal; } html[lang=ru] .poles b { font-weight: 600; }
-  .axis { color: var(--cy); margin: 6px 0 12px; }
-  .bridge { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin: 12px 0 6px; }
-  .bridge button { margin: 0; padding: 6px 2px; text-align: center; }
-  .bridge svg { display: block; width: 100%; height: auto; }
-  .bridge .n { display: block; font-size: 14px; }
-  .scale { display: flex; justify-content: space-between; font-size: 14px; color: var(--dim); }
-  .prof { display: grid; grid-template-columns: auto 1fr auto; gap: 4px 10px; align-items: center; margin: 6px 0 4px; }
+  .prof { display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; align-items: center; margin: 6px 0 4px; }
   .prof i { display: block; height: 12px; background: #1d2d1d; position: relative; }
   .prof i b { position: absolute; inset: 0 auto 0 0; background: var(--fg); }
   .prof .top1 { color: var(--hi); } .prof .top1 + i b { background: var(--hi); }
+  .prof .m { grid-column: 1 / -1; margin-bottom: 6px; }
+  .kv { margin: 4px 0; } .kv b { color: var(--cy); font-weight: normal; } html[lang=ru] .kv b { font-weight: 600; }
+  ul.ev { margin: 6px 0 0; padding-left: 18px; color: var(--dim); }
   .progress { border: 2px solid var(--fg); height: 26px; margin: 20px 0; }
   .progress > i { display: block; height: 100%; width: 0; background: var(--fg); transition: width 1.4s steps(14); }
   img.artifact { display: block; width: 100%; max-width: 420px; margin: 6px auto 4px; height: auto; border: 2px solid var(--fg); -webkit-touch-callout: default; }
@@ -102,6 +101,7 @@
   pre.seed { white-space: pre-wrap; background: #001400; border: 1px solid var(--line); padding: 10px; max-height: 200px; overflow: auto; font: inherit; font-size: 15px; color: var(--dim); }
   html[lang=ru] pre.seed { font-size: 13px; }
   details summary { cursor: pointer; color: var(--cy); margin: 12px 0 8px; }
+  .calc p { color: var(--dim); }
   .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: var(--hi); color: #000; padding: 8px 14px; z-index: 20; display: none; max-width: calc(100% - 32px); }
   .glitch { animation: glitch .45s steps(5); }
   @keyframes glitch { 0% { transform: translateX(0); filter: hue-rotate(0); } 25% { transform: translateX(-6px); filter: hue-rotate(90deg); } 50% { transform: translateX(5px); } 75% { transform: translateX(-2px); filter: hue-rotate(200deg); } 100% { transform: none; filter: none; } }
@@ -135,27 +135,21 @@
     <h2 id="birthWeeks" tabindex="-1"></h2>
     <div class="life" id="lifeGrid" aria-hidden="true"></div>
     <p class="small muted" id="lifeCaption"></p>
-    <div class="box"><span class="hi" id="milestone"></span><br><span class="small muted" data-i18n="milestoneWhy"></span></div>
-    <div class="box"><span id="stage"></span></div>
-    <p id="world" class="muted"></p>
-    <h3 data-i18n="symbolHead"></h3>
-    <div class="box" id="symbol"></div>
-    <p class="small tag" data-i18n="motto"></p>
-    <button class="primary" id="btnBirth" data-i18n="toModel"></button>
-  </section>
-
-  <section class="screen" id="s-model">
-    <span class="bar" data-i18n="modelBar"></span>
-    <h2 data-i18n="modelHead" tabindex="-1"></h2>
-    <div class="poles" id="poles"></div>
-    <p data-i18n="howTo"></p>
-    <p class="small muted" data-i18n="caveat"></p>
-    <button class="primary" id="btnModel" data-i18n="begin"></button>
+    <p class="hi" id="milestone"></p>
+    <h3 data-i18n="starsHead"></h3>
+    <div class="stars" id="starsBox"></div>
+    <p data-i18n="starsTest"></p>
+    <button class="primary" id="btnBirth" data-i18n="toTest"></button>
+    <details class="calc">
+      <summary data-i18n="calcHead"></summary>
+      <div id="calc"></div>
+    </details>
   </section>
 
   <section class="screen" id="s-item">
     <span class="bar" id="itemBar"></span>
-    <p class="small tag" id="itemBirth" hidden></p>
+    <p class="small tag" id="itemIntro"></p>
+    <h3 id="itemTitle"></h3>
     <h2 id="itemPrompt" tabindex="-1"></h2>
     <p class="hint" id="itemHint" aria-live="polite"></p>
     <div id="itemOpts"></div>
@@ -165,13 +159,6 @@
       <div class="hud" id="hud"></div>
       <button class="primary" id="btnNext"></button>
     </div>
-  </section>
-
-  <section class="screen" id="s-bridge">
-    <span class="bar" data-i18n="bridgeBar"></span>
-    <h2 id="bridgePrompt" tabindex="-1"></h2>
-    <div class="bridge" id="bridgeOpts"></div>
-    <div class="scale"><span id="bridgeLow"></span><span id="bridgeHigh"></span></div>
   </section>
 
   <section class="screen" id="s-compile">
@@ -194,18 +181,32 @@
     <p class="small muted" data-i18n="keyExplain"></p>
 
     <div class="section">
-      <h3 data-i18n="hProfile"></h3>
-      <p class="hi" id="resOrder"></p>
+      <h3 data-i18n="hCompass"></h3>
+      <p class="kv"><b data-i18n="kDrives"></b> <span class="hi" id="resDrives"></span></p>
+      <p class="kv"><b data-i18n="kProtect"></b> <span id="resProtect"></span></p>
+      <p class="kv"><b data-i18n="kEasy"></b> <span id="resEasy"></span></p>
       <div class="prof" id="resProfile"></div>
-      <h3 data-i18n="hTension"></h3>
-      <p><b class="hi" id="resTensionShort"></b><br><span id="resTension"></span></p>
-      <h3 data-i18n="hBlind"></h3>
-      <p id="resBlind"></p>
-      <h3 id="resBridgeHead"></h3>
-      <p id="resBridge"></p>
+
+      <h3 data-i18n="hStars"></h3>
+      <p><b class="mgc" id="resStarsWord"></b> <span id="resStars"></span></p>
+      <p class="hi" id="resHidden" hidden></p>
+
+      <h3 data-i18n="hContra"></h3>
+      <p><b class="hi" id="resContraShort"></b><br><span id="resContra"></span></p>
+      <p class="small muted" data-i18n="evidenceHead" id="evHead"></p>
+      <ul class="ev small" id="resEvidence"></ul>
+
+      <h3 data-i18n="hConf"></h3>
+      <p id="resConf"></p>
+      <p class="noc" id="resFragile" hidden></p>
+
+      <h3 data-i18n="hPurpose"></h3>
+      <p class="hi" id="resPurpose"></p>
+      <p class="small tag" data-i18n="purposeQ"></p>
+      <div class="row" id="purposeBtns"></div>
+
       <h3 data-i18n="hQuest"></h3>
       <p id="resQuest"></p>
-      <p class="tag small" id="resStart"></p>
     </div>
 
     <div class="section">
@@ -215,9 +216,9 @@
         <button type="button" id="aiChatgpt">ChatGPT</button>
         <button type="button" id="aiClaude">Claude</button>
       </div>
+      <a class="btn" id="aiCompass" target="_blank" rel="noopener"></a>
+      <a class="btn" id="aiPurpose" target="_blank" rel="noopener"></a>
       <a class="btn" id="aiPlan" target="_blank" rel="noopener"></a>
-      <a class="btn" id="aiTension" target="_blank" rel="noopener"></a>
-      <a class="btn" id="aiFuture" target="_blank" rel="noopener"></a>
       <details>
         <summary data-i18n="seedMore"></summary>
         <p class="muted small" data-i18n="seedDesc"></p>
@@ -235,6 +236,10 @@
       <details>
         <summary data-i18n="myChoices"></summary>
         <ol class="tl" id="resChoices"></ol>
+      </details>
+      <details class="calc">
+        <summary data-i18n="calcHead"></summary>
+        <div id="calcRes"></div>
       </details>
     </div>
 
@@ -273,110 +278,126 @@
   // ---------- i18n ----------
   const UI = {
     en: {
-      tagline: 'A mirror for lives you haven\'t lived yet.',
-      subline: '3 minutes · 8 situations · find out which values pull you in different directions, where your blind spot is, and how close you feel to your future self. Then a 7-day quest and a pixel character card.',
+      tagline: 'The stars made a guess about your values. Let\'s check it.',
+      subline: '3 minutes · 9 weird choices in 3 rounds: INSTINCT, PRICE, SHADOW. You get your value compass, your main contradiction, a purpose hypothesis and a pixel card — and you find out what the stars got wrong.',
       dobLabel: 'ENTER YOUR BIRTH DATE:', start: 'BEGIN',
-      privacy: 'Your birth date never leaves this device and is never stored. It gives real facts about your time (shown only to you) and one openly symbolic number. Not a prediction.',
+      privacy: 'Your birth date never leaves this device and is never stored. It gives facts about your time (only you see them) and the stars\' guess. Values are counted from your choices only.',
       birthBar: 'YOUR TIME',
       weeks: n => 'WEEKS LIVED: ' + n.toLocaleString('en-US'),
-      lifeCaption: a => 'Each cell is a year of a 90-year life. You are here: year ' + (a + 1) + '. The empty ones can still be coloured differently.',
-      milestone: m => 'In ' + m.inDays + ' day' + (m.inDays === 1 ? '' : 's') + ' (' + m.date + '): ' + ({ gsec: 'you turn ' + m.k + ' billion seconds old', weeks: 'your ' + m.k.toLocaleString('en-US') + 'th week of life', bday: 'your birthday', days: 'your ' + m.day.toLocaleString('en-US') + 'th day of life' })[m.kind] + '.',
-      milestoneWhy: 'Research on the "fresh start effect" (Dai, Milkman & Riis): people start new things more often after personal landmarks like this. A good day to begin.',
-      stage: s => 'Psychologist Erik Erikson called this stage of life "' + s.name + '". Its main question: ' + s.q,
-      symbolHead: 'SYMBOL (LORE, NOT A FORECAST)',
-      symbol: d => 'Date ' + d.dateShown + ' → ' + d.lifePathSteps.join(' → ') + '\nLife path ' + d.lifePath + ' — ' + d.lp.name + '\n+ ' + d.lp.plus + '\n− ' + d.lp.shadow + '\n? ' + d.lp.q + '\nSun sign: ' + d.zodiac + ' — just for decoration.',
-      motto: 'The numbers are facts. The archetype is a metaphor. The choice is yours.',
-      toModel: 'NEXT: WHAT WE EXPLORE →',
-      modelBar: 'WHAT WE EXPLORE', modelHead: 'Which values pull you in different directions — and how close you-in-10-years feels.',
-      axisO: 'FREEDOM ↔ ANCHOR', axisE: 'WEIGHT ↔ CARE',
-      howTo: 'In each of 8 situations, first tap what you WOULD CHOOSE, then what you would DEFINITELY NOT. No right answers: every option has a price.',
-      caveat: 'A mirror of today\'s choices — not a test, not a diagnosis. Inspired by Schwartz\'s theory of basic human values and Hershfield\'s research on the future self; the wording is ours and not validated. 8 situations show only the order of your values, not how you compare to others.',
-      begin: 'START',
-      byBirth: n => 'YOUR NUMBER ' + n + ' PICKED THIS QUESTION',
-      pickBest: 'Tap what you WOULD CHOOSE', pickWorst: 'Now tap what you would DEFINITELY NOT', mkBest: '✓ I\'D CHOOSE', mkWorst: '✗ DEFINITELY NOT',
-      next: 'NEXT →', toBridge: 'ONE QUESTION ABOUT YOU →', toResult: 'SHOW MY MIRROR →',
-      bridgeBar: 'BRIDGE TO FUTURE YOU',
-      compileBar: 'COMPILING MIRROR', compileText: 'Sorting values, measuring tensions…',
+      lifeCaption: a => 'Each cell is a year of a 90-year life. You are here: year ' + (a + 1) + '. The empty ones are still yours to colour.',
+      milestone: m => '▸ In ' + m.inDays + ' day' + (m.inDays === 1 ? '' : 's') + ' (' + m.date + '): ' + ({ gsec: 'you turn ' + m.k + ' billion seconds old', weeks: 'your ' + m.k.toLocaleString('en-US') + 'th week of life', bday: 'your birthday', days: 'your ' + m.day.toLocaleString('en-US') + 'th day of life' })[m.kind] + ' — a good day to start something.',
+      starsHead: 'THE STARS EXPECT:',
+      starsWhy: d => 'number ' + d.lifePath + ': ' + d.lpWhy + ' · ' + d.zodiac + ', ' + d.elemWhy,
+      starsTest: 'This is a guess, not a fact. 9 choices will check it.',
+      toTest: 'CHECK THE STARS →',
+      calcHead: 'How this is calculated',
+      calc: d => [
+        'Life path: ' + d.dateShown + ' → ' + d.lifePathSteps.join(' → ') + '. Numerology and signs are a playful hypothesis — your scores come only from your choices.',
+        'Sun sign: ' + d.zodiac + ' (' + d.elementName + ').',
+        'Life stage, after psychologist Erik Erikson: "' + d.stage.name + '". Its question: ' + d.stage.q,
+        d.world,
+        'The "good day to start" uses the fresh-start effect (Dai, Milkman & Riis): after personal landmarks people begin new things more often.',
+        'Values: Schwartz\'s theory of basic human values, tested in 80+ countries. We use 8 of them; opposite ones on the circle pull against each other.',
+      ],
+      calcResult: [
+        'Rounds I–II: every value appears exactly 3 times. "Open" / "never pay" = +1, "definitely not" / "pay easily" = −1. Round III tests your leaders (and a value the stars expected) against a real cost: take it +1, no −1.',
+        'The main contradiction is two strong values on opposite (or nearly opposite) sides of Schwartz\'s circle. If there is none, you get your clear direction and its price.',
+        'Inspired by Schwartz\'s theory of basic human values; the wording is ours and not validated. 9 choices give an order of values, not a comparison with other people.',
+      ],
+      round: (i, n) => ['I', 'II', 'III'][i] + ' · ' + n,
+      next: 'NEXT →', toShadow: 'ROUND III: SHADOW →', toResult: 'SHOW MY COMPASS →',
+      compileBar: 'CALIBRATING COMPASS', compileText: 'Checking the stars against your choices…',
       share: 'SEND THE KEY LINK TO SOMEONE', save: 'SAVE IMAGE', copyLink: 'COPY LINK',
       keyExplain: 'The key link opens your card for a friend. If they play their own, the counter of realities you spawned goes up.',
       hintIOS: 'Tip: press and hold the card → "Save to Photos".', hintOther: 'Tip: press and hold (or right-click) the card to save it.',
-      hProfile: 'YOUR VALUE ORDER', hTension: 'MAIN TENSION', hBlind: 'BLIND SPOT', bridgeHead: n => 'BRIDGE TO FUTURE YOU: ' + n + '/7', hQuest: 'QUEST FOR 7 DAYS',
-      start2: m => 'Good day to start: ' + m.date + ' (in ' + m.inDays + ' days) — a personal landmark.',
+      hCompass: 'YOUR VALUE COMPASS', kDrives: 'DRIVES YOU:', kProtect: 'YOU WOULD NEVER GIVE UP:', kEasy: 'YOU GIVE UP EASILY:',
+      hStars: 'STARS VS YOU', hContra: 'MAIN CONTRADICTION', evidenceHead: 'Where it showed:', hConf: 'HOW SURE WE ARE',
+      hPurpose: 'PURPOSE HYPOTHESIS', purposeQ: 'Is this about you?', purposeOpts: ['YES', 'ALMOST', 'NO'], purposeThanks: 'Noted. Refine it with your AI below.',
+      hQuest: 'QUEST FOR 7 DAYS',
       hAI: 'CONTINUE WITH YOUR AI', aiExplain: 'One tap opens your AI with a ready request built from this result. (You need to be signed in there.)',
-      aiPlan: '▸ TURN THE QUEST INTO A 7-DAY PLAN', aiTension: '▸ UNPACK MY MAIN TENSION', aiFuture: '▸ TALK TO ME IN 10 YEARS',
-      seedMore: 'Full Reality Seed (file for any AI)', seedDesc: 'A portable file with this result. Paste it into any AI.',
-      copySeed: 'COPY SEED TEXT', dlSeed: 'DOWNLOAD .weird.md',
-      retake: d => 'TAKE IT AGAIN ON ' + d + ' — see whether the mirror shows the same thing. Values are stable; moods are not.',
-      myChoices: 'My 8 choices',
-      fbWorth: 'WAS THIS WORTH YOUR TIME?', fbTrue: 'DID THE MAIN TENSION RING TRUE?', fbSend: 'WOULD YOU SEND THIS TO ONE SPECIFIC PERSON?',
+      aiCompass: '▸ UNPACK MY COMPASS AND CONTRADICTION', aiPurpose: '▸ REFINE MY PURPOSE AND FIRST GOALS', aiPlan: '▸ TURN THE QUEST INTO A 7-DAY PLAN',
+      seedMore: 'Value passport (file for any AI)', seedDesc: 'Your compass as a portable file, with a machine-readable profile. Paste it into any AI.',
+      copySeed: 'COPY PASSPORT', dlSeed: 'DOWNLOAD .weird.md',
+      retake: d => 'TAKE IT AGAIN ON ' + d + ' — is the compass stable? Values are; moods are not.',
+      caveat: 'A first calibration from 9 choices — not a test, not a diagnosis. Values follow Schwartz\'s theory; the wording is ours. The stars are a game.',
+      myChoices: 'My 9 choices',
+      fbWorth: 'WAS THIS WORTH YOUR TIME?', fbTrue: 'IS THE COMPASS ABOUT YOU?', fbSend: 'WOULD YOU SEND THIS TO ONE SPECIFIC PERSON?',
       trueOpts: ['NOT AT ALL', 'PARTLY', 'SPOT ON'], yesno: ['YES', 'NO'],
-      fbThanks: 'Logged anonymously. The company reads this.', again: 'LIVE ANOTHER LIFE',
+      fbThanks: 'Logged anonymously. The company reads this.', again: 'PLAY AGAIN',
       soundOn: 'SOUND: ON', soundOff: 'SOUND: OFF',
-      footer: 'BORN WEIRD is an experiment run by an AI-agent company. Not a test, not a prediction, not science. No accounts, no cookies, no third-party trackers (your browser keeps only the IDs of realities you made and which situations you have seen); only anonymous event counts are sent to a public counter service.',
+      footer: 'BORN WEIRD is an experiment run by an AI-agent company. Not a test, not a prediction, not science. No accounts, no cookies, no third-party trackers (your browser keeps only the IDs of your realities and which situations you have seen); only anonymous event counts are sent to a public counter service.',
       builtPublic: 'Built in public',
       ref: id => 'TRANSMISSION RECEIVED: Reality #' + id + ' sent you here.',
-      keyRef: r => ['A FRIEND SENT YOU THEIR MIRROR', r.title, r.tension.short, 'Yours will be different. Enter your birth date below.'],
+      keyRef: r => ['A FRIEND SENT YOU THEIR COMPASS', r.title, 'The stars expected ' + r.stars.labels.join(' + ') + '. Their choices: ' + r.drivesText + '. ' + r.stars.word + '.', 'What did the stars get wrong about you? Enter your birth date below.'],
       spawned: n => 'YOUR REALITIES HAVE SPAWNED ' + n + ' NEW ' + (n === 1 ? 'ONE' : 'ONES') + '.',
       errEmpty: 'Enter a birth date.', errBad: 'That date does not compute. Try again.',
       reality: 'REALITY',
       alt: (tt, id) => 'Character card: ' + tt + ', reality #' + id,
-      shareText: r => 'BORN WEIRD showed me my main inner tension: ' + r.tension.short + '. I am ' + r.archetype + '. Yours will be different:',
+      shareText: r => 'The stars expected ' + r.stars.labels.join(' + ') + '. My choices said ' + r.drivesText + '. ' + r.stars.word + '. What will yours say?',
       tCopied: 'Copied. Send it to one specific person.', tLink: 'Link copied.', tNoArt: 'Card unavailable on this device.',
-      tSeed: 'Seed text copied. Paste it into any AI.', tSeedFail: 'Copy was blocked. Use DOWNLOAD or the AI buttons above.',
-      art: { arch: 'ARCHETYPE', path: n => 'LIFE PATH ' + n, tension: 'MAIN TENSION', plus: 'PLUS', shadow: 'SHADOW', bridge: 'BRIDGE', rare: n => 'RARITY: 1 IN ' + n, note: 'A MIRROR, NOT A PREDICTION.' },
+      tSeed: 'Passport copied. Paste it into any AI.', tSeedFail: 'Copy was blocked. Use DOWNLOAD or the AI buttons above.',
+      art: { arch: 'ARCHETYPE', path: n => 'LIFE PATH ' + n, starsExp: 'STARS EXPECTED:', chose: 'CHOICES SAID:', contra: 'MAIN CONTRADICTION', rare: n => 'RARITY: 1 IN ' + n, note: 'A FIRST CALIBRATION, NOT A PREDICTION.' },
     },
     ru: {
-      tagline: 'Зеркало для жизней, которых у тебя ещё не было.',
-      subline: '3 минуты · 8 ситуаций · узнай, какие ценности тянут тебя в разные стороны, где слепая зона и как далеко тебе до себя-через-10-лет. В конце — квест на 7 дней и пиксельная карточка персонажа.',
+      tagline: 'Звёзды выдвинули гипотезу о твоих ценностях. Проверим?',
+      subline: '3 минуты · 9 странных выборов в 3 раундах: ИНСТИНКТ, ЦЕНА, ТЕНЬ. В конце — твой компас ценностей, главное противоречие, гипотеза о предназначении и пиксельная карточка. И станет ясно, в чём звёзды ошиблись.',
       dobLabel: 'ВВЕДИ ДАТУ РОЖДЕНИЯ:', start: 'НАЧАТЬ',
-      privacy: 'Дата рождения не покидает это устройство и нигде не хранится. Она даёт реальные факты о твоём времени (их видишь только ты) и одно открыто символическое число. Это не предсказание.',
+      privacy: 'Дата рождения не покидает это устройство и нигде не хранится. Она даёт факты о твоём времени (их видишь только ты) и гипотезу звёзд. Ценности считаются только по твоим выборам.',
       birthBar: 'ТВОЁ ВРЕМЯ',
       weeks: n => 'ПРОЖИТО НЕДЕЛЬ: ' + n.toLocaleString('ru-RU'),
-      lifeCaption: a => 'Каждая клетка — год 90-летней жизни. Ты здесь: ' + (a + 1) + '-й год. Пустые клетки ещё можно раскрасить по-другому.',
-      milestone: m => 'Через ' + m.inDays + ' ' + BW.plural(m.inDays, ['день', 'дня', 'дней']) + ' (' + m.date + ') — ' + ({ gsec: 'тебе исполнится ' + m.k + ' ' + BW.plural(m.k, ['миллиард', 'миллиарда', 'миллиардов']) + ' секунд', weeks: 'твоя ' + m.k.toLocaleString('ru-RU') + '-я неделя жизни', bday: 'твой день рождения', days: 'твой ' + m.day.toLocaleString('ru-RU') + '-й день жизни' })[m.kind] + '.',
-      milestoneWhy: 'Исследования «эффекта нового старта» (Dai, Milkman, Riis): после личных вех вроде этой люди чаще начинают новое. Хороший день для старта.',
-      stage: s => 'Психолог Эрик Эриксон называл этот этап жизни «' + s.name + '». Его главный вопрос: ' + s.q,
-      symbolHead: 'СИМВОЛ (ЛОР, НЕ ПРОГНОЗ)',
-      symbol: d => 'Дата ' + d.dateShown + ' → ' + d.lifePathSteps.join(' → ') + '\nЧисло пути ' + d.lifePath + ' — ' + d.lp.name + '\n+ ' + d.lp.plus + '\n− ' + d.lp.shadow + '\n? ' + d.lp.q + '\nЗнак: ' + d.zodiac + ' — просто для красоты.',
-      motto: 'Цифры — факты. Архетип — метафора. Выбор — твой.',
-      toModel: 'ДАЛЬШЕ: ЧТО МЫ ИЗУЧАЕМ →',
-      modelBar: 'ЧТО МЫ ИЗУЧАЕМ', modelHead: 'Какие ценности тянут тебя в разные стороны — и насколько ты-через-10-лет ощущается как ты.',
-      axisO: 'СВОБОДА ↔ ОПОРА', axisE: 'ВЕС ↔ ЗАБОТА',
-      howTo: 'В каждой из 8 ситуаций сначала отметь, что ВЫБЕРЕШЬ, потом — что ТОЧНО НЕТ. Правильных ответов нет: у каждого варианта своя цена.',
-      caveat: 'Это зеркало сегодняшних выборов — не тест и не диагноз. По мотивам теории базовых ценностей Шварца и исследований Хершфилда о будущем себе; формулировки наши и не валидированы. 8 ситуаций показывают только порядок твоих ценностей, а не сравнение с другими людьми.',
-      begin: 'НАЧАТЬ',
-      byBirth: n => 'ТВОЁ ЧИСЛО ' + n + ' ВЫБРАЛО ЭТОТ ВОПРОС',
-      pickBest: 'Отметь, что ВЫБЕРЕШЬ', pickWorst: 'Теперь отметь, что ТОЧНО НЕТ', mkBest: '✓ ВЫБЕРУ', mkWorst: '✗ ТОЧНО НЕТ',
-      next: 'ДАЛЬШЕ →', toBridge: 'ОДИН ВОПРОС О ТЕБЕ →', toResult: 'ПОКАЗАТЬ МОЁ ЗЕРКАЛО →',
-      bridgeBar: 'МОСТ К БУДУЩЕМУ СЕБЕ',
-      compileBar: 'СБОРКА ЗЕРКАЛА', compileText: 'Сортируем ценности, измеряем напряжения…',
+      lifeCaption: a => 'Каждая клетка — год 90-летней жизни. Ты здесь: ' + (a + 1) + '-й год. Пустые клетки ещё можно раскрасить по-своему.',
+      milestone: m => '▸ Через ' + m.inDays + ' ' + BW.plural(m.inDays, ['день', 'дня', 'дней']) + ' (' + m.date + ') — ' + ({ gsec: 'тебе исполнится ' + m.k + ' ' + BW.plural(m.k, ['миллиард', 'миллиарда', 'миллиардов']) + ' секунд', weeks: 'твоя ' + m.k.toLocaleString('ru-RU') + '-я неделя жизни', bday: 'твой день рождения', days: 'твой ' + m.day.toLocaleString('ru-RU') + '-й день жизни' })[m.kind] + '. Хороший день, чтобы начать что-то новое.',
+      starsHead: 'ЗВЁЗДЫ ЖДУТ:',
+      starsWhy: d => 'число ' + d.lifePath + ': ' + d.lpWhy + ' · ' + d.zodiac + ', ' + d.elemWhy,
+      starsTest: 'Это гипотеза, а не факт. Проверим её 9 выборами.',
+      toTest: 'ПРОВЕРИТЬ ЗВЁЗДЫ →',
+      calcHead: 'Как это посчитано',
+      calc: d => [
+        'Число пути: ' + d.dateShown + ' → ' + d.lifePathSteps.join(' → ') + '. Нумерология и знак — игровая гипотеза: баллы ценностей считаются только по твоим выборам.',
+        'Знак: ' + d.zodiac + ' (стихия: ' + d.elementName + ').',
+        'Этап жизни по теории психолога Эрика Эриксона: «' + d.stage.name + '». Его главный вопрос: ' + d.stage.q,
+        d.world,
+        '«Хороший день для старта» — по исследованиям эффекта нового старта (Dai, Milkman, Riis): после личных вех люди чаще начинают новое.',
+        'Ценности — по теории базовых ценностей Шварца, проверенной в 80+ странах, включая Россию. Берём 8; противоположные на круге тянут в разные стороны.',
+      ],
+      calcResult: [
+        'Раунды I–II: каждая ценность встречается ровно 3 раза. «Моё» / «ни за что» = +1, «точно нет» / «заплачу легко» = −1. Раунд III проверяет лидеров (и ценность, которую ждали звёзды) реальной ценой: «беру» +1, «нет» −1.',
+        'Главное противоречие — две сильные ценности на противоположных (или почти противоположных) сторонах круга Шварца. Если таких нет — показываем твоё ясное направление и его цену.',
+        'По мотивам теории базовых ценностей Шварца; формулировки наши и не валидированы. 9 выборов показывают порядок ценностей, а не сравнение с другими людьми.',
+      ],
+      round: (i, n) => 'РАУНД ' + ['I', 'II', 'III'][i] + ' · ' + n,
+      next: 'ДАЛЬШЕ →', toShadow: 'РАУНД III: ТЕНЬ →', toResult: 'ПОКАЗАТЬ МОЙ КОМПАС →',
+      compileBar: 'КАЛИБРОВКА КОМПАСА', compileText: 'Сверяем звёзды с твоими выборами…',
       share: 'ОТПРАВИТЬ ССЫЛКУ-КЛЮЧ', save: 'СОХРАНИТЬ КАРТИНКУ', copyLink: 'СКОПИРОВАТЬ ССЫЛКУ',
-      keyExplain: 'Ссылка-ключ открывает у друга твою карточку. Если он пройдёт своё зеркало — вырастет счётчик реальностей, которые породила твоя.',
-      hintIOS: 'Совет: удерживай карточку пальцем → «Сохранить в Фото».', hintOther: 'Совет: удерживай карточку (или правый клик), чтобы сохранить.',
-      hProfile: 'ТВОЙ ПОРЯДОК ЦЕННОСТЕЙ', hTension: 'ГЛАВНОЕ НАПРЯЖЕНИЕ', hBlind: 'СЛЕПАЯ ЗОНА', bridgeHead: n => 'МОСТ К БУДУЩЕМУ СЕБЕ: ' + n + '/7', hQuest: 'КВЕСТ НА 7 ДНЕЙ',
-      start2: m => 'Хороший день для старта: ' + m.date + ' (через ' + m.inDays + ' ' + BW.plural(m.inDays, ['день', 'дня', 'дней']) + ') — твоя личная веха.',
+      keyExplain: 'Ссылка-ключ открывает у друга твою карточку. Каждая калибровка по этой ссылке — плюс один к счётчику реальностей, которые породила твоя.',
+      hintIOS: 'Совет: удерживай карточку пальцем → «Сохранить в Фото».', hintOther: 'Совет: удерживай карточку пальцем (или кликни правой кнопкой), чтобы сохранить.',
+      hCompass: 'ТВОЙ КОМПАС ЦЕННОСТЕЙ', kDrives: 'ГЛАВНОЕ ДЛЯ ТЕБЯ:', kProtect: 'НИ ЗА ЧТО НЕ ОТДАШЬ:', kEasy: 'ЛЕГКО ОТДАЁШЬ:',
+      hStars: 'ЗВЁЗДЫ VS ТЫ', hContra: 'ГЛАВНОЕ ПРОТИВОРЕЧИЕ', evidenceHead: 'Где это проявилось:', hConf: 'НАСКОЛЬКО МЫ УВЕРЕНЫ',
+      hPurpose: 'ГИПОТЕЗА О ПРЕДНАЗНАЧЕНИИ', purposeQ: 'Это про тебя?', purposeOpts: ['ДА', 'ПОЧТИ', 'НЕТ'], purposeThanks: 'Записали. Уточнить можно с ИИ ниже.',
+      hQuest: 'КВЕСТ НА 7 ДНЕЙ',
       hAI: 'ПРОДОЛЖИТЬ С ИИ', aiExplain: 'Одно нажатие — и твой ИИ откроется с готовым запросом по этому результату. (Нужен вход в аккаунт этого ИИ.)',
-      aiPlan: '▸ ПРЕВРАТИТЬ КВЕСТ В ПЛАН НА 7 ДНЕЙ', aiTension: '▸ РАЗОБРАТЬ МОЁ ГЛАВНОЕ НАПРЯЖЕНИЕ', aiFuture: '▸ ПОГОВОРИТЬ С СОБОЙ ЧЕРЕЗ 10 ЛЕТ',
-      seedMore: 'Полное зерно реальности (файл для любого ИИ)', seedDesc: 'Файл с этим результатом. Вставь его в любой ИИ.',
-      copySeed: 'СКОПИРОВАТЬ ТЕКСТ ЗЕРНА', dlSeed: 'СКАЧАТЬ .weird.md',
-      retake: d => 'ПРОЙДИ СНОВА ' + d + ' — проверь, покажет ли зеркало то же самое. Ценности устойчивы, настроение — нет.',
-      myChoices: 'Мои 8 выборов',
-      fbWorth: 'СТОИЛО ЛИ ЭТО ТВОЕГО ВРЕМЕНИ?', fbTrue: 'ГЛАВНОЕ НАПРЯЖЕНИЕ — ПРО ТЕБЯ?', fbSend: 'ХОЧЕТСЯ ПОКАЗАТЬ ЭТО КОМУ-ТО КОНКРЕТНОМУ?',
+      aiCompass: '▸ РАЗОБРАТЬ МОЙ КОМПАС И ПРОТИВОРЕЧИЕ', aiPurpose: '▸ УТОЧНИТЬ ПРЕДНАЗНАЧЕНИЕ И ПЕРВЫЕ ЦЕЛИ', aiPlan: '▸ ПРЕВРАТИТЬ КВЕСТ В ПЛАН НА 7 ДНЕЙ',
+      seedMore: 'Паспорт ценностей (файл для любого ИИ)', seedDesc: 'Твой компас в виде файла — с профилем, понятным машинам. Вставь его в любой ИИ.',
+      copySeed: 'СКОПИРОВАТЬ ПАСПОРТ', dlSeed: 'СКАЧАТЬ .weird.md',
+      retake: d => 'ПРОЙДИ СНОВА ' + d + ' — устойчив ли компас? Ценности устойчивы, настроение — нет.',
+      caveat: 'Это первая калибровка по 9 выборам — не тест и не диагноз. Ценности — по теории Шварца, формулировки наши. Звёзды — игра.',
+      myChoices: 'Мои 9 выборов',
+      fbWorth: 'СТОИЛО ЛИ ЭТО ТВОЕГО ВРЕМЕНИ?', fbTrue: 'КОМПАС — ПРО ТЕБЯ?', fbSend: 'ХОЧЕТСЯ ПОКАЗАТЬ ЭТО КОМУ-ТО КОНКРЕТНОМУ?',
       trueOpts: ['СОВСЕМ НЕТ', 'ОТЧАСТИ', 'В ТОЧКУ'], yesno: ['ДА', 'НЕТ'],
       fbThanks: 'Записано анонимно. Компания это читает.', again: 'ПРОЙТИ ЕЩЁ РАЗ',
       soundOn: 'ЗВУК: ВКЛ', soundOff: 'ЗВУК: ВЫКЛ',
-      footer: 'BORN WEIRD — эксперимент, который ведёт компания из ИИ-агентов. Не тест, не предсказание, не наука. Без аккаунтов, без cookies, без сторонних трекеров (браузер хранит только ID созданных тобой реальностей и какие ситуации уже были); в публичный сервис уходят только анонимные счётчики событий.',
+      footer: 'BORN WEIRD — эксперимент, который ведёт компания из ИИ-агентов. Не тест, не предсказание, не наука. Без аккаунтов, без cookies, без сторонних трекеров (браузер хранит только ID твоих реальностей и какие ситуации уже были); в публичный сервис уходят только анонимные счётчики событий.',
       builtPublic: 'Строится в открытую',
       ref: id => 'ПЕРЕДАЧА ПОЛУЧЕНА: реальность #' + id + ' отправила тебя сюда.',
-      keyRef: r => ['ТЕБЕ ПРИСЛАЛИ ЗЕРКАЛО', r.title, r.tension.short, 'Твоё будет другим. Введи дату рождения ниже.'],
+      keyRef: r => ['ТЕБЕ ПРИСЛАЛИ КОМПАС ЦЕННОСТЕЙ', r.title, 'Прогноз звёзд: ' + r.stars.labels.join(' + ') + '. Выборы: ' + r.drivesText + '. ' + r.stars.word + '.', 'А в чём звёзды ошибутся насчёт тебя? Введи дату рождения ниже.'],
       spawned: n => 'ТВОИ РЕАЛЬНОСТИ УЖЕ ПОРОДИЛИ НОВЫХ: ' + n + '.',
       errEmpty: 'Введи дату рождения.', errBad: 'Эта дата не вычисляется. Попробуй ещё раз.',
       reality: 'РЕАЛЬНОСТЬ',
       alt: (tt, id) => 'Карточка персонажа: ' + tt + ', реальность #' + id,
-      shareText: r => 'BORN WEIRD показал моё главное внутреннее напряжение: ' + r.tension.short + '. Мой архетип — ' + r.archetype + '. У тебя будет другое:',
+      shareText: r => 'Прогноз звёзд: ' + r.stars.labels.join(' + ') + '. Мои выборы: ' + r.drivesText + '. ' + r.stars.word + '. А что покажут твои?',
       tCopied: 'Скопировано. Отправь одному конкретному человеку.', tLink: 'Ссылка скопирована.', tNoArt: 'Карточка недоступна на этом устройстве.',
-      tSeed: 'Текст зерна скопирован. Вставь его в любой ИИ.', tSeedFail: 'Браузер не дал скопировать. Используй СКАЧАТЬ или кнопки ИИ выше.',
-      art: { arch: 'АРХЕТИП', path: n => 'ЧИСЛО ПУТИ ' + n, tension: 'ГЛАВНОЕ НАПРЯЖЕНИЕ', plus: 'ПЛЮС', shadow: 'ТЕНЬ', bridge: 'МОСТ', rare: n => 'РЕДКОСТЬ: 1 ИЗ ' + n, note: 'ЗЕРКАЛО, А НЕ ПРЕДСКАЗАНИЕ.' },
+      tSeed: 'Паспорт скопирован. Вставь его в любой ИИ.', tSeedFail: 'Браузер не дал скопировать. Используй СКАЧАТЬ или кнопки ИИ выше.',
+      art: { arch: 'АРХЕТИП', path: n => 'ЧИСЛО ПУТИ ' + n, starsExp: 'ЗВЁЗДЫ ЖДАЛИ:', chose: 'ВЫБОРЫ СКАЗАЛИ:', contra: 'ГЛАВНОЕ ПРОТИВОРЕЧИЕ', rare: n => 'РЕДКОСТЬ: 1 ИЗ ' + n, note: 'ПЕРВАЯ КАЛИБРОВКА, А НЕ ПРЕДСКАЗАНИЕ.' },
     },
   };
   const RU_LOCALES = /^(ru|uk|be|kk)\b/i;
@@ -441,7 +462,7 @@
   const FAST = isQA && params.get('fast') === '1'; // automated QA: skip animations
   const fired = new Set();
   // Only events that operations/metrics.mjs reads for the RU segment get a ru_ copy.
-  const RU_TRACKED = /^(landing_view|referred_visit|key_landing_view|simulation_started|birth_viewed|model_viewed|bridge_answered|simulation_completed|referred_simulation_completed|artifact_generated|share_completed|link_copied|artifact_saved|reality_seed_copied|reality_seed_downloaded|ai_open_\w+|item_answered_\d|fb_worth_\d|fb_true_\w+|fb_send_(yes|no))$/;
+  const RU_TRACKED = /^(landing_view|referred_visit|key_landing_view|simulation_started|birth_viewed|simulation_completed|referred_simulation_completed|artifact_generated|share_completed|link_copied|artifact_saved|reality_seed_copied|reality_seed_downloaded|ai_open_\w+|item_answered_\d|purpose_\w+|fb_worth_\d|fb_true_\w+|fb_send_(yes|no))$/;
   const sendQ = []; let pumping = false;
   function hit(key) { try { fetch('https://abacus.jasoncameron.dev/hit/' + NS + '/' + key, { mode: 'cors', keepalive: true }).catch(() => {}); } catch (e) {} }
   function track(ev, opts) {
@@ -467,8 +488,8 @@
   // ---------- referral: ?k=KEY or legacy ?from=ID ----------
   const ownIds = () => { try { return JSON.parse(store.get('bw_own') || '[]'); } catch (e) { return []; } };
   function rememberOwn(id) { const a = ownIds().filter(v => v !== id).concat(id).slice(-50); store.set('bw_own', JSON.stringify(a)); }
-  const seenSits = () => { try { return JSON.parse(store.get('bw_seen') || '[]'); } catch (e) { return []; } };
-  function rememberSeen(ids) { store.set('bw_seen', JSON.stringify(seenSits().concat(ids).slice(-24))); }
+  const seenSits = () => { try { return JSON.parse(store.get('bw_seen5') || '[]'); } catch (e) { return []; } };
+  function rememberSeen(ids) { store.set('bw_seen5', JSON.stringify(seenSits().concat(ids).slice(-12))); }
   const keyParam = params.get('k');
   const keyRes = keyParam ? BW.fromKey(keyParam, lang) : null;
   const fromParam = (keyRes ? keyRes.id : (params.get('from') || '')).toUpperCase();
@@ -481,7 +502,7 @@
   const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
   // ---------- state ----------
-  let run = null, result = null, pngBlob = null, compiling = false, itemIdx = 0, pick = { best: null, worst: null };
+  let run = null, result = null, pngBlob = null, compiling = false, itemIdx = 0, pick = { plus: null, minus: null };
   let aiProvider = store.get('bw_ai') === 'claude' ? 'claude' : 'chatgpt';
 
   function show(id) {
@@ -514,10 +535,11 @@
     };
     step();
   }
+  const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
 
   function applyLang() {
     document.documentElement.lang = lang;
-    document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = UI[lang][el.getAttribute('data-i18n')]; });
+    document.querySelectorAll('[data-i18n]').forEach(e => { e.textContent = UI[lang][e.getAttribute('data-i18n')]; });
     $('langEn').setAttribute('aria-pressed', String(lang === 'en'));
     $('langRu').setAttribute('aria-pressed', String(lang === 'ru'));
     $('btnSound').textContent = SND.on ? t('soundOn') : t('soundOff');
@@ -536,14 +558,11 @@
     if (keyRes && !isOwnKey) {
       const token = ++refToken;
       const shown = BW.fromKey(keyParam, lang);
-      const [head, title, tension, cta] = t('keyRef')(shown);
+      const [head, title, line, cta] = t('keyRef')(shown);
       b.innerHTML = '';
-      const h = document.createElement('div'); h.textContent = head;
-      const ti = document.createElement('b'); ti.textContent = title;
-      const v = document.createElement('div'); v.textContent = tension;
-      const img = document.createElement('img'); img.alt = t('alt')(shown.title, shown.id);
-      const c = document.createElement('div'); c.textContent = cta;
-      b.append(h, ti, v, img, c); b.hidden = false;
+      const ti = el('b', null, title);
+      const img = el('img'); img.alt = t('alt')(shown.title, shown.id);
+      b.append(el('div', null, head), ti, el('div', null, line), img, el('div', null, cta)); b.hidden = false;
       try {
         const blob = await renderArtifact(shown);
         if (token !== refToken) return;
@@ -588,116 +607,103 @@
     showBirth(v);
   });
 
-  // ---------- your time (private) ----------
+  // ---------- your time + the stars' guess (private) ----------
   function showBirth(dateStr) {
     show('s-birth');
     const d = run.decoded;
     const [y, m, dd] = dateStr.split('-');
     $('birthWeeks').textContent = t('weeks')(d.weeksLived);
     const grid = $('lifeGrid'); grid.innerHTML = '';
-    for (let i = 0; i < 90; i++) { const c = document.createElement('i'); if (i < d.age) c.className = 'on'; if (i === d.age) c.className = 'now'; grid.appendChild(c); }
+    for (let i = 0; i < 90; i++) { const c = el('i'); if (i < d.age) c.className = 'on'; if (i === d.age) c.className = 'now'; grid.appendChild(c); }
     $('lifeCaption').textContent = t('lifeCaption')(d.age);
     $('milestone').textContent = t('milestone')(d.milestone);
-    $('stage').textContent = t('stage')(d.stage);
-    $('world').textContent = d.world;
-    $('symbol').className = 'box type';
-    $('symbol').textContent = t('symbol')(Object.assign({ dateShown: dd + '.' + m + '.' + y }, d));
+    const sb = $('starsBox'); sb.innerHTML = '';
+    d.stars.forEach(s => { const v = el('span', 'v', '★ ' + s.label + ' '); v.appendChild(el('small', null, s.meaning)); sb.appendChild(v); });
+    sb.appendChild(el('span', 'small muted', t('starsWhy')(d)));
+    const calc = $('calc'); calc.innerHTML = '';
+    t('calc')(Object.assign({ dateShown: dd + '.' + m + '.' + y }, d)).forEach(line => calc.appendChild(el('p', 'small', line)));
     track('birth_viewed');
   }
-  $('btnBirth').addEventListener('click', () => {
-    const box = $('poles'); box.innerHTML = '';
-    const P = BW.CONTENT[lang];
-    [['axisO', ['FREEDOM', 'ANCHOR']], ['axisE', ['WEIGHT', 'CARE']]].forEach(([ax, ps]) => {
-      const a = document.createElement('div'); a.className = 'axis'; a.textContent = t(ax); box.appendChild(a);
-      ps.forEach(p => { const row = document.createElement('div'); const b = document.createElement('b'); b.textContent = P.poles[p].label; row.append(b, document.createTextNode(' — ' + P.poles[p].meaning)); box.appendChild(row); });
-    });
-    const a = document.createElement('div'); a.className = 'axis'; a.textContent = P.bridge.label; box.appendChild(a);
-    const r = document.createElement('div'); r.textContent = P.bridge.meaning; box.appendChild(r);
-    show('s-model'); SND.blip(); track('model_viewed');
-  });
-  $('btnModel').addEventListener('click', () => { SND.blip(); showItem(0); });
+  $('btnBirth').addEventListener('click', () => { SND.blip(); showItem(0); });
 
-  // ---------- situations ----------
+  // ---------- 9 screens ----------
   function renderHud() {
     const sc = BW.score(run), box = $('hud'); box.innerHTML = '';
-    BW.POLES.forEach((p, i) => {
-      const name = document.createElement('span'); name.textContent = BW.CONTENT[lang].poles[p].label;
-      const bar = document.createElement('i'); const fill = document.createElement('b');
-      fill.style.width = Math.round((sc.net[i] + 8) / 16 * 100) + '%';
-      bar.appendChild(fill); box.append(name, bar);
+    BW.VALUES.forEach((v, i) => {
+      const bar = el('i'), fill = el('b');
+      fill.style.width = Math.max(0, Math.min(100, Math.round((sc.net[i] + 4) / 8 * 100))) + '%';
+      bar.appendChild(fill); box.append(el('span', null, BW.CONTENT[lang].values[v].label), bar);
     });
   }
+  const roundIdx = r => ['instinct', 'price', 'shadow'].indexOf(r);
   function showItem(k) {
-    itemIdx = k; pick = { best: null, worst: null };
-    const it = BW.item(run, k);
+    itemIdx = k; pick = { plus: null, minus: null };
+    const it = BW.item(run, k), R = BW.CONTENT[lang].rounds[it.round];
     show('s-item');
-    $('itemBar').textContent = '[' + (k + 1) + '/' + it.total + '] ' + it.horizon;
-    $('itemBirth').hidden = !it.byBirth;
-    if (it.byBirth) $('itemBirth').textContent = t('byBirth')(run.lifePath);
+    $('itemBar').textContent = '[' + (k + 1) + '/' + it.total + '] ' + t('round')(roundIdx(it.round), R.name);
+    $('itemIntro').textContent = it.hiddenCheck ? R.starsCheck(BW.CONTENT[lang].values[it.value].label) : R.intro;
+    $('itemTitle').textContent = it.round === 'shadow' ? '' : '« ' + it.title + ' »';
     $('itemPrompt').textContent = it.prompt;
-    $('itemHint').textContent = t('pickBest');
     $('itemOut').hidden = true;
     const box = $('itemOpts'); box.innerHTML = '';
+    if (it.round === 'shadow') {
+      $('itemHint').textContent = R.q;
+      const row = el('div', 'row');
+      R.answers.forEach((a, choice) => {
+        const b = el('button', 'opt', a); b.type = 'button';
+        b.addEventListener('click', () => tapShadow(k, choice, b));
+        row.appendChild(b);
+      });
+      box.appendChild(row);
+      return;
+    }
+    // price round asks for the easy price first, then the one you would never pay
+    $('itemHint').textContent = it.round === 'price' ? R.minus : R.plus;
     it.options.forEach((o, pos) => {
-      const b = document.createElement('button'); b.className = 'opt'; b.type = 'button';
-      const mk = document.createElement('span'); mk.className = 'mk';
-      b.append(mk, document.createTextNode(o.text));
-      b.addEventListener('click', () => tapOption(k, pos, b));
+      const b = el('button', 'opt'); b.type = 'button';
+      b.append(el('span', 'mk'), document.createTextNode(o.text));
+      b.addEventListener('click', () => tapOption(k, pos, b, it.round));
       box.appendChild(b);
     });
   }
-  function tapOption(k, pos, btn) {
+  function tapOption(k, pos, btn, round) {
     if (!run || run.answers.length !== k || itemIdx !== k) return;
-    if (pick.best === null) {
-      pick.best = pos; btn.classList.add('best'); btn.querySelector('.mk').textContent = t('mkBest');
-      $('itemHint').textContent = t('pickWorst'); SND.blip(); return;
-    }
-    if (pos === pick.best) { // undo the first pick
-      pick.best = null; btn.classList.remove('best'); btn.querySelector('.mk').textContent = ''; $('itemHint').textContent = t('pickBest'); return;
-    }
-    pick.worst = pos; btn.classList.add('worst'); btn.querySelector('.mk').textContent = t('mkWorst'); SND.no();
+    const R = BW.CONTENT[lang].rounds[round];
+    const firstSlot = round === 'price' ? 'minus' : 'plus', secondSlot = firstSlot === 'plus' ? 'minus' : 'plus';
+    const mark = (b, slot) => { b.classList.add(slot === 'plus' ? 'best' : 'worst'); b.querySelector('.mk').textContent = slot === 'plus' ? R.mkPlus : R.mkMinus; };
+    if (pick[firstSlot] === null) { pick[firstSlot] = pos; mark(btn, firstSlot); $('itemHint').textContent = secondSlot === 'plus' ? R.plus : R.minus; SND.blip(); return; }
+    if (pos === pick[firstSlot]) { pick[firstSlot] = null; btn.classList.remove('best', 'worst'); btn.querySelector('.mk').textContent = ''; $('itemHint').textContent = firstSlot === 'plus' ? R.plus : R.minus; return; }
+    pick[secondSlot] = pos; mark(btn, secondSlot); SND.no();
     $('itemOpts').querySelectorAll('button').forEach(b => { b.disabled = true; });
     $('itemHint').textContent = '';
-    const out = BW.answer(run, k, pick.best, pick.worst);
+    revealOutcome(k, BW.answer(run, k, pick.plus, pick.minus));
+  }
+  function tapShadow(k, choice, btn) {
+    if (!run || run.shadows.length !== k - BW.CHOICE_SCREENS || itemIdx !== k) return;
+    $('itemOpts').querySelectorAll('button').forEach(b => { b.disabled = true; });
+    if (choice === 1) { btn.style.cssText = 'border-color:var(--cy);color:#fff;opacity:1;background:#0d2a3a'; } else btn.classList.add(choice === 0 ? 'best' : 'worst');
+    $('itemHint').textContent = '';
+    choice === 2 ? SND.no() : SND.blip();
+    revealOutcome(k, BW.answerShadow(run, k, choice));
+  }
+  function revealOutcome(k, out) {
     track('item_answered_' + (k + 1));
     const main = $('s-item'); main.classList.remove('glitch'); void main.offsetWidth; main.classList.add('glitch');
     $('itemOut').hidden = false; $('itemDeltas').innerHTML = ''; $('hud').innerHTML = '';
     const next = $('btnNext'); next.disabled = true;
-    next.textContent = k === BW.BRIDGE_AFTER ? t('toBridge') : (k + 1 < BW.PLAN.length ? t('next') : t('toResult'));
+    next.textContent = k + 1 === BW.TOTAL ? t('toResult') : k + 1 === BW.CHOICE_SCREENS ? t('toShadow') : t('next');
     typeInto($('itemReact'), out.reaction, () => {
-      out.deltas.forEach(d => { const s = document.createElement('span'); s.className = d.value > 0 ? 'okc' : 'noc'; s.textContent = (d.value > 0 ? '+1 ' : '−1 ') + d.label; $('itemDeltas').appendChild(s); });
+      out.deltas.forEach(d => $('itemDeltas').appendChild(el('span', d.delta > 0 ? 'okc' : 'noc', (d.delta > 0 ? '+1 ' : '−1 ') + d.label)));
       renderHud(); SND.up(); next.disabled = false;
       next.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
     });
   }
   $('btnNext').addEventListener('click', () => {
-    if (!run || run.answers.length !== itemIdx + 1) return;
-    if (itemIdx === BW.BRIDGE_AFTER && run.bridge == null) return showBridge();
-    if (itemIdx + 1 < BW.PLAN.length) showItem(itemIdx + 1); else compile();
+    if (!run) return;
+    const done = run.answers.length + run.shadows.length;
+    if (done !== itemIdx + 1) return;
+    if (itemIdx + 1 < BW.TOTAL) showItem(itemIdx + 1); else compile();
   });
-
-  // ---------- bridge (future self-continuity) ----------
-  function circles(v) {
-    const gap = 46 - (v - 1) * 7.5; // 1: apart … 7: same circle
-    return '<svg viewBox="0 0 80 50" aria-hidden="true"><circle cx="' + (40 - gap / 2) + '" cy="25" r="16" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="' + (40 + gap / 2) + '" cy="25" r="16" fill="none" stroke="#ffff55" stroke-width="3"/></svg>';
-  }
-  function showBridge() {
-    const Q = BW.CONTENT[lang].bridgeQ;
-    show('s-bridge');
-    $('bridgePrompt').textContent = Q.prompt; $('bridgeLow').textContent = Q.low; $('bridgeHigh').textContent = Q.high;
-    const box = $('bridgeOpts'); box.innerHTML = '';
-    for (let v = 1; v <= 7; v++) {
-      const b = document.createElement('button'); b.type = 'button'; b.setAttribute('aria-label', String(v));
-      b.innerHTML = circles(v) + '<span class="n">' + v + '</span>';
-      b.addEventListener('click', () => {
-        if (run.bridge != null) return;
-        BW.setBridge(run, v); SND.up(); track('bridge_answered'); track('bridge_' + v);
-        box.querySelectorAll('button').forEach(x => { x.disabled = true; }); b.style.background = 'var(--fg)'; b.style.color = '#000';
-        setTimeout(() => showItem(itemIdx + 1), FAST ? 0 : 350);
-      });
-      box.appendChild(b);
-    }
-  }
 
   // ---------- compile ----------
   async function compile() {
@@ -710,7 +716,8 @@
     result = BW.finish(run);
     rememberOwn(result.id); rememberSeen(result.sitIds);
     track('simulation_completed');
-    track('tension_' + (result.tension.kind === 'axis' ? result.tension.axis : result.tension.kind));
+    track('contra_' + result.contradiction.kind); track('stars_' + result.stars.kind);
+    if (result.hidden) track('hidden_found'); if (result.fragile) track('fragile_found');
     if (referredBy) {
       track('referred_simulation_completed');
       if (!store.get('bw_ref_sent_' + referredBy, true)) { store.set('bw_ref_sent_' + referredBy, '1', true); track('ref_' + referredBy); }
@@ -727,52 +734,69 @@
   function shareUrl() { return langBase() + '?k=' + result.key; }
   function shareText() { return t('shareText')(result); }
   function aiUrl(prompt) { const q = encodeURIComponent(prompt); return aiProvider === 'claude' ? 'https://claude.ai/new?q=' + q : 'https://chatgpt.com/?q=' + q; }
+  const AI_LINKS = [['aiCompass', 'compass'], ['aiPurpose', 'purpose'], ['aiPlan', 'plan']];
   function renderAI() {
     const p = BW.aiPrompts(result);
     $('aiChatgpt').setAttribute('aria-pressed', String(aiProvider === 'chatgpt'));
     $('aiClaude').setAttribute('aria-pressed', String(aiProvider === 'claude'));
     $('aiChatgpt').style.cssText = aiProvider === 'chatgpt' ? 'background:var(--fg);color:#000' : '';
     $('aiClaude').style.cssText = aiProvider === 'claude' ? 'background:var(--fg);color:#000' : '';
-    $('aiPlan').textContent = t('aiPlan'); $('aiPlan').href = aiUrl(p.plan);
-    $('aiTension').textContent = t('aiTension'); $('aiTension').href = aiUrl(p.tension);
-    $('aiFuture').textContent = t('aiFuture'); $('aiFuture').href = aiUrl(p.future);
+    AI_LINKS.forEach(([id, kind]) => { $(id).textContent = t(id); $(id).href = aiUrl(p[kind]); });
   }
   [['aiChatgpt', 'chatgpt'], ['aiClaude', 'claude']].forEach(([id, pv]) => $(id).addEventListener('click', () => { aiProvider = pv; store.set('bw_ai', pv); renderAI(); SND.blip(); }));
-  [['aiPlan', 'plan'], ['aiTension', 'tension'], ['aiFuture', 'future']].forEach(([id, kind]) => $(id).addEventListener('click', () => track('ai_open_' + kind + '_' + aiProvider)));
+  AI_LINKS.forEach(([id, kind]) => $(id).addEventListener('click', () => track('ai_open_' + kind + '_' + aiProvider)));
 
   function showResult() {
     show('s-result'); SND.fanfare();
-    $('resBar').textContent = t('reality') + ' #' + result.id + ' · ' + result.earth;
-    $('resTitle').textContent = result.title;
-    $('resPlus').textContent = result.plus; $('resShadow').textContent = result.shadow;
+    const r = result;
+    $('resBar').textContent = t('reality') + ' #' + r.id + ' · ' + r.earth;
+    $('resTitle').textContent = r.title;
+    $('resPlus').textContent = r.plus; $('resShadow').textContent = r.shadow;
     const img = $('artifact');
     if (img.src && img.src.startsWith('blob:')) URL.revokeObjectURL(img.src);
-    if (pngBlob) { img.src = URL.createObjectURL(pngBlob); img.alt = t('alt')(result.title, result.id); img.hidden = false; } else img.hidden = true;
+    if (pngBlob) { img.src = URL.createObjectURL(pngBlob); img.alt = t('alt')(r.title, r.id); img.hidden = false; } else img.hidden = true;
     $('saveHint').textContent = isIOS ? t('hintIOS') : t('hintOther');
-    $('resOrder').textContent = result.orderText;
+    // compass
+    $('resDrives').textContent = r.drivesText; $('resProtect').textContent = r.protectLabel; $('resEasy').textContent = r.easyLabel;
     const pr = $('resProfile'); pr.innerHTML = '';
-    result.rank.forEach((p, i) => {
-      const row = result.profile.find(x => x.pole === p);
-      const name = document.createElement('span'); name.textContent = row.label; if (i === 0) name.className = 'top1';
-      const bar = document.createElement('i'); const fill = document.createElement('b'); fill.style.width = row.bar * 10 + '%'; bar.appendChild(fill);
-      const mean = document.createElement('span'); mean.className = 'small muted'; mean.textContent = '✓' + row.best + ' ✗' + row.worst;
-      pr.append(name, bar, mean);
-      const m = document.createElement('span'); m.className = 'small muted'; m.style.gridColumn = '1 / -1'; m.textContent = result.meanings[p]; pr.appendChild(m);
+    r.compass.forEach((c, i) => {
+      const bar = el('i'), fill = el('b'); fill.style.width = c.bar * 10 + '%'; bar.appendChild(fill);
+      pr.append(el('span', i === 0 ? 'top1' : null, (r.stars.values.includes(c.value) ? '★ ' : '') + c.label), bar, el('span', 'small muted m', c.meaning));
     });
-    $('resTensionShort').textContent = result.tension.short; $('resTension').textContent = result.tension.text;
-    $('resBlind').textContent = result.blind;
-    $('resBridgeHead').textContent = t('bridgeHead')(result.bridge); $('resBridge').textContent = result.bridgeText;
-    $('resQuest').textContent = result.tension.quest;
-    $('resStart').textContent = ''; // the milestone date stays on the private birth screen: next to the life path it would reveal the birth date
+    // stars, contradiction, confidence, purpose, quest
+    $('resStarsWord').textContent = r.stars.word + '.'; $('resStars').textContent = r.stars.text;
+    $('resHidden').hidden = !r.hiddenText; $('resHidden').textContent = r.hiddenText || '';
+    $('resContraShort').textContent = r.contradiction.short; $('resContra').textContent = r.contradiction.text;
+    const ev = $('resEvidence'); ev.innerHTML = ''; r.contradiction.evidence.forEach(e => ev.appendChild(el('li', null, e)));
+    $('evHead').hidden = !r.contradiction.evidence.length;
+    $('resConf').textContent = r.confidence.text;
+    $('resFragile').hidden = !r.fragileText; $('resFragile').textContent = r.fragileText || '';
+    $('resPurpose').textContent = r.purpose;
+    buildPurpose();
+    $('resQuest').textContent = r.contradiction.quest;
     $('retake').textContent = t('retake')(run && run.decoded ? run.decoded.retakeDate : '');
     renderAI();
     const ol = $('resChoices'); ol.innerHTML = '';
-    result.choices.forEach(c => {
-      const li = document.createElement('li'); const b = document.createElement('b'); b.textContent = c.horizon + ' — ';
-      li.append(b, document.createTextNode(c.prompt + ' ✓ ' + c.best + ' · ✗ ' + c.worst)); ol.appendChild(li);
+    r.choices.forEach(c => {
+      const li = el('li'); li.appendChild(el('b', null, c.title + ' — '));
+      li.appendChild(document.createTextNode(c.round === 'shadow' ? c.prompt + ' → ' + c.answer : c.prompt + ' ✓ ' + c.plus + ' · ✗ ' + c.minus));
+      ol.appendChild(li);
     });
-    $('seedPre').textContent = BW.realitySeedMarkdown(result);
+    const cr = $('calcRes'); cr.innerHTML = ''; t('calcResult').forEach(line => cr.appendChild(el('p', 'small', line)));
+    $('seedPre').textContent = BW.realitySeedMarkdown(r);
     buildFeedback();
+  }
+  function buildPurpose() {
+    const box = $('purposeBtns'); box.innerHTML = ''; let done = false;
+    ['yes', 'almost', 'no'].forEach((v, i) => {
+      const b = el('button', null, t('purposeOpts')[i]); b.type = 'button';
+      b.addEventListener('click', () => {
+        if (done) return; done = true; SND.blip(); track('purpose_' + v);
+        box.querySelectorAll('button').forEach(x => { x.disabled = x !== b; });
+        b.style.background = 'var(--fg)'; b.style.color = '#000'; toast(t('purposeThanks'));
+      });
+      box.appendChild(b);
+    });
   }
 
   const isAbort = e => e && e.name === 'AbortError';
@@ -798,7 +822,7 @@
   });
   $('btnCopySeed').addEventListener('click', async () => { if (await copyText(BW.realitySeedMarkdown(result))) { track('reality_seed_copied'); toast(t('tSeed')); } else toast(t('tSeedFail')); });
   $('btnDlSeed').addEventListener('click', async () => {
-    const name = 'mirror_' + result.id + '.weird.md';
+    const name = 'compass_' + result.id + '.weird.md';
     const file = new File([BW.realitySeedMarkdown(result)], name, { type: 'text/markdown' });
     if (isTouch && navigator.canShare && navigator.canShare({ files: [file] })) {
       try { await navigator.share({ files: [file], title: '' }); track('reality_seed_downloaded'); return; } catch (e) { if (isAbort(e)) return; }
@@ -809,14 +833,14 @@
   });
   $('btnAgain').addEventListener('click', () => {
     track('restart_clicked');
-    fired.forEach(k => { if (/^(founder_)?(ru_)?(simulation_|referred_simulation_|birth_|model_|item_|bridge_|tension_|artifact_|reality_seed_|share_|link_copied|ai_open_|fb_|feedback_|restart_)/.test(k)) fired.delete(k); });
+    fired.forEach(k => { if (/^(founder_)?(ru_)?(simulation_|referred_simulation_|birth_|item_|contra_|stars_|hidden_|fragile_|purpose_|artifact_|reality_seed_|share_|link_copied|ai_open_|fb_|feedback_|restart_)/.test(k)) fired.delete(k); });
     run = null; result = null; show('s-intro');
   });
 
   function buildFeedback() {
     const done = {};
     const mk = (box, label, ev, k) => {
-      const b = document.createElement('button'); b.textContent = label;
+      const b = el('button', null, label);
       b.addEventListener('click', () => {
         if (done[k]) return; done[k] = true; SND.blip();
         track(ev); track('feedback_submitted');
@@ -838,6 +862,8 @@
     WEIGHT: { sky: ['#0a0000', '#2a0000', '#5c0a0a', '#991b1b', '#ef4444'], m: ['#260303', '#160101', '#080000'], g: '#0a0000', sun: '#ffeeee', acc: '#ff5555' },
     CARE: { sky: ['#1c0a00', '#431407', '#9a3412', '#ea580c', '#fdba74'], m: ['#3b1206', '#240a03', '#120400'], g: '#160600', sun: '#fff1b8', acc: '#ffcc55' },
   };
+  // the 8 values share 4 landscapes: openness, self-enhancement, conservation, self-transcendence
+  const SCENE = { FREEDOM: 'FREEDOM', NOVELTY: 'FREEDOM', SUCCESS: 'WEIGHT', INFLUENCE: 'WEIGHT', SECURITY: 'ANCHOR', ROOTS: 'ANCHOR', PEOPLE: 'CARE', WORLD: 'CARE' };
   function fontReady(l) {
     if (!document.fonts || !document.fonts.load) return Promise.resolve();
     const f = l === 'ru' ? Promise.all([document.fonts.load('600 40px Plex', 'АБВ ABC'), document.fonts.load('400 40px Plex', 'АБВ ABC'), document.fonts.load('40px VT323')]) : document.fonts.load('40px VT323');
@@ -847,7 +873,7 @@
     const W = 180, H = 110, HZ = 88;
     const c = document.createElement('canvas'); c.width = W; c.height = H;
     const x = c.getContext('2d', { willReadFrequently: true });
-    const r = BW.rng(res.artSeed), P = PALETTES[res.top];
+    const r = BW.rng(res.artSeed), G = SCENE[res.top], P = PALETTES[G];
     for (let i = 0; i < 5; i++) {
       x.fillStyle = P.sky[i]; const y0 = Math.floor(i * 14), y1 = Math.floor((i + 1) * 14);
       x.fillRect(0, y0, W, y1 - y0 + 1); x.fillStyle = P.sky[Math.min(i + 1, 4)];
@@ -878,7 +904,7 @@
     const lx = 110 + Math.floor(r() * 50), ly = HZ;
     const S = (dx, dy, w, h, col) => { x.fillStyle = col; x.fillRect(lx + dx, ly + dy, w, h); };
     const dark = '#000000', lit = P.acc;
-    switch (res.top) {
+    switch (G) {
       case 'WEIGHT': S(-4, -46, 9, 46, dark); S(-2, -54, 5, 8, dark); S(0, -60, 1, 6, lit); for (let w = -40; w < -2; w += 5) { S(-2, w, 1, 2, lit); S(2, w, 1, 2, lit); } break;
       case 'ANCHOR': S(-10, -14, 21, 14, dark); S(-6, -18, 13, 4, dark); S(-1, -8, 3, 8, lit); S(-12, -2, 25, 2, dark); S(-3, -36, 7, 22, dark); S(-2, -38, 5, 2, lit); break;
       case 'CARE': for (let h = -24; h <= 16; h += 10) { S(h, -8, 8, 8, dark); S(h + 1, -11, 6, 3, dark); S(h + 3, -5, 2, 2, lit); } S(-26, -1, 50, 1, lit); break;
@@ -910,7 +936,6 @@
     });
     return opt.y + lines.length * lh;
   }
-  const firstSentence = s => { const m = String(s).match(/^[^.!?]*[.!?]/); return m ? m[0] : s; };
 
   async function renderArtifact(res) {
     const L = res.lang === 'ru' ? 'ru' : 'en', A = UI[L].art;
@@ -918,7 +943,7 @@
     const W = 1080, H = 1920;
     const c = document.createElement('canvas'); c.width = W; c.height = H;
     const x = c.getContext('2d');
-    const P = PALETTES[res.top];
+    const P = PALETTES[SCENE[res.top]];
     const VT = px => px + 'px VT323, ui-monospace, monospace';
     const T = L === 'ru' ? px => '600 ' + Math.round(px * 0.62) + 'px Plex, ui-monospace, monospace' : VT;
     const Tn = L === 'ru' ? px => '400 ' + Math.round(px * 0.68) + 'px Plex, ui-monospace, monospace' : VT;
@@ -927,53 +952,50 @@
     x.fillStyle = '#ffffff'; x.font = VT(44); x.textBaseline = 'middle';
     x.fillText('BORN_WEIRD.EXE', 26, 37); x.textAlign = 'right'; x.fillText(res.protocol + ' // ' + res.earth, W - 26, 37); x.textAlign = 'left';
     x.textBaseline = 'top';
-    x.imageSmoothingEnabled = false; x.drawImage(drawScene(res), 0, 70, W, 660);
-    const label = A.arch + ' // ' + A.path(res.lifePath) + ' · ' + res.lp.name;
+    x.imageSmoothingEnabled = false; x.drawImage(drawScene(res), 0, 70, W, 600);
+    const label = A.arch + ' // ' + A.path(res.lifePath) + ' · ' + res.stars.elementName.toUpperCase();
     x.font = T(40);
     x.fillStyle = 'rgba(0,0,0,0.75)'; x.fillRect(40, 100, Math.min(W - 80, x.measureText(label).width + 28), L === 'ru' ? 40 : 46);
     x.fillStyle = P.acc; x.fillText(label, 54, L === 'ru' ? 108 : 104);
     block(x, res.title, { x: 50, y: 170, w: W - 100, size: 104, min: 60, lines: 4, lh: 1.0, font: T, color: '#ffff55', shadow: true, center: true });
 
-    const py = 740;
+    const py = 680;
     x.strokeStyle = P.acc; x.lineWidth = 5; x.strokeRect(14, py, W - 28, H - py - 16);
     x.lineWidth = 2; x.strokeRect(26, py + 12, W - 52, H - py - 40);
-    let y = block(x, res.orderText, { x: 60, y: py + 40, w: W - 120, size: 52, min: 30, lines: 1, font: T, color: '#55ffff' });
-    y += 22;
-    // profile bars in rank order
-    x.font = T(50);
-    const labelW = Math.max(...res.profile.map(p => x.measureText(p.label).width)) + 28;
-    const barX = 60 + labelW, step = Math.floor((W - 80 - barX) / 10);
-    res.rank.forEach((p, i) => {
-      const row = res.profile.find(z => z.pole === p), sy = y + i * 56;
-      x.font = T(50); x.fillStyle = i === 0 ? '#ffff55' : i === 3 ? '#777' : '#c8ffc8';
-      x.fillText(row.label, 60, sy + (L === 'ru' ? 8 : 0));
-      for (let b = 0; b < 10; b++) { x.fillStyle = b < row.bar ? (i === 0 ? '#ffff55' : P.acc) : '#222'; x.fillRect(barX + b * step, sy + 8, step - 6, 32); }
+    // compass star: 8 rays in Schwartz circle order, stars' expected values marked ★
+    const cx = W / 2, cy = py + 250, R = 160, ang = i => (-90 + i * 45) * Math.PI / 180;
+    const barOf = Object.fromEntries(res.compass.map(cc => [cc.value, cc]));
+    x.strokeStyle = '#2a4a2a'; x.lineWidth = 2;
+    [1 / 3, 2 / 3, 1].forEach(f => { x.beginPath(); BW.VALUES.forEach((v, i) => { const px = cx + Math.cos(ang(i)) * R * f, pyy = cy + Math.sin(ang(i)) * R * f; i ? x.lineTo(px, pyy) : x.moveTo(px, pyy); }); x.closePath(); x.stroke(); });
+    BW.VALUES.forEach((v, i) => { x.beginPath(); x.moveTo(cx, cy); x.lineTo(cx + Math.cos(ang(i)) * R, cy + Math.sin(ang(i)) * R); x.stroke(); });
+    x.beginPath();
+    BW.VALUES.forEach((v, i) => { const f = Math.max(0.08, barOf[v].bar / 10), px = cx + Math.cos(ang(i)) * R * f, pyy = cy + Math.sin(ang(i)) * R * f; i ? x.lineTo(px, pyy) : x.moveTo(px, pyy); });
+    x.closePath(); x.fillStyle = 'rgba(255,255,85,0.28)'; x.fill(); x.strokeStyle = '#ffff55'; x.lineWidth = 4; x.stroke();
+    x.textBaseline = 'middle';
+    BW.VALUES.forEach((v, i) => {
+      const lx = cx + Math.cos(ang(i)) * (R + 26), ly = cy + Math.sin(ang(i)) * (R + 26), cs = Math.cos(ang(i));
+      x.textAlign = Math.abs(cs) < 0.2 ? 'center' : cs > 0 ? 'left' : 'right';
+      const lb = (res.stars.values.includes(v) ? '★' : '') + barOf[v].label;
+      x.font = T(v === res.top ? 50 : 42); x.fillStyle = v === res.top ? '#ffff55' : res.drives.includes(v) ? '#c8ffc8' : '#6a8f6a';
+      x.fillText(lb, lx, ly + (Math.abs(cs) < 0.2 ? Math.sign(Math.sin(ang(i))) * 18 : 0));
     });
-    y += 4 * 56 + 24;
-    // tension box
-    const tBody = firstSentence(res.tension.text);
-    const tOpt = (yy, dry) => ({ x: 82, y: yy, w: W - 164, size: 40, min: 28, lines: 3, lh: 1.15, font: Tn, color: '#ffffff', dry });
-    let ty = y + 26; x.font = T(36); ty += 44;
-    const shortOpt = (yy, dry) => ({ x: 82, y: yy, w: W - 164, size: 50, min: 32, lines: 2, font: T, color: '#ffff55', dry });
-    ty = block(x, res.tension.short, shortOpt(ty, true)) + 8;
-    ty = block(x, tBody, tOpt(ty, true)) + 20;
-    const tH = ty - y;
+    x.textAlign = 'left'; x.textBaseline = 'top';
+    let y = cy + R + 70;
+    // stars vs choices
+    x.font = T(36); x.fillStyle = '#ff55ff'; x.fillText(A.starsExp, 60, y);
+    y = block(x, '★ ' + res.stars.labels.join(' + '), { x: 60, y: y + 44, w: W - 120, size: 46, min: 30, lines: 1, font: T, color: '#ffffff' }) + 10;
+    x.font = T(36); x.fillStyle = '#55ffff'; x.fillText(A.chose, 60, y);
+    y = block(x, res.drivesText, { x: 60, y: y + 44, w: W - 120, size: 46, min: 30, lines: 1, font: T, color: '#ffff55' }) + 6;
+    y = block(x, res.stars.word + '.', { x: 60, y, w: W - 120, size: 64, min: 40, lines: 1, font: T, color: '#ff55ff' }) + 20;
+    // contradiction box
+    // only the one-line headline goes on the card: the full text stays on the page (readable on a phone)
+    const shortOpt = (yy, dry) => ({ x: 82, y: yy, w: W - 164, size: 64, min: 40, lines: 2, font: T, color: '#ffff55', dry });
+    const tH = block(x, res.contradiction.short, shortOpt(y + 70, true)) + 24 - y;
     x.fillStyle = '#0000aa'; x.fillRect(50, y, W - 100, tH);
     x.strokeStyle = '#ffffff'; x.lineWidth = 3; x.strokeRect(58, y + 8, W - 116, tH - 16);
-    x.font = T(36); x.fillStyle = '#55ffff'; x.fillText(A.tension, 82, y + 26);
-    let yy = block(x, res.tension.short, shortOpt(y + 70, false)) + 8;
-    block(x, tBody, tOpt(yy, false));
-    y += tH + 22;
-    // plus / shadow / bridge
-    const rows = [[A.plus, res.plus, '#55ff99'], [A.shadow, res.shadow, '#ff7777']];
-    rows.forEach(([k, v, col]) => {
-      x.font = T(40); x.fillStyle = col; x.fillText(k, 60, y + (L === 'ru' ? 6 : 0));
-      y = Math.max(y + 48, block(x, v, { x: 280, y: y + (L === 'ru' ? 4 : 0), w: W - 340, size: 40, min: 28, lines: 2, lh: 1.1, font: Tn, color: '#ffffff' })) + 8;
-    });
-    x.font = T(40); x.fillStyle = '#55ffff'; x.fillText(A.bridge, 60, y + (L === 'ru' ? 6 : 0));
-    for (let i = 0; i < 7; i++) { x.strokeStyle = '#55ffff'; x.lineWidth = 3; x.fillStyle = i < res.bridge ? '#55ffff' : '#000'; x.fillRect(280 + i * 52, y + 6, 40, 32); x.strokeRect(280 + i * 52, y + 6, 40, 32); }
-    x.font = VT(44); x.fillStyle = '#ffffff'; x.fillText(res.bridge + '/7', 280 + 7 * 52 + 14, y + 2);
-    y += 56;
+    x.font = T(36); x.fillStyle = '#55ffff'; x.fillText(A.contra, 82, y + 26);
+    block(x, res.contradiction.short, shortOpt(y + 70, false));
+    y += tH + 20;
     if (res.rarity) { x.font = T(40); x.fillStyle = '#ffff55'; x.fillText(A.rare(res.rarity), 60, y); y += 50; }
     // footer pinned to the bottom
     const fy = Math.max(y + 10, H - 30 - 104);

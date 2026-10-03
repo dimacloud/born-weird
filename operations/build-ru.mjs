@@ -12,9 +12,9 @@ let html = await readFile(join(site, 'index.html'), 'utf8');
 const swaps = [
   ['<html lang="en">', '<html lang="ru" data-lang="ru">'],
   ['<head>\n', '<head>\n<base href="../">\n'],
-  [/<meta name="description" content="[^"]*">/, '<meta name="description" content="Зеркало для жизней, которых у тебя ещё не было. 8 ситуаций, 3 минуты: какие ценности тянут тебя в разные стороны.">'],
-  [/<meta property="og:title" content="[^"]*">/, '<meta property="og:title" content="BORN WEIRD — зеркало для жизней, которых у тебя ещё не было">'],
-  [/<meta property="og:description" content="[^"]*">/, '<meta property="og:description" content="8 ситуаций, 3 минуты: какие ценности тянут тебя в разные стороны. Зеркало, не тест.">'],
+  [/<meta name="description" content="[^"]*">/, '<meta name="description" content="Звёзды выдвинули гипотезу о твоих ценностях. 9 странных выборов её проверят. Компас ценностей за 3 минуты — честно, странно, не предсказание.">'],
+  [/<meta property="og:title" content="[^"]*">/, '<meta property="og:title" content="BORN WEIRD — звёзды угадали твои ценности? Проверь за 3 минуты">'],
+  [/<meta property="og:description" content="[^"]*">/, '<meta property="og:description" content="9 странных выборов: твой компас ценностей, главное противоречие и в чём ошиблись звёзды — на пиксельной карточке.">'],
   [/<meta property="og:image" content="[^"]*">/, '<meta property="og:image" content="https://dimacloud.github.io/born-weird/og-ru.png">\n<meta property="og:locale" content="ru_RU">'],
 ];
 for (const [a, b] of swaps) {

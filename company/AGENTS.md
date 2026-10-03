@@ -121,3 +121,4 @@ CEO-001 ── runs: BUILDER-001 (mode), PRODUCT (merged)
 | 2026-10-03 | RU-EDITOR-001 spawned (temporary, retires after RU review) | Builder should not be the only judge of its own translation; native-quality copy is a share-rate risk |
 | 2026-10-03 | RESEARCH-001, UX-AUDIT-001, AI-ARCH-001 spawned in parallel, then retired | Founder asked for a value audit. Three independent lenses (market, user, cost) in ~2 min wall-clock, ~370k tokens total |
 | 2026-10-03 | RU-EDITOR-002 spawned (temporary) | New v0.3 Russian copy needs an independent native read |
+| 2026-10-03 | QA-EVAL-001 (v0.5) and RU-EDITOR-004 spawned in parallel (temporary) | Independent evaluation and native-copy review of v0.5 before deploy |
