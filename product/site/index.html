@@ -400,6 +400,16 @@
       if (ctx.state === 'suspended') ctx.resume();
       return ctx;
     }
+    // Mobile: audio may only start inside a user gesture, and iOS mutes Web Audio
+    // with the silent switch unless the session is 'playback'. Unlock on first touch.
+    function unlock() {
+      if (!on) return;
+      try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) {}
+      const a = ac(); if (!a) return;
+      try { const b = a.createBuffer(1, 1, 22050), s = a.createBufferSource(); s.buffer = b; s.connect(a.destination); s.start(0); } catch (e) {}
+      if (a.state === 'running') ['pointerdown', 'touchend', 'keydown'].forEach(ev => document.removeEventListener(ev, unlock, true));
+    }
+    ['pointerdown', 'touchend', 'keydown'].forEach(ev => document.addEventListener(ev, unlock, true));
     function tone(f, d, at, type, vol) {
       if (!on) return;
       const a = ac(); if (!a) return;
