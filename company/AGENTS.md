@@ -100,7 +100,7 @@ CEO-001 ── runs: BUILDER-001 (mode), PRODUCT (merged)
 | RESEARCH-002 | Evidence-based backbone measurable in ~8 choices | Schwartz higher-order values + Hershfield FSC; best–worst format; caveats | RETIRED |
 | RESEARCH-003 | What a birth date can honestly give; RU numerology market | Life in weeks, fresh-start milestones, Erikson stage; plus/shadow language; avoid karma and fear funnels | RETIRED |
 | PROTOTYPE-001 | Would a live adaptive AI fix "empty/repetitive"? | 3 RU sample sessions; ~$0.025/session; needs an ingredient pool, gender checks, fallback | RETIRED |
-| RU-EDITOR-003 | RU copy review of v0.4 | (pending) | TEMPORARY |
+| RU-EDITOR-003 | RU copy review of v0.4 | 27 edits; flagged 2 unbalanced situations (rewritten by CEO); 4/5 | RETIRED |
 
 ### PROPOSED (not instantiated)
 | Role | Why not now | Instantiate when |

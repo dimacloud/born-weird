@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-10-03T07:52:00Z",
+  "updated_at": "2026-10-03T09:30:00Z",
   "phase": "PHASE_0_BECOME_ALIVE",
   "level": 0,
-  "status": "LIVE_V0.3_AWAITING_FIRST_HUMANS",
+  "status": "LIVE_V0.4_MIRROR_AWAITING_FIRST_HUMANS",
   "primary_bottleneck": {
     "id": "B-002",
     "statement": "Zero non-Founder humans have seen the product. Agents may not send unsolicited messages, so first exposure needs the Founder to personally send the link to 3-5 people (HUMAN REQUEST #002).",
@@ -14,7 +14,7 @@
     "EXP-003"
   ],
   "product": {
-    "version": "0.3",
+    "version": "0.4",
     "url": "https://dimacloud.github.io/born-weird/",
     "deployed": true,
     "language": [
@@ -29,9 +29,10 @@
       "reality_seed_md",
       "share_link_with_from_param"
     ],
-    "deployed_at": "2026-10-03T07:50:00Z",
+    "deployed_at": "2026-10-03T09:30:00Z",
     "repo": "https://github.com/dimacloud/born-weird",
-    "url_ru": "https://dimacloud.github.io/born-weird/ru/"
+    "url_ru": "https://dimacloud.github.io/born-weird/ru/",
+    "model": "Schwartz 4 poles (FREEDOM/ANCHOR/WEIGHT/CARE) + BRIDGE (Hershfield)"
   },
   "agents": [
     {
@@ -78,6 +79,23 @@
       "id": "RU-EDITOR-002",
       "status": "RETIRED",
       "note": "native-feel 4.5/5"
+    },
+    {
+      "id": "RESEARCH-002",
+      "status": "RETIRED"
+    },
+    {
+      "id": "RESEARCH-003",
+      "status": "RETIRED"
+    },
+    {
+      "id": "PROTOTYPE-001",
+      "status": "RETIRED"
+    },
+    {
+      "id": "RU-EDITOR-003",
+      "status": "RETIRED",
+      "note": "27 edits, 4/5"
     }
   ],
   "treasury": {
@@ -102,7 +120,7 @@
     }
   },
   "founder": {
-    "minutes": 27,
+    "minutes": 40,
     "approvals": 0,
     "overrides": 1,
     "credential_actions_done": 1,
@@ -117,8 +135,7 @@
   "alive": false,
   "qa": {
     "verdict": "PASS",
-    "tests": "23/23",
-    "blockers_caught_pre_deploy": 6,
-    "note": "v0.3: birth-date leak via key/scores found twice by QA and closed (life path only)"
+    "tests": "26/26",
+    "note": "v0.4 QA FAIL (contradictory result texts 22–57%) → fixed → 0%"
   }
 }

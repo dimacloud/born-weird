@@ -24,7 +24,7 @@ test('real facts: weeks, age, stage, milestone, world', () => {
   assert.equal(BW.decodeBirth('1988-10-03', 'en', NOW).age, 38); // birthday today
   assert.equal(BW.decodeBirth('1988-10-04', 'en', NOW).age, 37);
   const g = BW.decodeBirth('1995-01-01', 'en', new Date('2026-09-01T12:00:00Z'));
-  assert.ok(['days', 'gsec'].includes(g.milestone.kind));
+  assert.ok(['days', 'gsec', 'weeks', 'bday'].includes(g.milestone.kind)); assert.ok(g.milestone.inDays <= 366);
 });
 test('life path arithmetic in DD.MM.YYYY order', () => {
   assert.deepEqual(BW.lifePathOf('1991-03-14'), { n: 1, steps: ['1+4+0+3+1+9+9+1 = 28', '2+8 = 10', '1+0 = 1'] });

@@ -181,6 +181,36 @@
         "EXP-003",
         "HR-003"
       ]
+    },
+    {
+      "id": "W-012",
+      "title": "v0.4 Mirror: values model, tension insight, real birth facts",
+      "owner": "CEO-001",
+      "why": "Founder: v0.3 empty",
+      "bottleneck": "value",
+      "expected_value": "recognition and utility",
+      "cost": "$0",
+      "risk": "low",
+      "metric": "fb_true_* ≥70% yes/partly; share rate",
+      "status": "DEPLOYED",
+      "dependencies": [
+        "W-010"
+      ]
+    },
+    {
+      "id": "W-013",
+      "title": "Grow situation pool 30 → 40+ (concept promise); then runtime AI v0.5 (HR-003)",
+      "owner": "CEO-001",
+      "why": "repeats after 3–4 runs",
+      "bottleneck": "variety",
+      "expected_value": "fewer repeats",
+      "cost": "$0 / then ~$0.02 per session",
+      "risk": "low",
+      "metric": "repeat rate",
+      "status": "PROPOSED",
+      "dependencies": [
+        "first real users"
+      ]
     }
   ]
 }

@@ -280,7 +280,7 @@
       birthBar: 'YOUR TIME',
       weeks: n => 'WEEKS LIVED: ' + n.toLocaleString('en-US'),
       lifeCaption: a => 'Each cell is a year of a 90-year life. You are here: year ' + (a + 1) + '. The empty ones can still be coloured differently.',
-      milestone: m => (m.kind === 'gsec' ? 'In ' + m.inDays + ' days you turn ' + m.k + ' billion seconds old (' + m.date + ').' : 'In ' + m.inDays + ' days it is your ' + m.day.toLocaleString('en-US') + 'th day (' + m.date + ').'),
+      milestone: m => 'In ' + m.inDays + ' day' + (m.inDays === 1 ? '' : 's') + ' (' + m.date + '): ' + ({ gsec: 'you turn ' + m.k + ' billion seconds old', weeks: 'your ' + m.k.toLocaleString('en-US') + 'th week of life', bday: 'your birthday', days: 'your ' + m.day.toLocaleString('en-US') + 'th day of life' })[m.kind] + '.',
       milestoneWhy: 'Research on the "fresh start effect" (Dai, Milkman & Riis): people start new things more often after personal landmarks like this. A good day to begin.',
       stage: s => 'Psychologist Erik Erikson called this stage of life "' + s.name + '". Its main question: ' + s.q,
       symbolHead: 'SYMBOL (LORE, NOT A FORECAST)',
@@ -333,8 +333,7 @@
       birthBar: 'ТВОЁ ВРЕМЯ',
       weeks: n => 'ПРОЖИТО НЕДЕЛЬ: ' + n.toLocaleString('ru-RU'),
       lifeCaption: a => 'Каждая клетка — год 90-летней жизни. Ты здесь: ' + (a + 1) + '-й год. Пустые клетки ещё можно раскрасить по-другому.',
-      milestone: m => (m.kind === 'gsec' ? 'Через ' + m.inDays + ' ' + BW.plural(m.inDays, ['день', 'дня', 'дней']) + ' тебе исполнится ' + m.k + ' ' + BW.plural(m.k, ['миллиард', 'миллиарда', 'миллиардов']) + ' секунд (' + m.date + ').'
-        : 'Через ' + m.inDays + ' ' + BW.plural(m.inDays, ['день', 'дня', 'дней']) + ' — твой ' + m.day.toLocaleString('ru-RU') + '-й день жизни (' + m.date + ').'),
+      milestone: m => 'Через ' + m.inDays + ' ' + BW.plural(m.inDays, ['день', 'дня', 'дней']) + ' (' + m.date + ') — ' + ({ gsec: 'тебе исполнится ' + m.k + ' ' + BW.plural(m.k, ['миллиард', 'миллиарда', 'миллиардов']) + ' секунд', weeks: 'твоя ' + m.k.toLocaleString('ru-RU') + '-я неделя жизни', bday: 'твой день рождения', days: 'твой ' + m.day.toLocaleString('ru-RU') + '-й день жизни' })[m.kind] + '.',
       milestoneWhy: 'Исследования «эффекта нового старта» (Dai, Milkman, Riis): после личных вех вроде этой люди чаще начинают новое. Хороший день для старта.',
       stage: s => 'Психолог Эрик Эриксон называл этот этап жизни «' + s.name + '». Его главный вопрос: ' + s.q,
       symbolHead: 'СИМВОЛ (ЛОР, НЕ ПРОГНОЗ)',

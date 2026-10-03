@@ -406,6 +406,11 @@
     // Next "fresh start" milestone: the next round thousand of days, or a billion-seconds mark if sooner.
     const cands = [{ day: (Math.floor(daysAlive / 1000) + 1) * 1000, kind: 'days' }];
     for (let k = 1; k <= 4; k++) { const day = Math.ceil(k * 1e9 / 86400); if (day > daysAlive) { cands.push({ day, kind: 'gsec', k }); break; } }
+    const w100 = (Math.floor(daysAlive / 700) + 1) * 100; cands.push({ day: w100 * 7, kind: 'weeks', k: w100 });
+    // next birthday (also a "fresh start" landmark in Dai, Milkman & Riis)
+    let bd = Date.UTC(new Date(today).getUTCFullYear(), mo - 1, d);
+    if (bd <= today) bd = Date.UTC(new Date(today).getUTCFullYear() + 1, mo - 1, d);
+    cands.push({ day: Math.round((bd - date.getTime()) / DAY), kind: 'bday', k: age + 1 });
     const ms = cands.sort((a, b) => a.day - b.day)[0];
     const milestone = { day: ms.day, kind: ms.kind, k: ms.k || 0, inDays: ms.day - daysAlive, date: fmtDate(date.getTime() + ms.day * DAY, lang) };
     const stage = P.stages.find(s => age <= s.max);
