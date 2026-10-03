@@ -160,10 +160,11 @@
       "cost": "$0",
       "risk": "low",
       "metric": "EXP-001/002/003",
-      "status": "REVIEW",
+      "status": "DEPLOYED",
       "dependencies": [
         "W-005"
-      ]
+      ],
+      "result": "live 2026-10-03; QA FAIL x2 → PASS"
     },
     {
       "id": "W-011",

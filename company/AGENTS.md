@@ -92,7 +92,7 @@ CEO-001 ── runs: BUILDER-001 (mode), PRODUCT (merged)
 | RESEARCH-001 | Comparable products: what creates value and sharing at low cost | 8 ranked mechanics; iOS image-save facts; AI deep-link facts | RETIRED |
 | UX-AUDIT-001 | Independent end-user walkthrough (RU, mobile) | Scorecard; top-7 problems; root causes of the save/copy bugs | RETIRED |
 | AI-ARCH-001 | Cost and architecture of runtime LLM | Haiku 4.5 ≈ $0.011/reality; staged plan; HR-003 draft; guardrails | RETIRED |
-| RU-EDITOR-002 | Russian copy review of v0.3 | (pending) | TEMPORARY |
+| RU-EDITOR-002 | Russian copy review of v0.3 | ~25 edits; found the future-prompt bug in both languages; 4.5/5 | RETIRED |
 
 ### PROPOSED (not instantiated)
 | Role | Why not now | Instantiate when |

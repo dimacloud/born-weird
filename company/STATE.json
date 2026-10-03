@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-10-03T06:56:00Z",
+  "updated_at": "2026-10-03T07:52:00Z",
   "phase": "PHASE_0_BECOME_ALIVE",
   "level": 0,
-  "status": "LIVE_V0.2_EN_RU_AWAITING_FIRST_HUMANS",
+  "status": "LIVE_V0.3_AWAITING_FIRST_HUMANS",
   "primary_bottleneck": {
     "id": "B-002",
     "statement": "Zero non-Founder humans have seen the product. Agents may not send unsolicited messages, so first exposure needs the Founder to personally send the link to 3-5 people (HUMAN REQUEST #002).",
@@ -10,10 +10,11 @@
   },
   "current_experiment": [
     "EXP-001",
-    "EXP-002"
+    "EXP-002",
+    "EXP-003"
   ],
   "product": {
-    "version": "0.2",
+    "version": "0.3",
     "url": "https://dimacloud.github.io/born-weird/",
     "deployed": true,
     "language": [
@@ -28,7 +29,7 @@
       "reality_seed_md",
       "share_link_with_from_param"
     ],
-    "deployed_at": "2026-10-03T06:53:00Z",
+    "deployed_at": "2026-10-03T07:50:00Z",
     "repo": "https://github.com/dimacloud/born-weird",
     "url_ru": "https://dimacloud.github.io/born-weird/ru/"
   },
@@ -59,9 +60,24 @@
     },
     {
       "id": "RU-EDITOR-001",
+      "status": "RETIRED"
+    },
+    {
+      "id": "RESEARCH-001",
+      "status": "RETIRED"
+    },
+    {
+      "id": "UX-AUDIT-001",
+      "status": "RETIRED"
+    },
+    {
+      "id": "AI-ARCH-001",
+      "status": "RETIRED"
+    },
+    {
+      "id": "RU-EDITOR-002",
       "status": "RETIRED",
-      "kind": "temporary subagent",
-      "note": "delivered RU copy review 2026-10-03, native-feel 4/5"
+      "note": "native-feel 4.5/5"
     }
   ],
   "treasury": {
@@ -86,7 +102,7 @@
     }
   },
   "founder": {
-    "minutes": 12,
+    "minutes": 27,
     "approvals": 0,
     "overrides": 1,
     "credential_actions_done": 1,
@@ -95,12 +111,14 @@
   "autonomy_ratio": 0.84,
   "ocpl": "n/a (0 validated learnings yet)",
   "open_human_requests": [
-    "HR-002"
+    "HR-002",
+    "HR-003 (optional, gated)"
   ],
   "alive": false,
   "qa": {
     "verdict": "PASS",
-    "tests": "25/25",
-    "blockers_caught_pre_deploy": 3
+    "tests": "23/23",
+    "blockers_caught_pre_deploy": 6,
+    "note": "v0.3: birth-date leak via key/scores found twice by QA and closed (life path only)"
   }
 }

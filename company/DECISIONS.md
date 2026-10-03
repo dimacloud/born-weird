@@ -106,3 +106,9 @@ All decisions below are owned by CEO-001, are reversible unless stated otherwise
 - **TEAM:** CEO-001 (decision, build). Temporary agents: RESEARCH-001, UX-AUDIT-001, AI-ARCH-001 (inputs; retired after reports), QA-EVAL-001 and RU-EDITOR-002 (independent evaluation).
 - **COST:** $0 cash. **REVERSIBILITY:** high. **CONFIDENCE:** medium-high (copy and mechanics proven elsewhere; our audience is untested).
 - **REVISIT WHEN:** EXP-001/002/003 data from ≥10 real completions.
+
+## DECISION #014 — Privacy over birth-date "influence": only the life path affects the result
+- **TRIGGER:** QA-EVAL-001 measured that a shared card or key let someone narrow the birth date: first to ~28 candidate dates (exact scores in the key), then to a median of 9 with the age known (0–10 bars still shifted by sign, eastern year and weekday bonuses).
+- **DECISION:** The seed is random per run (never date-derived). The key holds ranking + 0–10 bars + checksum only. Only the life path (+2) affects the result and picks the first question. Sign, eastern year and weekday are shown as lore on the local decode screen, and the copy says plainly that they don't affect the result (Genesis §21: deception = 0).
+- **RESULT:** Residual leakage = life path only (≈2,475 candidate dates in 1950–2010, same as the life path alone).
+- **TRADE-OFF:** The birth date matters less mechanically than the Founder may have hoped. It still visibly picks the start class and the first question. Revisit if users ask for more birth influence. Any added influence must pass the same leakage test.
