@@ -66,11 +66,12 @@
       "cost": "$0",
       "risk": "low",
       "metric": "URL returns 200",
-      "status": "APPROVED",
+      "status": "DONE",
       "dependencies": [
         "W-003",
         "HR-001"
-      ]
+      ],
+      "result": "live 2026-10-03; first CI run failed (node --test dir arg on Node 22), fixed in 1 commit"
     },
     {
       "id": "W-005",
@@ -82,7 +83,7 @@
       "cost": "~3 Founder minutes",
       "risk": "low",
       "metric": "founder_simulation_completed >= 1",
-      "status": "PROPOSED",
+      "status": "APPROVED",
       "dependencies": [
         "W-004"
       ]
@@ -97,7 +98,7 @@
       "cost": "~5 Founder minutes",
       "risk": "low",
       "metric": "simulation_completed >= 3",
-      "status": "PROPOSED",
+      "status": "APPROVED",
       "dependencies": [
         "W-004"
       ]
@@ -112,7 +113,7 @@
       "cost": "$0",
       "risk": "low",
       "metric": "metrics.json fresh <24h",
-      "status": "APPROVED",
+      "status": "IN_PROGRESS",
       "dependencies": [
         "W-004"
       ]

@@ -33,7 +33,7 @@ const counts = {}, founder = {};
 for (const e of EVENTS) {
   counts[e] = await get(e);
   founder[e] = await get('founder_' + e);
-  await new Promise(r => setTimeout(r, 120)); // stay well under the 30 req/10 s limit
+  await new Promise(r => setTimeout(r, 400)); // 2 GETs per 400 ms = 5/s, under the 30 req/10 s limit
 }
 
 const c = counts;

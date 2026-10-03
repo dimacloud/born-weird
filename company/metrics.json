@@ -1,0 +1,83 @@
+{
+  "generated_at": "2026-10-03T06:20:54.676Z",
+  "scope": "non-founder traffic only (founder-flagged and qa traffic excluded)",
+  "funnel": {
+    "visits": 2,
+    "started": 0,
+    "completed": 0,
+    "artifacts": 0,
+    "shares_completed": 0,
+    "links_copied": 0,
+    "referred_visits": 0,
+    "referred_completed": 0
+  },
+  "rates": {
+    "activation": "0%",
+    "completion": "n/a",
+    "artifact_rate": "n/a",
+    "share_rate": "n/a",
+    "referral_conversion": "n/a",
+    "RRR": "n/a",
+    "stage_dropoff": [
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "satisfaction": {
+    "worth_avg": null,
+    "worth_n": 0,
+    "feel": {
+      "meh": 0,
+      "weird": 0,
+      "wtf": 0
+    }
+  },
+  "alive_signal": "NOT YET",
+  "raw": {
+    "landing_view": 2,
+    "referred_visit": 0,
+    "locale_ru": 0,
+    "simulation_started": 0,
+    "referred_simulation_started": 0,
+    "birth_seed_created": 0,
+    "choice_presented_1": 0,
+    "choice_selected_1": 0,
+    "choice_presented_2": 0,
+    "choice_selected_2": 0,
+    "choice_presented_3": 0,
+    "choice_selected_3": 0,
+    "choice_presented_4": 0,
+    "choice_selected_4": 0,
+    "choice_presented_5": 0,
+    "choice_selected_5": 0,
+    "simulation_completed": 0,
+    "referred_simulation_completed": 0,
+    "artifact_generation_started": 0,
+    "artifact_generated": 0,
+    "artifact_generation_failed": 0,
+    "artifact_saved": 0,
+    "share_clicked": 0,
+    "share_completed": 0,
+    "share_cancelled": 0,
+    "link_copied": 0,
+    "reality_seed_viewed": 0,
+    "reality_seed_copied": 0,
+    "reality_seed_downloaded": 0,
+    "feedback_submitted": 0,
+    "fb_worth_1": 0,
+    "fb_worth_2": 0,
+    "fb_worth_3": 0,
+    "fb_worth_4": 0,
+    "fb_worth_5": 0,
+    "fb_feel_meh": 0,
+    "fb_feel_weird": 0,
+    "fb_feel_wtf": 0,
+    "fb_send_yes": 0,
+    "fb_send_no": 0,
+    "restart_clicked": 0
+  },
+  "founder_raw": {}
+}
