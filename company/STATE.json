@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-10-04T12:00:00Z",
+  "updated_at": "2026-10-04T08:50:00Z",
   "phase": "PHASE_0_BECOME_ALIVE",
   "level": 0,
-  "status": "PRODUCT_RESET_TOURNAMENT_IN_PROGRESS",
+  "status": "LAB_LIVE_AWAITING_FOUNDER_PLAY",
   "primary_bottleneck": {
     "id": "B-004",
     "statement": "We do not know which tiny Born Weird people actually want to play and pass on. v0.5 is an assessment engine wrapped in a game (Founder reset 2026-10-04).",
@@ -168,7 +168,8 @@
     },
     {
       "id": "QA-EVAL-RECHECK",
-      "status": "TEMPORARY"
+      "status": "RETIRED",
+      "note": "GO x3"
     }
   ],
   "treasury": {
@@ -201,12 +202,14 @@
   },
   "autonomy_ratio": 0.84,
   "ocpl": "n/a (0 validated learnings yet)",
-  "open_human_requests": [],
+  "open_human_requests": [
+    "HR-004 (play the lab, say which feels alive)"
+  ],
   "alive": false,
   "qa": {
-    "verdict": "PASS WITH FIXES -> fixed",
-    "tests": "23/23",
-    "note": "v0.5 QA: fragile vs protect contradiction (19%), 'clear' on empty compass, stars tie-break flips (18%) -> fixed; RU-EDITOR-004: 37 edits applied"
+    "verdict": "GO (A, B, C) after recheck",
+    "tests": "54/54",
+    "note": "B blocker (birth date recoverable from card sigil) found by QA-EVAL-B and fixed"
   },
   "genesis_version": "0.3 (amendment §74 Product Reset)",
   "north_star": "DOES THE TOY REPRODUCE? (player -> result -> share -> new player)",
@@ -245,7 +248,10 @@
         "birth": "none"
       }
     ],
-    "reserve": "C3 ЦЕНА ВОПРОСА"
+    "reserve": "C3 ЦЕНА ВОПРОСА",
+    "deployed": true,
+    "founder_link": "https://dimacloud.github.io/born-weird/lab/?f=1",
+    "baseline": "company/lab-baseline.json (QA hits subtracted)"
   },
   "frozen": [
     "life-in-weeks",

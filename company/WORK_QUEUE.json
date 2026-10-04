@@ -322,11 +322,11 @@
       "cost": "$0 (inference only)",
       "risk": "low",
       "metric": "START, COMPLETION, RECOGNITION, SHARE INTENT, ACTUAL SHARE, REFERRED START (DECISION #019)",
-      "status": "REVIEW",
+      "status": "DONE",
       "dependencies": [
         "W-019"
       ],
-      "result": "QA round 1: A PASS WITH FIXES, B 1 privacy blocker (birth date recoverable from card), C PASS WITH FIXES → all fixed by builders; independent recheck running"
+      "result": "QA round 1: A PASS WITH FIXES, B 1 privacy blocker (birth date recoverable from card), C PASS WITH FIXES → all fixed by builders; independent recheck running; recheck: GO for A, B, C (reports/tournament/qa-recheck.md)"
     },
     {
       "id": "W-021",
@@ -356,11 +356,12 @@
       "cost": "$0 (inference only)",
       "risk": "low",
       "metric": "START, COMPLETION, RECOGNITION, SHARE INTENT, ACTUAL SHARE, REFERRED START (DECISION #019)",
-      "status": "PROPOSED",
+      "status": "IN_PROGRESS",
       "dependencies": [
         "W-020",
         "W-021"
-      ]
+      ],
+      "result": "Lab live 2026-10-04 (commit 2ca37e2). Waiting for the Founder to play (HR-004)."
     },
     {
       "id": "W-023",
