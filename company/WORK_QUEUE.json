@@ -9,6 +9,7 @@
     "DEPLOYED",
     "MEASURING",
     "DONE",
+    "FROZEN",
     "REJECTED"
   ],
   "items": [
@@ -99,14 +100,15 @@
       "cost": "~5 Founder minutes",
       "risk": "low",
       "metric": "simulation_completed >= 3",
-      "status": "APPROVED",
+      "status": "REJECTED",
       "dependencies": [
         "W-004"
-      ]
+      ],
+      "result": "Withdrawn 2026-10-04 (DECISION #017): do not spend first-tester goodwill on v0.5. Replaced by W-024."
     },
     {
       "id": "W-007",
-      "title": "Run metrics.mjs daily; detect ALIVE; write cycle report",
+      "title": "Run metrics.mjs; detect ALIVE; read lab counters (bw-lab-r1)",
       "owner": "CEO-001",
       "why": "observe → learn",
       "bottleneck": "B-002",
@@ -145,10 +147,11 @@
       "cost": "$0",
       "risk": "low",
       "metric": "RRR",
-      "status": "DISCOVERED",
+      "status": "FROZEN",
       "dependencies": [
         "ALIVE"
-      ]
+      ],
+      "result": "Frozen by Product Reset 2026-10-04 (DECISION #017)."
     },
     {
       "id": "W-010",
@@ -176,11 +179,12 @@
       "cost": "~$0.011/reality, $5 cap",
       "risk": "medium",
       "metric": "A/B completion + share",
-      "status": "PROPOSED",
+      "status": "FROZEN",
       "dependencies": [
         "EXP-003",
         "HR-003"
-      ]
+      ],
+      "result": "Frozen by Product Reset 2026-10-04 (DECISION #017)."
     },
     {
       "id": "W-012",
@@ -207,10 +211,11 @@
       "cost": "$0 / then ~$0.02 per session",
       "risk": "low",
       "metric": "repeat rate",
-      "status": "PROPOSED",
+      "status": "FROZEN",
       "dependencies": [
         "first real users"
-      ]
+      ],
+      "result": "Frozen by Product Reset 2026-10-04 (DECISION #017)."
     },
     {
       "id": "W-014",
@@ -240,6 +245,155 @@
       "metric": "sound plays on iPhone",
       "status": "DEPLOYED",
       "dependencies": []
+    },
+    {
+      "id": "W-016",
+      "title": "Preserve v0.5 (git tag v0.5-archive), amend Genesis §74, registry, decisions #017-#019, queue, state",
+      "owner": "CEO-001",
+      "why": "Founder reset §22",
+      "bottleneck": "B-004: we do not know which tiny Born Weird people want to play",
+      "mission": "MISSION-001 FIND THE SMALLEST BORN WEIRD THAT FEELS ALIVE",
+      "expected_value": "learning which toy reproduces",
+      "cost": "$0 (inference only)",
+      "risk": "low",
+      "metric": "START, COMPLETION, RECOGNITION, SHARE INTENT, ACTUAL SHARE, REFERRED START (DECISION #019)",
+      "status": "DONE",
+      "dependencies": []
+    },
+    {
+      "id": "W-017",
+      "title": "Concepts: >=5 mechanically different radically simple concepts from 3 independent lenses (game design, growth, behavior)",
+      "owner": "GAME-DESIGN, GROWTH, BEHAVIOR",
+      "why": "Mission step 2",
+      "bottleneck": "B-004: we do not know which tiny Born Weird people want to play",
+      "mission": "MISSION-001 FIND THE SMALLEST BORN WEIRD THAT FEELS ALIVE",
+      "expected_value": "learning which toy reproduces",
+      "cost": "$0 (inference only)",
+      "risk": "low",
+      "metric": "START, COMPLETION, RECOGNITION, SHARE INTENT, ACTUAL SHARE, REFERRED START (DECISION #019)",
+      "status": "DONE",
+      "dependencies": [
+        "W-016"
+      ],
+      "result": "11 concepts from 3 lenses (game design 4, growth 3, behavior 3+1 merged) → 9 distinct mechanics: reports/tournament/CONCEPTS_INDEX.md"
+    },
+    {
+      "id": "W-018",
+      "title": "Independent review of every concept (fun, signal, share, comprehension); CEO picks 2-3 finalists preserving hypothesis diversity",
+      "owner": "GAME-DESIGN, BEHAVIOR, GROWTH, QA-EVAL, CEO-001",
+      "why": "Mission steps 3-4",
+      "bottleneck": "B-004: we do not know which tiny Born Weird people want to play",
+      "mission": "MISSION-001 FIND THE SMALLEST BORN WEIRD THAT FEELS ALIVE",
+      "expected_value": "learning which toy reproduces",
+      "cost": "$0 (inference only)",
+      "risk": "low",
+      "metric": "START, COMPLETION, RECOGNITION, SHARE INTENT, ACTUAL SHARE, REFERRED START (DECISION #019)",
+      "status": "DONE",
+      "dependencies": [
+        "W-017"
+      ],
+      "result": "4 independent reviews; finalists A ШАР, B ОРАКУЛ (+birth arm), C ДВОЙНОЕ ДНО; reserve C3 ЦЕНА ВОПРОСА: reports/tournament/FINALISTS.md"
+    },
+    {
+      "id": "W-019",
+      "title": "Build finalists as disposable static pages under /lab/ (RU, lab analytics #019, URL referral)",
+      "owner": "BUILDER",
+      "why": "Mission step 5",
+      "bottleneck": "B-004: we do not know which tiny Born Weird people want to play",
+      "mission": "MISSION-001 FIND THE SMALLEST BORN WEIRD THAT FEELS ALIVE",
+      "expected_value": "learning which toy reproduces",
+      "cost": "$0 (inference only)",
+      "risk": "low",
+      "metric": "START, COMPLETION, RECOGNITION, SHARE INTENT, ACTUAL SHARE, REFERRED START (DECISION #019)",
+      "status": "DONE",
+      "dependencies": [
+        "W-018"
+      ],
+      "result": "3 static prototypes under /lab/ + shared kit + per-result preview pages; 54 tests incl. 10k-run simulation gates"
+    },
+    {
+      "id": "W-020",
+      "title": "Independent QA of finalists: blockers, mobile, privacy, 'understandable without explanation'",
+      "owner": "QA-EVAL",
+      "why": "Mission step 6",
+      "bottleneck": "B-004: we do not know which tiny Born Weird people want to play",
+      "mission": "MISSION-001 FIND THE SMALLEST BORN WEIRD THAT FEELS ALIVE",
+      "expected_value": "learning which toy reproduces",
+      "cost": "$0 (inference only)",
+      "risk": "low",
+      "metric": "START, COMPLETION, RECOGNITION, SHARE INTENT, ACTUAL SHARE, REFERRED START (DECISION #019)",
+      "status": "REVIEW",
+      "dependencies": [
+        "W-019"
+      ],
+      "result": "QA round 1: A PASS WITH FIXES, B 1 privacy blocker (birth date recoverable from card), C PASS WITH FIXES → all fixed by builders; independent recheck running"
+    },
+    {
+      "id": "W-021",
+      "title": "Human test protocol + neutral /lab/ hub (random order, letter names)",
+      "owner": "CEO-001",
+      "why": "Mission step 7",
+      "bottleneck": "B-004: we do not know which tiny Born Weird people want to play",
+      "mission": "MISSION-001 FIND THE SMALLEST BORN WEIRD THAT FEELS ALIVE",
+      "expected_value": "learning which toy reproduces",
+      "cost": "$0 (inference only)",
+      "risk": "low",
+      "metric": "START, COMPLETION, RECOGNITION, SHARE INTENT, ACTUAL SHARE, REFERRED START (DECISION #019)",
+      "status": "DONE",
+      "dependencies": [
+        "W-019"
+      ],
+      "result": "reports/tournament/HUMAN_TEST_PROTOCOL.md; neutral hub /lab/ (random order, letters only)"
+    },
+    {
+      "id": "W-022",
+      "title": "Deploy lab; Founder plays all finalists ('which one feels alive?')",
+      "owner": "CEO-001 then Founder",
+      "why": "Mission step 8",
+      "bottleneck": "B-004: we do not know which tiny Born Weird people want to play",
+      "mission": "MISSION-001 FIND THE SMALLEST BORN WEIRD THAT FEELS ALIVE",
+      "expected_value": "learning which toy reproduces",
+      "cost": "$0 (inference only)",
+      "risk": "low",
+      "metric": "START, COMPLETION, RECOGNITION, SHARE INTENT, ACTUAL SHARE, REFERRED START (DECISION #019)",
+      "status": "PROPOSED",
+      "dependencies": [
+        "W-020",
+        "W-021"
+      ]
+    },
+    {
+      "id": "W-023",
+      "title": "Founder sends the 1-2 surviving prototypes to 5-10 people; observe START→REFERRED START",
+      "owner": "Founder (send) / CEO-001 (observe)",
+      "why": "Founder reset §18-19",
+      "bottleneck": "B-004: we do not know which tiny Born Weird people want to play",
+      "mission": "MISSION-001 FIND THE SMALLEST BORN WEIRD THAT FEELS ALIVE",
+      "expected_value": "learning which toy reproduces",
+      "cost": "$0 (inference only)",
+      "risk": "low",
+      "metric": "START, COMPLETION, RECOGNITION, SHARE INTENT, ACTUAL SHARE, REFERRED START (DECISION #019)",
+      "status": "PROPOSED",
+      "dependencies": [
+        "W-022"
+      ]
+    },
+    {
+      "id": "W-024",
+      "title": "Decide: promote winner to root (with EN), iterate, or new tournament round",
+      "owner": "CEO-001",
+      "why": "Close the loop",
+      "bottleneck": "B-004: we do not know which tiny Born Weird people want to play",
+      "mission": "MISSION-001 FIND THE SMALLEST BORN WEIRD THAT FEELS ALIVE",
+      "expected_value": "learning which toy reproduces",
+      "cost": "$0 (inference only)",
+      "risk": "low",
+      "metric": "START, COMPLETION, RECOGNITION, SHARE INTENT, ACTUAL SHARE, REFERRED START (DECISION #019)",
+      "status": "PROPOSED",
+      "dependencies": [
+        "W-023"
+      ]
     }
-  ]
+  ],
+  "note": "2026-10-04 Product Reset (Genesis §74, DECISION #017): the queue is organized around the prototype tournament. Items W-001..W-015 are history; frozen items keep their content for later."
 }

@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>BORN WEIRD · LAB C</title>
+<meta property="og:title" content="BORN WEIRD · LAB C">
+<meta property="og:description" content="8 быстрых тапов. Не думай.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://dimacloud.github.io/born-weird/lab/c/og/_default-2.png">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#000000">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23000'/%3E%3Crect x='3' y='3' width='10' height='4' fill='%23ffff55'/%3E%3Crect x='3' y='9' width='10' height='4' fill='%23ff55ff'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="../lab.css">
+<style>
+  main { padding-top: 12px; }
+  #top { display: flex; justify-content: space-between; align-items: center; min-height: 20px; }
+  #cnt { color: var(--dim); font-size: 13px; letter-spacing: 2px; }
+  #friend { color: var(--cy); font-weight: 600; font-size: 14px; letter-spacing: .5px; margin: 8px 0 0; }
+  #friend:empty { display: none; }
+  .hud { display: flex; justify-content: space-between; align-items: baseline; margin: 14px 0 6px; }
+  #hint { color: var(--hi); font-weight: 600; letter-spacing: 3px; font-size: 15px; }
+  .bar { height: 10px; border: 1px solid var(--line); position: relative; overflow: hidden; }
+  .bar i { position: absolute; inset: 0 auto 0 0; width: 100%; background: var(--cy); }
+  .bar.low i { background: var(--no); }
+  .bar.idle i { animation: idle 1s steps(2) infinite; }
+  @keyframes idle { 50% { opacity: .35; } }
+  #stage { margin-top: 14px; }
+  #q { min-height: 7.2em; display: flex; align-items: center; font-size: 20px; line-height: 1.35; font-weight: 600; color: var(--fg); }
+  #q.w { justify-content: center; color: var(--dim); font-size: 16px; letter-spacing: 3px; font-weight: 400; }
+  .opts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+  .opt { min-height: 104px; padding: 10px 8px; background: transparent; color: var(--hi); border: 2px solid var(--hi); font-weight: 600; font-size: 19px; letter-spacing: 1px; line-height: 1.2; word-break: break-word; }
+  .opt.long { font-size: 15px; letter-spacing: 0; }
+  .opt:active, .opt.hit { background: var(--hi); color: #000; }
+  .flash { animation: fl .16s steps(2); }
+  @keyframes fl { 0% { opacity: .2; transform: translateY(3px); } }
+  #to { text-align: center; color: var(--no); font-weight: 600; letter-spacing: 4px; height: 24px; margin-top: 10px; }
+  @media (max-height: 600px) { #q { min-height: 6.4em; font-size: 18px; } .opt { min-height: 92px; } .hud { margin-top: 10px; } }
+
+  #rev[hidden], #play[hidden] { display: none; }
+  .twist { color: var(--cy); font-size: 15px; margin: 14px 0 10px; min-height: 2.9em; }
+  .led { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 6px 0; font-size: 15px; }
+  .led .r { display: grid; grid-template-columns: 1fr 26px 1fr; align-items: center; min-height: 26px; opacity: 0; }
+  .led .r.on { opacity: 1; transition: opacity .12s; }
+  .led .h { color: var(--dim); font-size: 11px; letter-spacing: 2px; opacity: 1; }
+  .led .m { text-align: center; font-weight: 600; }
+  .led .r.sp { color: var(--mg); }
+  .led .r.eq .m { color: var(--ok); }
+  .led .r.x { color: var(--line); }
+  .led .r > :last-child { text-align: right; }
+  .tier { font-size: min(40px, 10vw); font-weight: 600; color: var(--hi); text-shadow: 3px 3px 0 var(--mg); letter-spacing: 1px; line-height: 1.05; margin: 16px 0 6px; opacity: 0; }
+  .tier.on { opacity: 1; animation: slam .22s ease-out; }
+  @keyframes slam { 0% { transform: scale(1.6); opacity: 0; } }
+  .after { opacity: 0; transition: opacity .3s; pointer-events: none; }
+  .after.on { opacity: 1; pointer-events: auto; }
+  #rev .lab-share { margin-top: 12px; }
+  #rev .lab-again { margin-top: 14px; }
+  @media (max-height: 600px) { .twist { font-size: 13px; margin: 8px 0 6px; min-height: 0; } .led .r { min-height: 21px; } .tier { margin-top: 10px; } }
+  .hl { font-size: 19px; font-weight: 600; line-height: 1.3; }
+  .hl .k { color: var(--dim); font-weight: 400; }
+  .ln { margin-top: 6px; }
+  .qt { margin-top: 10px; padding-left: 10px; border-left: 3px solid var(--mg); }
+  .qt b { color: var(--hi); white-space: nowrap; }
+  .rc { color: var(--dim); font-size: 14px; margin-top: 6px; }
+  .ttl { color: var(--mg); font-weight: 600; letter-spacing: 1px; margin-top: 12px; font-size: 17px; }
+  .hon { color: var(--dim); font-size: 13px; margin-top: 10px; }
+  .cmp { color: var(--cy); margin-top: 10px; font-size: 15px; }
+  body.nofx *, body.nofx *::before, body.nofx *::after { animation: none !important; transition: none !important; }
+  .hint { color: var(--dim); font-size: 12px; text-align: center; }
+</style>
+</head>
+<body>
+<main>
+  <div id="top"><span class="lab-brand">BORN WEIRD · LAB</span><span id="cnt"></span></div>
+  <div id="friend"></div>
+  <section id="play">
+    <div class="hud"><span id="hint">НЕ ДУМАЙ</span></div>
+    <div class="bar" id="bar"><i id="fill"></i></div>
+    <div id="stage">
+      <div id="q"></div>
+      <div class="opts"><button type="button" class="opt" id="o0"></button><button type="button" class="opt" id="o1"></button></div>
+      <div id="to"></div>
+    </div>
+  </section>
+  <section id="rev" hidden></section>
+</main>
+<script src="../lab.js"></script>
+<script src="game.js"></script>
+<script>
+(function () {
+  'use strict';
+  const G = window.GAME_C, LB = window.LAB;
+  const L = LB.init('c');
+  const SND = LB.SND;
+  const $ = id => document.getElementById(id);
+  const qsp = new URLSearchParams(location.search);
+  const demo = L.qa ? qsp.get('demo') : null;
+  const friend = G.decode(L.hash.s);   // null for missing or broken state → normal game
+  let run, idx, shownAt, tmr, busy, started = false, gen = 0;   // gen: bumps on every restart; stale reveal timers check it
+
+  function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+
+  // ---------------- play ----------------
+  function startGame() {
+    gen++;
+    run = G.newRun();
+    idx = 0;
+    $('rev').hidden = true; $('rev').innerHTML = '';
+    $('play').hidden = false;
+    $('friend').textContent = friend ? G.friendTop(friend) : '';
+    show();
+  }
+
+  function show() {
+    const v = G.view(run, idx);
+    $('cnt').textContent = v.n + '/' + v.of;
+    const q = $('q');
+    q.className = v.type === 'w' ? 'w' : '';
+    q.textContent = v.q;
+    [0, 1].forEach(j => { const b = $('o' + j); b.textContent = v.opts[j].label; b.dataset.side = v.opts[j].side; b.classList.remove('hit'); b.classList.toggle('long', v.opts[j].label.length > 9); });
+    $('to').textContent = '';
+    const st = $('stage'); st.classList.remove('flash'); void st.offsetWidth; st.classList.add('flash');
+    shownAt = performance.now();
+    busy = false;
+    if (tmr) { tmr.stop(); tmr = null; }
+    const bar = $('bar'), fill = $('fill');
+    bar.classList.remove('low', 'idle'); fill.style.width = '100%';
+    // Item 1 waits for the first tap (it is the start); every later item runs its bar.
+    if (idx === 0 && !started) { bar.classList.add('idle'); return; }
+    if (demo) return;
+    let lastSec = Math.ceil(v.ms / 1000);
+    tmr = LB.timer(v.ms, f => {
+      fill.style.width = (f * 100).toFixed(1) + '%';
+      const left = f * v.ms, s = Math.ceil(left / 1000);
+      if (left < 1000) bar.classList.add('low');
+      if (s < lastSec) { lastSec = s; if (s <= 2 && s > 0) SND.tick(3 - s); }
+    }, timeout);
+  }
+
+  function elapsed(v) { return tmr ? v.ms - Math.max(0, tmr.left) : performance.now() - shownAt; }
+
+  function pick(j) {
+    if (busy || demo) return;
+    if (performance.now() - shownAt < 180) return;   // a double tap must not answer the next item
+    busy = true;
+    const v = G.view(run, idx);
+    const rt = elapsed(v);
+    if (tmr) { tmr.stop(); tmr = null; }
+    if (!started) { started = true; L.track('start'); }
+    $('o' + j).classList.add('hit');
+    SND.tap();
+    G.answer(run, idx, +$('o' + j).dataset.side, rt);
+    next();
+  }
+
+  function timeout() {
+    tmr = null; busy = true;
+    const v = G.view(run, idx);
+    G.answer(run, idx, null, v.ms);
+    L.track('to_' + v.pair);
+    SND.bad();
+    $('to').textContent = 'ВРЕМЯ!';
+    const my = gen;
+    setTimeout(() => { if (my === gen) next(); }, 380);
+  }
+
+  function next() {
+    idx++;
+    if (idx < G.N) show(); else reveal(G.result(run));
+  }
+
+  $('o0').addEventListener('click', () => pick(0));
+  $('o1').addEventListener('click', () => pick(1));
+
+  // ---------------- reveal ----------------
+  function reveal(res, opts) {
+    opts = opts || {};
+    if (tmr) { tmr.stop(); tmr = null; }
+    $('play').hidden = true;
+    $('cnt').textContent = '';
+    $('friend').textContent = '';
+    const el = $('rev'); el.hidden = false; window.scrollTo(0, 0);
+    if (!opts.demo) {
+      L.track('done');
+      if (res.tier >= 0) L.track('tier_' + res.code); else L.track('tier_blank');
+      res.ledger.forEach(x => { if (x.valid) L.track((x.split ? 'flip_' : 'same_') + x.k); });
+    }
+    const P = G.PAIRS;
+    const rows = res.ledger.map(x => {
+      if (!x.valid) return '<div class="r x"><span>—</span><span class="m">·</span><span>—</span></div>';
+      const w = x.word === 0 ? P[x.p].a : P[x.p].b, s = x.scene === 0 ? P[x.p].a : P[x.p].b;
+      return '<div class="r ' + (x.split ? 'sp' : 'eq') + '"><span>' + esc(w) + '</span><span class="m">' + (x.split ? '≠' : '=') + '</span><span>' + esc(s) + '</span></div>';
+    }).join('');
+    let h = '<div class="twist" id="tw"></div>' +
+      '<div class="led"><div class="r h on"><span>СЛОВОМ</span><span></span><span>КОГДА ДОРОГО</span></div>' + rows + '</div>' +
+      '<div class="tier" id="tier">' + esc(res.name) + '</div><div class="after" id="after">';
+    if (res.headline) h += '<div class="hl"><div><span class="k">СЛОВОМ:</span> ' + esc(res.split.word) + '.</div><div><span class="k">КОГДА ДОРОГО:</span> ' + esc(res.split.scene) + '.</div></div>';
+    (res.lines || []).forEach(t => { h += '<div class="ln">' + esc(t) + '</div>'; });
+    if (res.quote) h += '<div class="qt">' + (res.quote.lead ? esc(res.quote.lead) + ' ' : '') + '«' + esc(res.quote.scene) + '» → <b>' + esc(res.quote.btn) + '</b>' + (res.quote.time ? ' <span class="rc">(' + esc(res.quote.time) + ')</span>' : '') + '</div>';
+    if (res.receipt) h += '<div class="rc">' + esc(res.receipt) + '</div>';
+    if (res.title) h += '<div class="ttl">' + esc(res.title) + '</div>';
+    // The share button sits right under the headline block so it is on the first screen of the reveal.
+    if (res.tier >= 0) h += '<button type="button" class="lab-share" id="share">ПОКАЗАТЬ ДРУГУ</button><div class="lab-muted" id="shst"></div>';
+    if (res.second) h += '<div class="ln">' + esc(res.second) + '</div>';
+    if (friend) h += '<div class="cmp">' + esc(G.compareLine(friend, res)) + '</div>';
+    if (res.tier >= 0) h += '<div class="hon">' + esc(res.honesty) + '</div>';
+    h += '<div id="cardbox"></div>';
+    h += '<button type="button" class="lab-again" id="again">ещё раз</button><div id="recog"></div></div>';
+    el.innerHTML = h;
+
+    // Beat 1: the twist types in. Beat 2: the ledger rows drop one by one. Beat 3: the tier slams.
+    const tw = $('tw'), twist = res.twist; let c = 0;
+    const my = gen;
+    const later = (fn, ms) => setTimeout(() => { if (my === gen) fn(); }, ms);   // dropped after «ещё раз»
+    const fast = !!opts.demo;
+    const step = fast ? 0 : 18;
+    function type() {
+      if (fast) { tw.textContent = twist; return ledgerIn(); }
+      c += 2; tw.textContent = twist.slice(0, c);
+      if (c < twist.length) later(type, step); else later(ledgerIn, 250);
+    }
+    function ledgerIn() {
+      const rs = el.querySelectorAll('.led .r:not(.h)');
+      let i = 0;
+      (function nx() {
+        if (i >= rs.length) return later(slam, fast ? 0 : 280);
+        const r = rs[i++]; r.classList.add('on');
+        if (!fast) { if (r.classList.contains('sp')) SND.tone(330, 0.09, 0, 'sawtooth', 0.025); else if (r.classList.contains('eq')) SND.tick(i); }
+        later(nx, fast ? 0 : 260);
+      })();
+    }
+    function slam() {
+      $('tier').classList.add('on'); if (!fast) SND.reveal();
+      later(() => $('after').classList.add('on'), fast ? 0 : 200);
+    }
+    type();
+
+    $('again').onclick = () => { L.track('again'); startGame(); window.scrollTo(0, 0); };
+    if (res.tier >= 0) {
+      $('share').onclick = () => L.share({ code: res.code, state: res.state, text: res.share, onStatus: m => {
+        $('shst').textContent = m === 'copied' ? 'Ссылка скопирована.' : m === 'ok' ? 'Отправлено.' : '';
+      } });
+      drawCard(res);
+      L.recog($('recog'), res.chips);
+    }
+  }
+
+  // ---------------- card 1080×1920 ----------------
+  function drawCard(res) {
+    const go = () => {
+      const cv = document.createElement('canvas'); cv.width = 1080; cv.height = 1920;
+      const g = cv.getContext('2d');
+      g.fillStyle = '#000'; g.fillRect(0, 0, 1080, 1920);
+      // frame with a double bottom, inside the central 70%
+      g.strokeStyle = '#55ffff'; g.lineWidth = 6; g.strokeRect(170, 300, 740, 1320);
+      g.strokeStyle = '#ff55ff'; g.beginPath(); g.moveTo(170, 1580); g.lineTo(910, 1580); g.stroke();
+      const F = (w, px) => w + ' ' + px + 'px Plex, Menlo, monospace';
+      function fit(text, w, px, max) { g.font = F(w, px); while (g.measureText(text).width > max && px > 20) { px -= 2; g.font = F(w, px); } return px; }
+      g.textAlign = 'center'; g.textBaseline = 'alphabetic';
+      g.fillStyle = '#ff55ff'; g.font = F(600, 40); g.fillText('B O R N   W E I R D', 540, 400);
+      const [l1, l2, l3] = res.card;
+      fit(l1, 600, 120, 680);
+      g.fillStyle = '#ff55ff'; g.fillText(l1, 546, 806);
+      g.fillStyle = '#ffff55'; g.fillText(l1, 540, 800);
+      g.fillStyle = '#c8ffc8'; fit(l2, 600, 56, 680); g.fillText(l2, 540, 1000);
+      g.fillStyle = '#c8ffc8'; fit(l3, 600, 56, 680); g.fillText(l3, 540, 1090);
+      g.fillStyle = '#55ffff'; fit('dimacloud.github.io/born-weird/lab', 400, 34, 680); g.fillText('dimacloud.github.io/born-weird/lab', 540, 1520);
+      g.fillStyle = 'rgba(0,0,0,.18)'; for (let y = 0; y < 1920; y += 6) g.fillRect(0, y, 1080, 2);
+      const box = $('cardbox'); if (!box) return;
+      box.innerHTML = '';
+      box.appendChild(LB.canvasImg(cv, res.card.join(' · ')));
+      const hn = document.createElement('div'); hn.className = 'hint'; hn.textContent = 'удерживай картинку, чтобы сохранить'; box.appendChild(hn);
+    };
+    const fl = document.fonts;
+    if (!fl) return go();
+    Promise.all([fl.load('600 40px Plex', 'ДНОW'), fl.load('400 30px Plex', 'ДНОw')]).catch(() => {}).then(() => fl.ready).then(go, go);
+  }
+
+  // ---------------- QA demo hooks (?qa=1&demo=word|scene|monolith|crack|double|chameleon|blank) ----------------
+  function demoRun(kind) {
+    const r = LB.rng(42);
+    const rr = G.newRun(r);
+    const want = { monolith: [0, 0, 0, 0], crack: [1, 0, 0, 0], double: [1, 0, 1, 0], chameleon: [1, 1, 0, 1] }[kind];
+    rr.items.forEach((it, i) => {
+      if (kind === 'blank') return G.answer(rr, i, null, it.type === 'w' ? G.WORD_MS : G.SCENE_MS);
+      const w = it.p % 2;   // word side
+      const side = it.type === 'w' ? w : (want[it.p] ? 1 - w : w);
+      const rt = it.type === 'w' ? 700 + it.p * 150 : (it.p === 0 ? 5600 : 2000 + it.p * 300);
+      G.answer(rr, i, side, rt);
+    });
+    return G.result(rr);
+  }
+
+  L.track('view');
+  if (demo) document.body.classList.add('nofx');
+  if (demo && /^(monolith|crack|double|chameleon|blank)$/.test(demo)) { startGame(); reveal(demoRun(demo), { demo: true }); return; }
+  startGame();
+  if (demo === 'word' || demo === 'scene') {
+    started = true;
+    const target = run.items.findIndex((it, i) => i > 0 && it.type === (demo === 'word' ? 'w' : 's'));
+    idx = target; show(); $('fill').style.width = '62%';
+  }
+})();
+</script>
+</body>
+</html>

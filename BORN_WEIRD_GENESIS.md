@@ -1,6 +1,6 @@
 
-**Status:** PRE-BOOT  
-**Version:** 0.2  
+**Status:** POST-BOOT. Product Reset in force (see §74)  
+**Version:** 0.3 (0.2 + amendment §74, 2026-10-04)  
 **Founder role:** Intent Owner / Capital Owner  
 **Initial users:** 0  
 **Initial revenue:** $0  
@@ -246,6 +246,8 @@ Implementation may change.
 
 The core loop should only change when evidence strongly supports doing so.
 
+> **Amended 2026-10-04 (§74):** the Founder reset the core loop. The current invariant is FUN → CHOICE → CURIOSITY → SURPRISE → REVEAL → IDENTITY → SHARE → NEW PLAYER. Birth seed, possible future and reality seed are experimental layers, not the invariant.
+
 ---
 
 # 6. EPISTEMIC RULE
@@ -276,6 +278,8 @@ User choices should become increasingly influential as the simulation progresses
 Despite Genesis being v0.2, the first public product remains:
 
 # BORN WEIRD PRODUCT v0.1
+
+> **Historical (shipped 2026-10-03).** v0.1–v0.5 are archived (git tag `v0.5-archive`). The next product is chosen by the prototype tournament in §74, not by this flow.
 
 Minimum flow:
 
@@ -2070,6 +2074,8 @@ when the simpler mechanism solves the problem adequately.
 
 # 58. CURRENT STATE
 
+> **Post-boot:** the live state is `company/STATE.json`; the full 2026-10-04 picture is `reports/CURRENT_STATE_SNAPSHOT_2026-10-04.md`. The block below is the state at Genesis, kept for history.
+
 At Genesis:
 
 ```
@@ -2833,3 +2839,40 @@ Then learn.
 Then change yourself.
 
 # BOOT BORN WEIRD.
+
+---
+
+# 74. AMENDMENT — PRODUCT RESET (Founder, 2026-10-04)
+
+Full text: `company/PRODUCT_RESET_2026-10-04.md`. Where it conflicts with §§0–69, this section wins.
+
+## Post-boot state (what actually happened)
+
+- BOOT done 2026-10-03. Five versions shipped in one day: v0.1 → v0.2 (RU) → v0.3 (character card) → v0.4 (mirror) → v0.5 (value compass).
+- Every step added layers after a Founder smoke test. v0.5 became an assessment engine wrapped in a game: birth date, 9 screens, 8 Schwartz values, a 13-section result.
+- Users: 0 non-Founder completions. ALIVE = false. Spend $0 of $25.
+- v0.5 stays live at the root URL and is archived as git tag `v0.5-archive`. It is evidence and an asset, not a constraint.
+
+## The reset
+
+1. **Product.** A tiny internet toy that happens to reveal something interesting about you. 30–90 seconds, a few instinctive choices, one surprising and recognizable reveal, an identity object ("my Weird"), one share action. Desired reaction: *WTF. That's weirdly me. Try this.*
+2. **Loop.** FUN → CHOICE → CURIOSITY → SURPRISE → REVEAL → IDENTITY → SHARE → NEW PLAYER. Not ASSESSMENT → ANALYSIS → EXPLANATION → UTILITY.
+3. **North star for this phase:** DOES THE TOY REPRODUCE? (one human voluntarily causes another human to play). It replaces RRR-depth, utility, monetization and Intent OS as the optimization target until it works.
+4. **Not psychometrics.** Speed, fun, surprise, recognition and shareability beat model completeness.
+5. **Birth date** is an experimental variable (hook/seed), never the truth engine. Test birth-first vs no-birth (vs birth-after) with humans.
+6. **Frozen, not deleted** (see DECISION #017 for the list): life-in-weeks, milestones, Erikson, world facts, how-calculated, 8-value HUD, purpose, confidence, fragile/hidden value, rarity, 7-day quest, value passport, JSON profile, Intent OS, runtime AI, AI deep links, compare-with-friend, Collide Timelines, community, DAO, tokens, monetization, referral genealogy.
+7. **Operating question for every feature, screen, model or agent:** does this make the magic trick stronger? No → remove or freeze. Unknown → test the cheapest version. Yes → keep it, smallest form. Plus §56: can we learn the same thing without building this?
+
+## Roles after the reset
+
+- **Founder:** INTENT OWNER / TASTE / CAPITAL. Defines the desired effect, plays prototypes, gives taste signals ("homework", "curious", "generic", "I'd send this"). Does not decide question counts, scoring, wording, layout, architecture, models or which screen survives. Agents asking the Founder implementation questions is an organizational failure.
+- **Agent functions** (no theater): PRODUCT/CEO (experiment portfolio), GAME DESIGN (is it fun?), BEHAVIOR/RESEARCH (is the reveal earned? no veto for psychometric thinness), GROWTH/VIRALITY (why would a human send it?), BUILDER (builds, does not set direction), QA/EVALUATION (independent of Builder). Registry: `company/AGENTS.md`.
+
+## Method
+
+Prototype tournament instead of v0.6: ≥5 mechanically different concepts → independent review by Game Design, Behavior, Growth, QA → CEO picks 2–3 finalists (diversity over average score) → cheap playable prototypes (hours, static, disposable) → internal QA → Founder and real humans play them → observe START, COMPLETION, RECOGNITION, SURPRISE, SHARE INTENT, ACTUAL SHARE, REFERRED START.
+
+Rules for this phase: no runtime AI, no question-pool expansion, no features added to v0.5.
+
+The next unit of progress is not "v0.6 has more capability". It is: **we learned which tiny Born Weird people actually want to play.**
+

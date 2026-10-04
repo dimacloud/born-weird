@@ -1,17 +1,15 @@
 {
-  "updated_at": "2026-10-03T14:00:00Z",
+  "updated_at": "2026-10-04T12:00:00Z",
   "phase": "PHASE_0_BECOME_ALIVE",
   "level": 0,
-  "status": "LIVE_V0.5_VALUE_COMPASS_AWAITING_FIRST_HUMANS",
+  "status": "PRODUCT_RESET_TOURNAMENT_IN_PROGRESS",
   "primary_bottleneck": {
-    "id": "B-002",
-    "statement": "Zero non-Founder humans have seen the product. Agents may not send unsolicited messages, so first exposure needs the Founder to personally send the link to 3-5 people (HUMAN REQUEST #002).",
-    "next_bottleneck": "B-003: share rate / referred completion (EXP-001)"
+    "id": "B-004",
+    "statement": "We do not know which tiny Born Weird people actually want to play and pass on. v0.5 is an assessment engine wrapped in a game (Founder reset 2026-10-04).",
+    "next_bottleneck": "B-002: first non-Founder humans play the finalists (Founder sends lab links)"
   },
   "current_experiment": [
-    "EXP-001",
-    "EXP-002",
-    "EXP-003"
+    "EXP-004"
   ],
   "product": {
     "version": "0.5",
@@ -36,7 +34,9 @@
     "deployed_at": "2026-10-03T15:00:00Z",
     "repo": "https://github.com/dimacloud/born-weird",
     "url_ru": "https://dimacloud.github.io/born-weird/ru/",
-    "model": "Schwartz 8 values on the circle; 3 rounds (instinct, price, shadow); stars hypothesis (life path + element) tested by choices"
+    "model": "Schwartz 8 values on the circle; 3 rounds (instinct, price, shadow); stars hypothesis (life path + element) tested by choices",
+    "status": "v0.5 live at root, frozen as reference (tag v0.5-archive); no new features",
+    "archive_tag": "v0.5-archive"
   },
   "agents": [
     {
@@ -109,6 +109,66 @@
     {
       "id": "RU-EDITOR-004",
       "status": "RETIRED"
+    },
+    {
+      "id": "GAME-DESIGN-001",
+      "status": "RETIRED",
+      "note": "4 concepts"
+    },
+    {
+      "id": "GROWTH-001",
+      "status": "RETIRED",
+      "note": "3 concepts + share rules + event list"
+    },
+    {
+      "id": "BEHAVIOR-001",
+      "status": "RETIRED",
+      "note": "3 concepts + recognition engine + epistemic rules"
+    },
+    {
+      "id": "GAME-DESIGN-REVIEW-002",
+      "status": "RETIRED"
+    },
+    {
+      "id": "BEHAVIOR-REVIEW-002",
+      "status": "RETIRED"
+    },
+    {
+      "id": "GROWTH-REVIEW-002",
+      "status": "RETIRED"
+    },
+    {
+      "id": "QA-REVIEW-002",
+      "status": "RETIRED"
+    },
+    {
+      "id": "BUILDER-A",
+      "status": "RETIRED"
+    },
+    {
+      "id": "BUILDER-B",
+      "status": "RETIRED"
+    },
+    {
+      "id": "BUILDER-C",
+      "status": "RETIRED"
+    },
+    {
+      "id": "QA-EVAL-A",
+      "status": "RETIRED"
+    },
+    {
+      "id": "QA-EVAL-B",
+      "status": "RETIRED",
+      "note": "caught birth-date leak via card sigil"
+    },
+    {
+      "id": "QA-EVAL-C",
+      "status": "RETIRED"
+    },
+    {
+      "id": "QA-EVAL-RECHECK",
+      "status": "TEMPORARY"
     }
   ],
   "treasury": {
@@ -141,14 +201,80 @@
   },
   "autonomy_ratio": 0.84,
   "ocpl": "n/a (0 validated learnings yet)",
-  "open_human_requests": [
-    "HR-002",
-    "HR-003 (optional, gated)"
-  ],
+  "open_human_requests": [],
   "alive": false,
   "qa": {
     "verdict": "PASS WITH FIXES -> fixed",
     "tests": "23/23",
     "note": "v0.5 QA: fragile vs protect contradiction (19%), 'clear' on empty compass, stars tie-break flips (18%) -> fixed; RU-EDITOR-004: 37 edits applied"
-  }
+  },
+  "genesis_version": "0.3 (amendment §74 Product Reset)",
+  "north_star": "DOES THE TOY REPRODUCE? (player -> result -> share -> new player)",
+  "mission": {
+    "id": "MISSION-001",
+    "title": "FIND THE SMALLEST BORN WEIRD THAT FEELS ALIVE",
+    "work": "W-016..W-024",
+    "experiment": "EXP-004"
+  },
+  "paused_experiments": [
+    "EXP-001",
+    "EXP-002",
+    "EXP-003"
+  ],
+  "lab": {
+    "url": "https://dimacloud.github.io/born-weird/lab/",
+    "analytics_namespace": "bw-lab-r1",
+    "language": "ru",
+    "finalists": [
+      {
+        "id": "a",
+        "name": "ШАР",
+        "hypothesis": "you reveal yourself by playing (objects under pressure), not answering",
+        "birth": "none"
+      },
+      {
+        "id": "b",
+        "name": "ОРАКУЛ",
+        "hypothesis": "the game bets on you; readability score + why it bet",
+        "birth": "50/50 arm: day+month as oracle persona only (H2)"
+      },
+      {
+        "id": "c",
+        "name": "ДВОЙНОЕ ДНО",
+        "hypothesis": "observed contradiction between quick word and costly choice",
+        "birth": "none"
+      }
+    ],
+    "reserve": "C3 ЦЕНА ВОПРОСА"
+  },
+  "frozen": [
+    "life-in-weeks",
+    "fresh-start milestone",
+    "Erikson",
+    "world-at-birth facts",
+    "how-calculated",
+    "8-value HUD",
+    "purpose",
+    "confidence",
+    "fragile/hidden value",
+    "rarity",
+    "7-day quest",
+    "value passport",
+    "JSON profile",
+    "Intent OS",
+    "runtime AI",
+    "AI deep links",
+    "compare-with-friend",
+    "Collide Timelines",
+    "community",
+    "DAO",
+    "tokens",
+    "monetization",
+    "referral genealogy",
+    "question-pool growth"
+  ],
+  "withdrawn_human_requests": [
+    "HR-002 (v0.5 exposure, DECISION #017)",
+    "HR-003 (runtime AI, frozen)"
+  ]
 }

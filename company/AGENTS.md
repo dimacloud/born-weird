@@ -1,19 +1,37 @@
 # BORN WEIRD // AGENT REGISTRY
 
-Owner: CEO-001 · Last change: 2026-10-03 (BOOT) · Machine-readable mirror: `company/STATE.json → agents`
+Owner: CEO-001 · Last change: 2026-10-04 (Product Reset, Genesis §74) · Machine-readable mirror: `company/STATE.json → agents`
 
-Phase 0 organization design rule (Genesis §27, §57): function > script > workflow > general agent > specialized agent. Most of the Genesis org chart is **intentionally not instantiated** in Phase 0. There are no users yet, so roles like Growth, Analyst, Community and Chronicler have no work that a script or the CEO can't do more cheaply.
+Design rule (Genesis §27, §57): function > script > workflow > general agent > specialized agent. After the reset the company needs **four independent product perspectives** plus a builder and an independent evaluator. They are lenses that disagree on purpose, not departments.
 
 ```
-FOUNDER (Intent / Capital / Credentials)
+FOUNDER — INTENT / TASTE / CAPITAL (plays prototypes, gives taste signals; no implementation decisions)
    │
-CEO-001 ── runs: BUILDER-001 (mode), PRODUCT (merged)
-   ├── QA-EVAL-001 (temporary, independent subagent)
-   ├── ANALYST-SCRIPT-001 (deterministic: operations/metrics.mjs)
-   └── FINANCE-SCRIPT (deterministic: company/LEDGER.md and STATE.json, maintained by CEO)
+CEO-001 (PRODUCT merged) — owns the experiment portfolio; picks finalists; deploy go/no-go
+   ├── GAME-DESIGN   "Is this actually fun to play?"                      temporary subagent per cycle
+   ├── BEHAVIOR      "Is the reveal earned, not arbitrary?" (no veto for thinness) temporary subagent per cycle
+   ├── GROWTH        "Why would one human send this to another?"          temporary subagent per cycle
+   ├── BUILDER       builds selected prototypes; does not set direction     subagents or primary-session mode
+   ├── QA-EVAL       independent of Builder; veto on blockers             temporary subagent per build
+   └── ANALYST-SCRIPT-001  deterministic counters (operations/metrics.mjs, lab namespace)
 ```
+
+## Functions after the reset (2026-10-04)
+
+| Function | Primary question | Owns | Never does | Instantiation |
+|---|---|---|---|---|
+| PRODUCT / CEO (CEO-001) | What is the smallest experiment that reduces the biggest uncertainty? | experiment portfolio, finalist choice, state, decisions, Founder contact | defend existing implementation; ask the Founder implementation questions | primary session |
+| GAME DESIGN | Is this actually fun to play? | loop, pacing, curiosity, escalation, surprise, cognitive friction | build | temporary subagent, one per tournament phase (concepts, review) |
+| BEHAVIOR / RESEARCH | Does the reveal have enough basis in behavior to not feel arbitrary? | model, interpretation, epistemic honesty, minimum signal | veto a design only because it yields less psychometric data | temporary subagent |
+| GROWTH / VIRALITY | Why would one human send this to another human? | artifact, curiosity gap, share copy, friend-entry, referral loop | send messages or post anywhere (Genesis §4) | temporary subagent |
+| BUILDER | (none — executes) | prototype code, deploy plumbing | choose direction or mechanics | one subagent per prototype, in parallel; or primary-session mode |
+| QA / EVALUATION | Would a stranger understand and finish this without explanation? Is anything broken, unsafe or deceptive? | blockers, privacy, comprehension, mobile | evaluate its own code | temporary subagent, independent of Builder |
+
+Founder signals that agents treat as data: "feels like homework", "made me curious", "I started thinking instead of playing", "generic", "I want to send this one".
 
 ---
+
+## Historical registry (BOOT → v0.5, 2026-10-03)
 
 ### CEO-001
 - **ROLE:** Company executive (successor to the GENESIS AGENT after BOOT)
@@ -122,3 +140,8 @@ CEO-001 ── runs: BUILDER-001 (mode), PRODUCT (merged)
 | 2026-10-03 | RESEARCH-001, UX-AUDIT-001, AI-ARCH-001 spawned in parallel, then retired | Founder asked for a value audit. Three independent lenses (market, user, cost) in ~2 min wall-clock, ~370k tokens total |
 | 2026-10-03 | RU-EDITOR-002 spawned (temporary) | New v0.3 Russian copy needs an independent native read |
 | 2026-10-03 | QA-EVAL-001 (v0.5) and RU-EDITOR-004 spawned in parallel (temporary) | Independent evaluation and native-copy review of v0.5 before deploy |
+| 2026-10-04 | Product Reset (Genesis §74): four product lenses defined (PRODUCT/CEO, GAME DESIGN, BEHAVIOR, GROWTH) + BUILDER + independent QA | Founder: humans own intent, agents own execution; the Founder must stop acting as designer, psychologist, copywriter |
+| 2026-10-04 | GAME-DESIGN-001, BEHAVIOR-001, GROWTH-001 spawned in parallel (temporary): tournament concepts | Three independent lenses generate mechanically different concepts before any build |
+| 2026-10-04 | 4 independent reviewers (GAME-DESIGN-REVIEW-002, BEHAVIOR-REVIEW-002, GROWTH-REVIEW-002, QA-REVIEW-002) scored all 9 concepts in parallel | Reviewers must not be the authors; disagreement is the point |
+| 2026-10-04 | BUILDER-A/B/C built finalists in parallel (one subagent per prototype), then QA-EVAL-A/B/C evaluated them independently; QA-EVAL-RECHECK gates deploy | Parallel cheap builds; Builder never judges its own work. QA-EVAL-B caught a birth-date leak the builder had declared impossible |
+

@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ОРАКУЛ · BORN WEIRD</title>
+<meta property="og:title" content="ОРАКУЛ СТАВИТ НА ТЕБЯ · BORN WEIRD">
+<meta property="og:description" content="7 выборов. Оракул ставит, ты ломаешь. А тебя он угадает?">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://dimacloud.github.io/born-weird/lab/b/og/_default-1.png">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#000000">
+<link rel="stylesheet" href="../lab.css">
+<style>
+  :root { --oc: #55ffff; }
+  main { padding-top: 10px; }
+  [hidden] { display: none !important; }
+  .top { display: flex; align-items: center; justify-content: space-between; min-height: 22px; }
+  .dots { display: flex; gap: 5px; }
+  .dots i { width: 10px; height: 10px; border: 1px solid var(--line); display: block; }
+  .dots i.done { background: var(--dim); border-color: var(--dim); }
+  .dots i.now { border-color: var(--oc); background: var(--oc); }
+  .dots i.boss { width: 16px; }
+  .friend { color: var(--hi); font-weight: 600; font-size: 14px; line-height: 1.3; border-left: 3px solid var(--hi); padding: 2px 8px; margin: 6px 0 8px; }
+
+  /* the oracle: eye + voice + live score */
+  .oracle { display: flex; align-items: center; gap: 12px; border: 2px solid var(--oc); padding: 8px 10px; margin: 8px 0 10px; }
+  .eye { width: 100px; height: 58px; flex: 0 0 auto; overflow: visible; }
+  .eye .lid { fill: none; stroke: var(--oc); stroke-width: 4; transform-origin: 60px 35px; }
+  .eye .ball { fill: #001a1a; }
+  .eye .ir { fill: none; stroke: var(--oc); stroke-width: 3; }
+  .eye .pu { fill: var(--oc); }
+  .eye .sig { fill: var(--oc); }
+  .eye .iris { animation: scan 2.4s steps(6) infinite alternate; }
+  .eye.lock .iris { animation: none; transform: translateX(0); }
+  .eye.hit .lid { animation: narrow .5s steps(2) 2; }
+  .eye.miss { animation: shake .35s steps(3) 2; }
+  .eye.blink .lid { animation: blink .2s steps(2) 1; }
+  @keyframes scan { from { transform: translateX(-20px); } to { transform: translateX(20px); } }
+  @keyframes narrow { 50% { transform: scaleY(.45); } }
+  @keyframes blink { 50% { transform: scaleY(.1); } }
+  @keyframes shake { 33% { transform: translateX(-5px); } 66% { transform: translateX(5px); } }
+  .ovoice { flex: 1; min-width: 0; }
+  .oname { color: var(--oc); font-weight: 600; font-size: 12px; letter-spacing: 2px; }
+  .oline { color: var(--fg); font-size: 15px; line-height: 1.3; min-height: 2.6em; }
+  .score { font-weight: 600; font-size: 15px; letter-spacing: 1px; margin-top: 2px; }
+  .score b { display: inline-block; min-width: 1.2ch; text-align: center; font-size: 20px; }
+  .score .so { color: var(--oc); }
+  .score .sp { color: var(--ok); }
+  .score.idle { opacity: .4; }
+  .score b.bump { animation: bump .4s steps(2); }
+  @keyframes bump { 50% { transform: scale(1.6); } }
+
+  /* the face-down bet card: visibly inert (no handler, dashed, labelled) */
+  .bet { pointer-events: none; user-select: none; border: 2px dashed var(--oc); min-height: 78px; padding: 6px 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; margin-bottom: 12px; }
+  .bet.off { visibility: hidden; }
+  .bet .bl { color: var(--oc); font-size: 12px; letter-spacing: 2px; font-weight: 600; }
+  .bet .bv { font-size: 26px; font-weight: 600; line-height: 1.15; color: var(--oc); }
+  .bet .bv svg { width: 34px; height: 34px; vertical-align: middle; }
+  .bet.res { border-style: solid; }
+  .bet.res.hit .bv { color: var(--no); }
+  .bet.res.miss .bv { color: var(--ok); }
+  .bet.boss { border-color: var(--hi); }
+  .bet.boss .bl { color: var(--hi); }
+
+  .sit { font-size: 22px; font-weight: 600; line-height: 1.25; min-height: 2.5em; margin: 0 0 12px; color: #fff; }
+  .opts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .opt { min-height: 76px; padding: 8px 6px; background: transparent; color: var(--fg); border: 2px solid var(--fg); font-size: 18px; font-weight: 600; line-height: 1.2; letter-spacing: .5px; overflow-wrap: anywhere; }
+  .opt:active { background: #113311; }
+  .opt.on { background: var(--hi); border-color: var(--hi); color: #000; }
+  .opt:disabled:not(.on) { opacity: .35; }
+
+  /* birth arm */
+  .ask { font-size: 22px; font-weight: 600; color: #fff; line-height: 1.25; margin: 4px 0 14px; }
+  .sel { display: grid; grid-template-columns: 1fr 1.6fr; gap: 10px; }
+  .sel select { -webkit-appearance: none; appearance: none; width: 100%; min-height: 58px; padding: 8px 12px; background: #000; color: var(--fg); border: 2px solid var(--fg); border-radius: 0; font: inherit; font-size: 20px; font-weight: 600; }
+  .go { display: block; width: 100%; min-height: 58px; margin: 12px 0 4px; background: var(--oc); color: #000; border: 0; font-size: 18px; font-weight: 600; letter-spacing: 1px; }
+  .go:disabled { opacity: .35; }
+  .skip { display: block; margin: 0 auto; min-height: 44px; min-width: 120px; padding: 6px 12px; background: transparent; color: var(--dim); border: 0; font-size: 14px; text-decoration: underline; }
+
+  /* reveal */
+  .rv-top { display: flex; align-items: center; gap: 10px; margin: 6px 0 4px; }
+  .rv-top .eye { width: 70px; height: 41px; }
+  .rv-sub { color: var(--oc); font-weight: 600; font-size: 20px; letter-spacing: 2px; margin-top: 6px; }
+  .rv-big { color: var(--hi); font-weight: 600; font-size: 56px; line-height: 1; text-shadow: 3px 3px 0 var(--mg); margin: 2px 0 8px; }
+  .rv-label { font-weight: 600; font-size: 24px; color: #fff; letter-spacing: 1px; }
+  .rv-code { color: var(--oc); font-size: 15px; letter-spacing: 1px; margin: 2px 0 10px; }
+  .rv-receipt { margin: 8px 0; font-size: 16px; border-left: 3px solid var(--ok); padding-left: 8px; }
+  .rv-why { margin: 6px 0 8px; font-size: 15px; color: var(--oc); }
+  .rv-cmp { margin: 8px 0; font-size: 15px; color: var(--hi); }
+  .hint { text-align: center; }
+  @media (max-height: 600px) {
+    .oracle { padding: 6px 8px; margin: 6px 0 8px; }
+    .eye { width: 84px; height: 49px; }
+    .bet { min-height: 66px; margin-bottom: 8px; }
+    .sit { font-size: 20px; margin-bottom: 10px; }
+    .opt { min-height: 68px; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <div class="top"><span class="lab-brand" id="brand">BORN WEIRD</span><span class="dots" id="dots"></span></div>
+  <div class="friend" id="friend" hidden></div>
+
+  <section id="sBirth" hidden>
+    <div class="oracle"><svg class="eye" viewBox="0 0 120 70" aria-hidden="true"></svg><div class="ovoice"><div class="oline" id="bdLine">ОРАКУЛ ИЗУЧАЕТ…</div></div></div>
+    <div class="ask">ОРАКУЛУ НУЖЕН ТВОЙ ДЕНЬ РОЖДЕНИЯ.</div>
+    <div class="sel">
+      <select id="bdDay" aria-label="день"><option value="">ДЕНЬ</option></select>
+      <select id="bdMonth" aria-label="месяц"><option value="">МЕСЯЦ</option></select>
+    </div>
+    <button class="go" id="bdGo" type="button" disabled>ГОТОВО</button>
+    <button class="skip" id="bdSkip" type="button">без даты</button>
+    <div class="lab-muted hint">только день и месяц · никуда не отправляется</div>
+  </section>
+
+  <section id="sGame" hidden>
+    <div class="oracle">
+      <svg class="eye" id="eye" viewBox="0 0 120 70" aria-hidden="true"></svg>
+      <div class="ovoice">
+        <div class="oline" id="oline">ОРАКУЛ ИЗУЧАЕТ…</div>
+        <div class="score idle" id="score">ОРАКУЛ <b class="so" id="so">0</b>:<b class="sp" id="sp">0</b> ТЫ</div>
+      </div>
+    </div>
+    <div class="bet off" id="bet" aria-hidden="true"><div class="bl" id="betL">СТАВКА СДЕЛАНА</div><div class="bv" id="betV">?</div></div>
+    <div class="sit" id="sit"></div>
+    <div class="opts" id="opts"></div>
+  </section>
+
+  <section id="sReveal" hidden>
+    <div class="rv-top"><svg class="eye lock" id="rvEye" viewBox="0 0 120 70" aria-hidden="true"></svg></div>
+    <div class="rv-sub">ОРАКУЛ УГАДАЛ</div>
+    <div class="rv-big" id="rvBig"></div>
+    <div class="rv-label" id="rvLabel"></div>
+    <div class="rv-code" id="rvCode"></div>
+    <div class="rv-receipt" id="rvReceipt"></div>
+    <div class="rv-why" id="rvWhy"></div>
+    <div class="rv-cmp" id="rvCmp" hidden></div>
+    <button class="lab-share" id="share" type="button">ПОКАЗАТЬ ДРУГУ</button>
+    <div class="lab-muted hint" id="shareMsg"></div>
+    <div class="lab-muted" id="rvHonest"></div>
+    <div id="recog"></div>
+    <div id="cardBox"></div>
+    <div class="lab-muted hint" id="cardHint" hidden>удерживай картинку, чтобы сохранить</div>
+    <button class="lab-again" id="again" type="button">ещё раз</button>
+  </section>
+</main>
+<script src="../lab.js"></script>
+<script src="game.js"></script>
+<script>
+(function () {
+  'use strict';
+  const G = window.ORACLE, LABK = window.LAB, SND = LABK.SND;
+  // Belt and braces for old kit copies whose parseHash threw on malformed escapes ("#s=%ZZ"): drop undecodable parts.
+  try { decodeURIComponent(location.hash); } catch (e) {
+    const keep = location.hash.replace(/^#/, '').split('&').filter(kv => { try { decodeURIComponent(kv); return true; } catch (x) { return false; } });
+    try { history.replaceState(null, '', location.pathname + location.search + (keep.length ? '#' + keep.join('&') : '')); } catch (x) {}
+  }
+  let L;
+  try { L = LABK.init('b'); } catch (e) { try { history.replaceState(null, '', location.pathname + location.search); } catch (x) {} L = LABK.init('b'); }
+  const $ = id => document.getElementById(id);
+  const qp = new URLSearchParams(location.search);
+  const demo = L.qa ? qp.get('demo') : null;
+
+  // ---------- arm (H2): 50/50 per tab, ?arm= forces ----------
+  let arm = qp.get('arm');
+  if (arm !== 'birth' && arm !== 'none') {
+    try { arm = sessionStorage.getItem('bw_lab_b_arm'); } catch (e) { arm = null; }
+    if (arm !== 'birth' && arm !== 'none') {
+      arm = Math.random() < 0.5 ? 'birth' : 'none';
+      try { sessionStorage.setItem('bw_lab_b_arm', arm); } catch (e) {}
+    }
+  }
+  L.track('view');
+  L.track('arm_' + arm);
+
+  // ---------- friend entry ----------
+  let friend = L.hash && L.hash.s ? G.decodeState(L.hash.s) : null;
+  function showFriend() {
+    const f = $('friend');
+    if (friend) { f.textContent = G.friendTop(friend); f.hidden = false; } else f.hidden = true;
+  }
+
+  // ---------- persona (costume only: never passed to the game logic, never stored, never shared) ----------
+  let persona = G.DEFAULT_PERSONA;
+  function star(cx, cy, ro, ri, n, rot) {
+    const pts = [];
+    for (let i = 0; i < n * 2; i++) {
+      const a = (rot * Math.PI / 180) + i * Math.PI / n - Math.PI / 2, r = i % 2 ? ri : ro;
+      pts.push((cx + r * Math.cos(a)).toFixed(1) + ',' + (cy + r * Math.sin(a)).toFixed(1));
+    }
+    return pts.join(' ');
+  }
+  function eyeSvg() {
+    const core = persona.points
+      ? `<polygon class="sig" points="${star(60, 35, 11, 5, persona.points, persona.rot)}"/>`
+      : `<circle class="pu" cx="60" cy="35" r="7"/>`;
+    return `<path class="ball" d="M4 35 Q60 -12 116 35 Q60 82 4 35Z"/><g class="iris"><circle class="ir" cx="60" cy="35" r="16"/>${core}</g><path class="lid" d="M4 35 Q60 -12 116 35 Q60 82 4 35Z"/>`;
+  }
+  function sigilSvg() {
+    return persona.points ? `<svg viewBox="0 0 34 34"><polygon fill="currentColor" points="${star(17, 17, 15, 7, persona.points, persona.rot)}"/></svg>` : '?';
+  }
+  // The persona (name, colour, sigil) is shown only during play. The reveal and the card use the
+  // default look, because screenshots and the card leave the device.
+  function applyPersona(p) {
+    const keep = persona; persona = p || persona;
+    document.documentElement.style.setProperty('--oc', persona.color);
+    document.querySelectorAll('svg.eye').forEach(s => { s.innerHTML = eyeSvg(); });
+    persona = keep;
+  }
+
+  // ---------- screens ----------
+  function show(id) { ['sBirth', 'sGame', 'sReveal'].forEach(s => { $(s).hidden = s !== id; }); window.scrollTo(0, 0); }
+
+  function birthScreen() {
+    const d = $('bdDay'), m = $('bdMonth');
+    for (let i = 1; i <= 31; i++) d.add(new Option(String(i), String(i)));
+    G.MONTHS.forEach((name, i) => m.add(new Option(name, String(i + 1))));
+    const sync = () => {
+      const mm = +m.value;
+      const max = mm ? G.MDAYS[mm - 1] : 31;
+      Array.from(d.options).forEach(o => { if (o.value) o.disabled = +o.value > max; });
+      if (+d.value > max) d.value = String(max);
+      $('bdGo').disabled = !G.validDate(+d.value, +m.value);
+    };
+    d.onchange = sync; m.onchange = sync;
+    $('bdGo').onclick = () => {
+      const p = G.persona(+d.value, +m.value);
+      if (!p) return;
+      persona = p; applyPersona(); SND.tap();
+      L.track('birth_given');
+      startGame();
+    };
+    $('bdSkip').onclick = () => { L.track('birth_skip'); startGame(); };
+    showFriend();
+    show('sBirth');
+  }
+
+  // ---------- game ----------
+  let run, k, busy, started = false, frozen = false, timers = [];
+  // LAB.timer pauses while the tab is hidden, so a hidden tab never skips the УГАДАЛ/ПРОМАХ moment.
+  const later = (fn, ms) => {
+    if (frozen) return;
+    if (demo) { const id = setTimeout(fn, ms); timers.push({ stop: () => clearTimeout(id) }); return; } // QA screenshots: headless frames don't tick rAF
+    timers.push(LABK.timer(Math.max(1, ms), null, fn));
+  };
+
+  function startGame() {
+    timers.forEach(t => t.stop()); timers = [];
+    applyPersona();
+    run = G.newRun(demo ? G.makeRng(1) : Math.random);
+    k = 0; busy = false;
+    $('so').textContent = '0'; $('sp').textContent = '0';
+    $('score').classList.add('idle');
+    $('oline').textContent = persona.points ? persona.name + ' ИЗУЧАЕТ…' : G.LINES.scan;
+    showFriend();
+    show('sGame');
+    renderItem();
+  }
+
+  function renderDots() {
+    const el = $('dots'); el.innerHTML = '';
+    for (let i = 0; i < G.TOTAL; i++) {
+      const d = document.createElement('i');
+      if (i < k) d.className = 'done'; else if (i === k) d.className = 'now';
+      if (i === 6) d.classList.add('boss');
+      el.appendChild(d);
+    }
+  }
+
+  function renderItem() {
+    const it = G.itemAt(run, k);
+    renderDots();
+    const eye = $('eye'); eye.classList.remove('hit', 'miss', 'lock');
+    const bet = $('bet');
+    bet.className = 'bet' + (k < 3 ? ' off' : '') + (it.boss ? ' boss' : '');
+    $('betL').textContent = it.boss ? 'ФИНАЛ · СТАВКА СДЕЛАНА' : 'СТАВКА СДЕЛАНА';
+    $('betV').innerHTML = sigilSvg();
+    if (k >= 3) {
+      $('oline').textContent = G.LINES.bet[k - 3];
+      $('score').classList.remove('idle');
+    } else if (k > 0) {
+      $('oline').textContent = persona.points ? persona.name + ' ИЗУЧАЕТ…' : G.LINES.scan;
+    }
+    $('sit').textContent = it.text;
+    const box = $('opts'); box.innerHTML = '';
+    it.options.forEach(o => {
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'opt'; b.textContent = o.label;
+      b.onclick = () => pick(it, o.side, b);
+      box.appendChild(b);
+    });
+    busy = false;
+  }
+
+  function hitSound() { SND.tone(392, 0.09, 0); SND.tone(294, 0.09, 0.11); SND.tone(196, 0.22, 0.22, 'sawtooth', 0.03); }
+  function missSound() { SND.good(); SND.tone(1047, 0.1, 0.18); }
+
+  function pick(it, side, btn) {
+    if (busy) return;
+    busy = true;
+    if (!started) { started = true; L.track('start'); L.track('start_' + arm); }
+    SND.tap();
+    btn.classList.add('on');
+    $('opts').querySelectorAll('button').forEach(b => { b.disabled = true; });
+    const res = G.answer(run, k, side);
+    const eye = $('eye');
+    if (res.bet === null) {
+      $('oline').textContent = G.LINES.learn[k];
+      eye.classList.remove('blink'); void eye.offsetWidth; eye.classList.add('blink');
+      later(next, k === 2 ? 1300 : 700);
+      return;
+    }
+    // suspense: three ticks, then a plain content swap (no 3D flip)
+    eye.classList.add('lock');
+    $('betV').textContent = '·';
+    [0, 1, 2].forEach(i => later(() => { SND.tick(i); $('betV').textContent = '·'.repeat(i + 2); }, 110 * i));
+    later(() => {
+      const betLabel = it.options.find(o => o.side === it.bet).label;
+      const bet = $('bet');
+      bet.classList.add('res', res.hit ? 'hit' : 'miss');
+      $('betL').textContent = 'СТАВКА: ' + betLabel;
+      $('betV').textContent = res.hit ? 'УГАДАЛ' : 'ПРОМАХ';
+      const sc = G.score(run);
+      const target = res.hit ? $('so') : $('sp');
+      $('so').textContent = sc[0]; $('sp').textContent = sc[1];
+      target.classList.remove('bump'); void target.offsetWidth; target.classList.add('bump');
+      const pool = res.hit ? G.LINES.hit : G.LINES.miss;
+      $('oline').textContent = pool[(k - 3) % pool.length];
+      eye.classList.remove('lock'); eye.classList.add(res.hit ? 'hit' : 'miss');
+      if (res.hit) hitSound(); else missSound();
+      later(next, 1600);
+    }, 380);
+  }
+
+  let hold = false; // QA demo: keep a resolved bet on screen
+  function next() {
+    if (hold) return;
+    k++;
+    if (k >= G.TOTAL) reveal(); else renderItem();
+  }
+
+  // ---------- reveal ----------
+  let lastRes = null;
+  function reveal() {
+    const res = G.finish(run);
+    lastRes = res;
+    applyPersona(G.DEFAULT_PERSONA);
+    $('dots').innerHTML = '';
+    $('friend').hidden = true;
+    $('rvBig').textContent = res.hits + ' ИЗ 4';
+    $('rvLabel').textContent = res.label;
+    $('rvCode').textContent = 'Твой код: ' + res.codeText;
+    $('rvReceipt').textContent = res.receipt;
+    $('rvWhy').textContent = res.why;
+    if (friend) { $('rvCmp').textContent = G.compareLine(res, friend); $('rvCmp').hidden = false; } else $('rvCmp').hidden = true;
+    $('rvHonest').textContent = res.honesty;
+    $('shareMsg').textContent = '';
+    show('sReveal');
+    SND.reveal();
+    L.track('done'); L.track('done_' + arm); L.track('res_' + res.code);
+    L.recog($('recog'), [res.hits + ' из 4', res.label.toLowerCase(), 'почему ставка']);
+    $('cardBox').innerHTML = ''; $('cardHint').hidden = true;
+    drawCard(res).then(img => { $('cardBox').appendChild(img); $('cardHint').hidden = false; }).catch(() => {});
+  }
+
+  $('share').onclick = () => {
+    if (!lastRes) return;
+    L.share({
+      code: lastRes.code, state: lastRes.state, text: lastRes.shareText,
+      onStatus: s => { $('shareMsg').textContent = s === 'copied' ? 'Ссылка скопирована.' : ''; },
+    });
+  };
+  $('again').onclick = () => { L.track('again'); friend = null; startGame(); };
+
+  // ---------- card 1080×1920 ----------
+  function drawEye(c, cx, cy, w, col) { // card eye: plain pupil, fixed colour (no persona)
+    const s = w / 120;
+    c.save(); c.translate(cx - 60 * s, cy - 35 * s); c.scale(s, s);
+    const lid = () => { c.beginPath(); c.moveTo(4, 35); c.quadraticCurveTo(60, -12, 116, 35); c.quadraticCurveTo(60, 82, 4, 35); c.closePath(); };
+    lid(); c.fillStyle = '#001a1a'; c.fill();
+    c.strokeStyle = col; c.lineWidth = 3; c.beginPath(); c.arc(60, 35, 16, 0, Math.PI * 2); c.stroke();
+    c.fillStyle = col; c.beginPath(); c.arc(60, 35, 7, 0, Math.PI * 2); c.fill();
+    lid(); c.lineWidth = 4; c.stroke();
+    c.restore();
+  }
+  function wrap(c, text, maxW) {
+    const words = text.split(' '), lines = []; let cur = '';
+    words.forEach(w => { const t = cur ? cur + ' ' + w : w; if (c.measureText(t).width <= maxW || !cur) cur = t; else { lines.push(cur); cur = w; } });
+    if (cur) lines.push(cur);
+    return lines;
+  }
+  async function drawCard(res) {
+    const spec = G.cardSpec(res); // the card's only input
+    try { await Promise.all([document.fonts.load('600 80px Plex', 'ОРАКУЛ 0'), document.fonts.load('400 40px Plex', 'Промах')]); } catch (e) {}
+    try { await document.fonts.ready; } catch (e) {}
+    const W = 1080, H = 1920, CW = 756, cx = W / 2;
+    const cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+    const c = cv.getContext('2d');
+    c.fillStyle = '#000'; c.fillRect(0, 0, W, H);
+    c.strokeStyle = spec.color; c.lineWidth = 8; c.strokeRect(70, 70, W - 140, H - 140);
+    c.textAlign = 'center'; c.textBaseline = 'alphabetic';
+    c.fillStyle = '#ff55ff'; c.font = '600 44px Plex, monospace';
+    c.fillText('B O R N   W E I R D', cx, 360);
+    drawEye(c, cx, 530, 380, spec.color);
+    // line 1: score sentence
+    c.fillStyle = spec.color; c.font = '600 66px Plex, monospace';
+    c.fillText(spec.top, cx, 800);
+    c.fillStyle = '#ffff55'; c.font = '600 220px Plex, monospace';
+    c.fillStyle = '#ff55ff'; c.fillText(spec.big, cx + 10, 1030);
+    c.fillStyle = '#ffff55'; c.fillText(spec.big, cx, 1020);
+    // score pips: oracle hits vs player misses (graphic, not text)
+    const pw = 120, gap = 28, px0 = cx - (4 * pw + 3 * gap) / 2;
+    spec.pips.forEach((hit, i) => {
+      const x = px0 + i * (pw + gap);
+      if (hit) { c.fillStyle = spec.color; c.fillRect(x, 1080, pw, 40); }
+      else { c.strokeStyle = '#55ff99'; c.lineWidth = 6; c.strokeRect(x + 3, 1083, pw - 6, 34); }
+    });
+    // line 2: label
+    c.fillStyle = '#ffffff'; c.font = '600 76px Plex, monospace';
+    wrap(c, spec.label, CW).forEach((l, i) => c.fillText(l, cx, 1250 + i * 86));
+    // line 3: the miss (or the clean run)
+    c.fillStyle = '#c8ffc8'; c.font = '400 46px Plex, monospace';
+    wrap(c, spec.line, CW).slice(0, 2).forEach((l, i) => c.fillText(l, cx, 1370 + i * 58));
+    // address
+    c.fillStyle = '#55ffff'; c.font = '600 38px Plex, monospace';
+    c.fillText('dimacloud.github.io/born-weird/lab', cx, 1580);
+    c.fillStyle = 'rgba(0,0,0,.18)';
+    for (let y = 0; y < H; y += 4) c.fillRect(0, y + 2, W, 1);
+    return LABK.canvasImg(cv, 'ОРАКУЛ УГАДАЛ ' + spec.big);
+  }
+
+  // ---------- boot ----------
+  if (L.qa) {
+    const bd = /^(\d{1,2})\.(\d{1,2})$/.exec(qp.get('bd') || '');
+    if (bd) { const p = G.persona(+bd[1], +bd[2]); if (p) persona = p; }
+  }
+  applyPersona();
+
+  if (demo) {
+    frozen = demo !== 'play';
+    const script = { bet: [0, 1, 1, 0], hit: [0, 1, 1], boss: [0, 1, 1, 1, 1, 1], reveal: [0, 1, 1, 1, 1, 1, 1], reveal4: [0, 1, 1, 0, 1, 1, 0] }[demo];
+    if (script) {
+      startGame();
+      if (demo === 'reveal' || demo === 'reveal4') { script.forEach((s, i) => G.answer(run, i, s)); k = G.TOTAL; frozen = false; reveal(); }
+      else {
+        script.forEach((s, i) => G.answer(run, i, s)); k = script.length;
+        const sc = G.score(run); $('so').textContent = sc[0]; $('sp').textContent = sc[1];
+        renderItem();
+        if (demo === 'hit') {
+          // show a resolved bet, frozen (no auto-advance)
+          const it = G.itemAt(run, k); frozen = false;
+          const btn = Array.from($('opts').children).find(b => b.textContent === it.options.find(o => o.side === it.bet).label);
+          hold = true;
+          pick(it, it.bet, btn);
+        }
+      }
+    } else if (arm === 'birth') birthScreen(); else startGame();
+  } else if (arm === 'birth') birthScreen();
+  else startGame();
+})();
+</script>
+</body>
+</html>

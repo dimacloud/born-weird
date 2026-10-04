@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>BORN WEIRD · LAB</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#000000">
+<link rel="stylesheet" href="lab.css">
+<style>
+  h1 { color: var(--hi); font-size: 28px; margin: 8vh 0 6px; letter-spacing: 2px; text-shadow: 3px 3px 0 var(--mg); }
+  p { margin: 0 0 18px; }
+  .g { display: block; margin: 12px 0; padding: 18px 16px; border: 2px solid var(--fg); color: var(--fg); text-decoration: none; font-size: 22px; font-weight: 600; letter-spacing: 2px; }
+  .g:active, .g:hover { background: var(--fg); color: #000; }
+  .g small { display: block; font-size: 13px; font-weight: 400; letter-spacing: 0; color: var(--dim); }
+</style>
+</head>
+<body>
+<main>
+  <div class="lab-brand">BORN WEIRD · LAB</div>
+  <h1>ТРИ МАЛЕНЬКИЕ ИГРЫ</h1>
+  <p>Сыграй каждую. Не анализируй. Потом скажи, какая живая.</p>
+  <div id="list"></div>
+  <p class="lab-muted">Каждая — около минуты. Ничего не сохраняется, никаких аккаунтов.</p>
+</main>
+<script>
+  // Random order on every load, letters only: no labels that hint at the mechanic (DECISION #018).
+  const games = ['a', 'b', 'c'];
+  for (let i = games.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [games[i], games[j]] = [games[j], games[i]]; }
+  const keep = new URLSearchParams(location.search);
+  const q = ['f', 'qa'].filter(k => keep.get(k) === '1').map(k => k + '=1').join('&');
+  document.getElementById('list').innerHTML = games.map((g, i) =>
+    `<a class="g" href="${g}/${q ? '?' + q : ''}">ИГРА ${g.toUpperCase()}<small>${i + 1}-я по порядку</small></a>`).join('');
+</script>
+</body>
+</html>

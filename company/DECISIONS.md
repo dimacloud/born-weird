@@ -150,3 +150,36 @@ All decisions below are owned by CEO-001, are reversible unless stated otherwise
 - **PRIVACY (amends #014):** shareable outputs may now depend on the birth date via life path (9) **and element (4)**, about 1/36 of dates. The zodiac sign name, date, age and milestone are never shared. Tested.
 - **COST:** $0. **REVERSIBILITY:** high (v0.4 in git). **CONFIDENCE:** medium. The model is standard and the mechanics are richer, but 9 screens are still thin, and "unclear" is shown honestly.
 - **SUCCESS SIGNAL:** `fb_true_yes + partly` ≥ 70%, `purpose_yes + almost` ≥ 60%, share rate > v0.4.
+
+## DECISION #017 — Product Reset accepted; v0.5 frozen as evidence (Founder intent, 2026-10-04)
+- **TRIGGER:** Founder handoff `company/PRODUCT_RESET_2026-10-04.md`. v0.5 had become an assessment engine wrapped in a game.
+- **DECISION:**
+  1. **Preserve.** v0.5 is tagged `v0.5-archive` and stays live at the root URL, unchanged, as a reference. No features are added to it. The production root changes only when a tournament winner has human evidence.
+  2. **Genesis.** Amended with §74 (post-boot state, the reset, roles, method). §5, §7 and §58 are marked historical or amended.
+  3. **Freeze** (kept in git, removed from the critical path): life-in-weeks, fresh-start milestone, Erikson stage, world-at-birth facts, "how calculated", 8-value HUD, purpose hypothesis, confidence, fragile/hidden value, rarity, 7-day quest, value passport, JSON profile, Intent OS, runtime AI (W-011, HR-003), AI deep links, compare-with-friend, Collide Timelines, community, DAO, tokens, monetization, referral genealogy (W-009), question-pool growth (W-013).
+  4. **Paused experiments.** EXP-001/002/003 measured v0.5 and its predecessors. They stay open only as passive counters; no decisions will be taken from them.
+  5. **Human exposure of v0.5 (HR-002) is withdrawn.** Sending people the old product would spend the Founder's first-tester goodwill on the thing we are replacing.
+- **ALTERNATIVES:** incremental v0.6 (rejected by Founder intent); delete v0.5 (rejected: it is evidence).
+- **COST:** $0. **REVERSIBILITY:** high. **CONFIDENCE:** high (Founder intent).
+
+## DECISION #018 — Tournament format: disposable static prototypes under /lab/, Russian first
+- **DECISION:**
+  1. Each finalist is one self-contained HTML file at `product/site/lab/<id>/index.html`, deployed by the existing Pages workflow. No shared engine, no build step, no tests beyond what QA needs. Abandoning one = deleting a folder.
+  2. Prototypes are **Russian only**. The first humans are the Founder's Russian-speaking network (DECISION #012). EN comes back with the winner.
+  3. Visual direction: reuse the retro-DOS palette and self-hosted fonts from `product/site/` only where it helps. No new components are kept for their own sake.
+  4. A neutral hub at `/lab/` lists the finalists in a randomized order with letter names only, so the Founder plays them without labels like "the contradiction one".
+  5. No runtime AI, no backend, no accounts. Referral state lives in the URL.
+- **COST:** $0. **REVERSIBILITY:** high. **CONFIDENCE:** high.
+
+## DECISION #019 — Minimum analytics for the tournament
+- **DECISION:** a separate anonymous counter namespace `bw-lab-r1` (same provider as #006, no cookies, no user-level data). Each prototype `<p>` sends only:
+  - `<p>_view`, `<p>_ref_view` (opened from a shared link): START funnel top
+  - `<p>_start` (first choice made): START
+  - `<p>_done` (reveal shown), `<p>_ref_done`: COMPLETION, REFERRED COMPLETION
+  - `<p>_rec_yes` / `<p>_rec_kinda` / `<p>_rec_no`: RECOGNITION (one optional tap under the reveal)
+  - `<p>_share_click`, `<p>_share_ok` (native share resolved or link copied): SHARE INTENT, ACTUAL SHARE
+  - variant prototypes add `<p>_birth_given` / `<p>_birth_skip`.
+  - `?qa=1` sends nothing; `?f=1` prefixes `f_` (Founder plays are counted separately).
+- **NOT measured by counters:** SURPRISE, hesitation, confusion, "who would you send it to". Those come from the human-test protocol (`reports/tournament/HUMAN_TEST_PROTOCOL.md`).
+- **WHY:** the north star is PLAYER → RESULT → SHARE → NEW PLAYER. These ~10 counters per prototype measure exactly that chain and nothing else.
+- **COST:** $0. **REVERSIBILITY:** high.

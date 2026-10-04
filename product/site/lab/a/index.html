@@ -1,0 +1,512 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ШАР · BORN WEIRD</title>
+<meta name="description" content="Шар падает. Восемь вещей в корзине. Выкидывай лишнее — что останется?">
+<meta property="og:title" content="ШАР ПАДАЕТ · BORN WEIRD">
+<meta property="og:description" content="8 вещей. Шар падает. Одна остаётся. А что останется в твоём шаре?">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://dimacloud.github.io/born-weird/lab/a/og/_default-1.png">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#000000">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23000'/%3E%3Ccircle cx='8' cy='6' r='5' fill='%23ff55ff'/%3E%3Crect x='6' y='12' width='4' height='3' fill='%23aa5500'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="../lab.css">
+<style>
+  :root { --brown: #aa5500; --tile: 64px; }
+  html, body { height: 100%; }
+  body { overflow-x: hidden; }
+  main { padding: 10px 12px 28px; }
+  body.playing main { padding-bottom: 10px; }
+  body.playing { overflow: hidden; }
+  #game { display: flex; flex-direction: column; height: calc(100vh - 20px); height: calc(100dvh - 20px); min-height: 520px; }
+  .hud { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; min-height: 26px; }
+  #msg { color: var(--hi); font-weight: 600; letter-spacing: .5px; font-size: 18px; line-height: 1.25; }
+  #msg.friend { color: var(--cy); }
+  #msg small { display: block; color: var(--fg); font-weight: 400; font-size: 13px; letter-spacing: 0; }
+  #alt { color: var(--dim); font-size: 12px; white-space: nowrap; padding-top: 2px; font-variant-numeric: tabular-nums; }
+  #alt b { color: var(--fg); font-weight: 600; }
+  #alt.low b { color: var(--no); }
+
+  /* sky: streaks move up while the balloon falls */
+  #sky { container-type: size; position: relative; flex: 1 1 auto; min-height: 120px; overflow: hidden; margin-top: 6px;
+    background-image: radial-gradient(circle, rgba(85,255,255,.55) 0 1.5px, transparent 2.5px),
+                      radial-gradient(circle, rgba(200,255,200,.35) 0 1px, transparent 2px);
+    background-size: 71px 53px, 37px 89px; }
+  #ground { position: absolute; left: 0; right: 0; bottom: 0; height: 4%; background:
+      linear-gradient(to bottom, #0a6a2a 0 6px, #054015 6px); clip-path: polygon(0 30%, 12% 30%, 12% 10%, 25% 10%, 25% 40%, 44% 40%, 44% 0, 58% 0, 58% 25%, 76% 25%, 76% 8%, 90% 8%, 90% 35%, 100% 35%, 100% 100%, 0 100%); }
+  #rig { position: absolute; left: 0; right: 0; bottom: -16px; height: 100%; pointer-events: none; will-change: transform; }
+  #env { position: absolute; left: 50%; bottom: calc(52px + 16px); width: min(40vw, 160px, calc((100cqh - 84px) / 1.08)); aspect-ratio: 1 / 1.08; transform: translateX(-50%);
+    border-radius: 50% 50% 44% 44% / 54% 54% 46% 46%;
+    background: repeating-linear-gradient(90deg, var(--mg) 0 14%, var(--hi) 14% 28%);
+    box-shadow: inset -12px -8px 0 rgba(0,0,0,.28), inset 8px 6px 0 rgba(255,255,255,.18); }
+  #env::after { content: ''; position: absolute; left: 30%; right: 30%; bottom: -10px; height: 12px; background: var(--brown); }
+  #ropes { position: absolute; left: 0; right: 0; bottom: 0; height: 68px; width: 100%; }
+  #banner { position: absolute; left: 0; right: 0; top: 34%; text-align: center; font-weight: 600; font-size: 30px; letter-spacing: 2px; color: var(--mg);
+    text-shadow: 3px 3px 0 #000, -2px -2px 0 #000; opacity: 0; transform: scale(.6); transition: opacity .15s, transform .15s; pointer-events: none; z-index: 3; }
+  #banner.on { opacity: 1; transform: scale(1); }
+  #banner.bad { color: var(--no); font-size: 24px; }
+
+  #fuse { height: 10px; margin: 0 0 6px; border: 1px solid var(--line); position: relative; z-index: 2; background: #000; }
+  #fuse i { display: block; height: 100%; width: 100%; background: var(--hi); transform-origin: left; }
+  #fuse.low i { background: var(--no); }
+  #fuse.idle i { background: var(--line); }
+
+  /* the basket = the grid of 8 */
+  #basket { position: relative; z-index: 2; border: 3px solid var(--brown); background: #120800; padding: 6px; }
+  #grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+  .tile { min-width: 0; white-space: normal; overflow: hidden; min-height: var(--tile); height: var(--tile); display: flex; align-items: center; gap: 7px; padding: 4px 6px; text-align: left;
+    background: #0b1a0b; color: var(--fg); border: 2px solid var(--line); font-size: 12px; font-weight: 600; line-height: 1.15; letter-spacing: 0;
+    transition: transform .08s, border-color .1s, background .1s; }
+  .tile .e { font-size: 26px; line-height: 1; flex: 0 0 auto; }
+  .tile:active:not(:disabled) { transform: scale(.93); background: #1d3a1d; border-color: var(--hi); }
+  .tile.gone { visibility: hidden; }
+  .tile.hot { border-color: var(--hi); }
+  .tile.ok { border-color: var(--ok); background: #0a3a1a; }
+  .tile.no { border-color: var(--no); background: #3a0a0a; }
+  .tile:disabled { cursor: default; }
+  #grid.twist { grid-template-columns: 1fr; }
+  #grid.twist .tile.gone { display: none; }
+  #grid.twist .tile { height: 64px; justify-content: center; font-size: 15px; border-color: var(--hi); }
+  #twist { display: none; margin-top: 8px; }
+  #twist.on { display: block; }
+  #twist .row { display: flex; gap: 8px; margin-top: 8px; }
+  #twist button { flex: 1; min-height: 58px; font-weight: 600; font-size: 17px; letter-spacing: 1px; border: 0; }
+  #bDrop { background: var(--cy); color: #000; }
+  #bJump { background: var(--mg); color: #000; }
+
+  .fly { position: fixed; z-index: 40; pointer-events: none; display: flex; align-items: center; gap: 8px; padding: 4px 8px; background: #0b1a0b; border: 2px solid var(--hi);
+    color: var(--fg); font: 600 12px 'Plex', monospace; transition: transform .95s cubic-bezier(.5,0,.9,.6), opacity .95s ease-in; }
+  .fly .e { font-size: 26px; }
+  .shake { animation: shake .5s linear 2; }
+  @keyframes shake { 0%,100% { transform: translate(0,0) } 20% { transform: translate(-7px,2px) } 40% { transform: translate(6px,-3px) } 60% { transform: translate(-5px,3px) } 80% { transform: translate(5px,-1px) } }
+  .flash { animation: flash .18s linear; }
+  @keyframes flash { 0% { background: rgba(255,255,85,.25) } 100% { background: transparent } }
+
+  /* reveal */
+  #reveal { display: none; }
+  #reveal.on { display: block; }
+  .rv-k { color: var(--cy); font-weight: 600; letter-spacing: 1px; margin-top: 6px; font-size: 15px; }
+  .rv-big { color: var(--hi); font-weight: 600; font-size: 28px; line-height: 1.12; margin: 4px 0 2px; text-shadow: 3px 3px 0 #6a1a6a; }
+  .rv-big .e { font-size: 30px; }
+  .rv-jump { color: var(--mg); font-weight: 600; font-size: 22px; margin-top: 6px; }
+  .rv-rc { list-style: none; padding: 0; margin: 14px 0 0; font-size: 14px; }
+  .rv-rc li { padding: 4px 0; border-top: 1px dashed var(--line); }
+  .rv-title { margin: 14px 0 0; padding: 10px; border: 2px solid var(--mg); color: var(--mg); font-weight: 600; text-align: center; letter-spacing: 1px; font-size: 17px; }
+  .rv-title small { display: block; color: var(--dim); font-weight: 400; font-size: 11px; letter-spacing: 2px; }
+  .rv-cmp { margin-top: 10px; color: var(--cy); font-size: 14px; }
+  #reveal.auto .lab-again { min-height: 54px; margin-top: 14px; background: var(--hi); color: #000; font-weight: 600; font-size: 18px; border: 0; }
+  #reveal .lab-share { margin-top: 12px; }
+  #card { text-align: center; }
+  #card .lab-card { width: 62%; max-width: 260px; }
+  #status { min-height: 18px; text-align: center; }
+
+  @media (max-height: 640px) {
+    :root { --tile: 56px; }
+    #msg { font-size: 14px; }
+    .tile .e { font-size: 22px; }
+    .tile { font-size: 11px; }
+    #banner { font-size: 24px; }
+    .rv-big { font-size: 24px; }
+  }
+  @media (max-width: 345px) {
+    .tile { gap: 5px; padding: 4px 5px; font-size: 10.5px; letter-spacing: 0; }
+    .tile .e { font-size: 20px; }
+  }
+  @media (min-height: 760px) { :root { --tile: 72px; } .tile { font-size: 13px; } }
+</style>
+</head>
+<body>
+<main>
+  <section id="game">
+    <div class="hud"><div id="msg">ШАР ПАДАЕТ. ВЫКИДЫВАЙ ЛИШНЕЕ.</div><div id="alt"><b>900</b> м</div></div>
+    <div id="sky">
+      <div id="ground"></div>
+      <div id="rig">
+        <div id="env"></div>
+        <svg id="ropes" viewBox="0 0 100 68" preserveAspectRatio="none" aria-hidden="true">
+          <line x1="44" y1="0" x2="2" y2="68" stroke="#aa5500" stroke-width="1.2" vector-effect="non-scaling-stroke"/>
+          <line x1="56" y1="0" x2="98" y2="68" stroke="#aa5500" stroke-width="1.2" vector-effect="non-scaling-stroke"/>
+          <line x1="48" y1="0" x2="34" y2="68" stroke="#aa5500" stroke-width="1" vector-effect="non-scaling-stroke"/>
+          <line x1="52" y1="0" x2="66" y2="68" stroke="#aa5500" stroke-width="1" vector-effect="non-scaling-stroke"/>
+        </svg>
+      </div>
+      <div id="banner"></div>
+    </div>
+    <div id="fuse" class="idle"><i></i></div>
+    <div id="basket">
+      <div id="grid"></div>
+      <div id="twist">
+        <div class="row"><button type="button" id="bDrop">ВЫКИДЫВАЮ</button><button type="button" id="bJump">ПРЫГАЮ Я</button></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="reveal">
+    <div id="rvHead"></div>
+    <ul class="rv-rc" id="rvRc"></ul>
+    <div class="rv-title" id="rvTitle"></div>
+    <div class="rv-cmp" id="rvCmp"></div>
+    <button type="button" class="lab-share" id="bShare">ПОКАЗАТЬ ДРУГУ</button>
+    <div class="lab-muted" id="status"></div>
+    <div class="lab-muted" id="rvHon"></div>
+    <div id="recog"></div>
+    <div id="cardBox"><div id="card"></div>
+    <div class="lab-muted" style="text-align:center">удерживай картинку, чтобы сохранить</div></div>
+    <button type="button" class="lab-again" id="bAgain">ещё раз</button>
+    <div class="lab-muted" style="text-align:center;margin-top:18px"><span class="lab-brand">BORN WEIRD</span> · лаборатория</div>
+  </section>
+</main>
+<script src="../lab.js"></script>
+<script src="game.js"></script>
+<script>
+(function () {
+  'use strict';
+  const L = LAB.init('a'), SND = LAB.SND, G = SHAR;
+  const $ = id => document.getElementById(id);
+  const msg = $('msg'), altEl = $('alt'), sky = $('sky'), rig = $('rig'), ground = $('ground'), banner = $('banner');
+  const fuse = $('fuse'), fuseBar = fuse.firstElementChild, grid = $('grid'), twist = $('twist'), game = $('game'), reveal = $('reveal');
+  const params = new URLSearchParams(location.search);
+  const DEMO = L.qa ? params.get('demo') : null;
+  const MSG0 = 'ШАР ПАДАЕТ. ВЫКИДЫВАЙ ЛИШНЕЕ.';
+
+  let friend = G.decodeState(L.hash.s);
+  let clock = null;
+  const GKEY = 'bw_lab_a_guessed_' + (L.hash.s || '');
+  const guessedBefore = () => { try { return sessionStorage.getItem(GKEY) === '1'; } catch (e) { return false; } };
+  let phase, run, timer, lock, started = false, frozen = !!DEMO, res = null;
+  let gustUntil = 0, bumpUntil = 0, fuseFrac = 1, sinkBase = 900;
+
+  // ---------- tiles ----------
+  const tiles = G.ITEMS.map((it, i) => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'tile';
+    b.innerHTML = '<span class="e">' + it.emoji + '</span><span>' + it.name + '</span>';
+    b.addEventListener('click', () => onTile(i));
+    grid.appendChild(b);
+    return b;
+  });
+
+  function setMsg(html, cls) { msg.innerHTML = html; msg.className = cls || ''; }
+  function showBanner(text, bad, ms) {
+    banner.textContent = text; banner.className = 'on' + (bad ? ' bad' : '');
+    clearTimeout(showBanner.t);
+    if (!(frozen && DEMO === 'gust')) showBanner.t = setTimeout(() => { banner.className = bad ? 'bad' : ''; }, ms || 900);
+  }
+  function buzz(ms) { if (frozen) return; try { if (navigator.vibrate) navigator.vibrate(ms); } catch (e) {} }
+
+  // ---------- scene loop: streaks, bob, altitude, ground ----------
+  let off1 = 0, off2 = 0, wind = 0, last = performance.now(), alt = 900;
+  function altTarget() {
+    if (phase === 'reveal') return alt;
+    if (phase === 'idle' || phase === 'guess') return Math.max(840, alt - 0.25);
+    if (phase === 'end') return alt + 3;
+    return sinkBase - (1 - fuseFrac) * 70;
+  }
+  function loop(t) {
+    const dt = Math.min(0.05, (t - last) / 1000); last = t;
+    let sp = phase === 'idle' || phase === 'guess' ? 70 : 110 + (1 - fuseFrac) * 260;
+    if (t < gustUntil) sp += 120;
+    if (t < bumpUntil || phase === 'end') sp = -180;
+    if (phase === 'twist') sp = 160;
+    off1 += sp * dt; off2 += sp * 1.7 * dt;
+    if (t < gustUntil) wind += 600 * dt;
+    sky.style.backgroundPosition = (wind % 400) + 'px ' + (-off1) + 'px, ' + (wind * 1.4 % 400 + 60) + 'px ' + (-off2) + 'px';
+    const a = altTarget(); alt += (a - alt) * Math.min(1, dt * 5);
+    altEl.innerHTML = '<b>' + Math.max(0, Math.round(alt)) + '</b> м';
+    altEl.className = alt < 350 ? 'low' : '';
+    ground.style.height = (4 + Math.max(0, (900 - alt) / 900) * 30) + '%';
+    const sway = Math.sin(t / 700) * (t < gustUntil ? 6 : 1.6);
+    const bob = Math.sin(t / 420) * 3 - (t < bumpUntil ? 10 : 0);
+    rig.style.transform = 'translateY(' + bob.toFixed(1) + 'px) rotate(' + sway.toFixed(2) + 'deg)';
+    if (!document.hidden && phase !== 'reveal') requestAnimationFrame(loop); else loopOn = false;
+  }
+  let loopOn = false;
+  function kick() { if (!loopOn) { loopOn = true; last = performance.now(); requestAnimationFrame(loop); } }
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) kick(); });
+
+  // ---------- game flow ----------
+  function reset(asFriend) {
+    if (timer) timer.stop(); timer = null;
+    if (clock) clock.stop();
+    document.body.classList.add('playing');
+    run = G.newRun(); lock = false; res = null; fuseFrac = 1; sinkBase = 900; alt = 900;
+    tiles.forEach(b => { b.className = 'tile'; b.disabled = false; });
+    grid.className = ''; twist.className = '';
+    fuse.className = 'idle'; fuseBar.style.transform = 'scaleX(1)';
+    reveal.className = ''; game.style.display = '';
+    banner.className = '';
+    if (asFriend) { phase = 'guess'; setMsg('У ДРУГА В ШАРЕ ОСТАЛОСЬ ОДНО. УГАДАЕШЬ?', 'friend'); }
+    else { phase = 'idle'; setMsg(friend ? 'ТЕПЕРЬ ТВОЙ ШАР. ВЫКИДЫВАЙ ЛИШНЕЕ.' : MSG0); }
+    clock = LAB.timer(600000, null, () => {}); // pause-aware clock: time since the tiles appeared / the last throw
+    kick();
+  }
+
+  function onTile(i) {
+    if (lock) return;
+    if (phase === 'guess') return onGuess(i);
+    if (phase !== 'idle' && phase !== 'throw') return;
+    if (tiles[i].classList.contains('gone')) return;
+    let ms;
+    if (phase === 'idle') {
+      if (!started) { started = true; L.track('start'); }
+      ms = 600000 - clock.left; clock.stop();
+    } else {
+      ms = timer ? G.FUSE[run.throws.length] - timer.left : 600000 - clock.left;
+    }
+    doThrow(i, ms, false);
+  }
+
+  function doThrow(i, ms, auto) {
+    if (timer) { timer.stop(); timer = null; }
+    G.throwItem(run, i, ms, auto);
+    if (clock) clock.stop();
+    clock = LAB.timer(600000, null, () => {});
+    if (auto) L.track('auto');
+    fly(tiles[i], 1);
+    tiles[i].classList.add('gone'); tiles[i].disabled = true;
+    SND.fall(); buzz(auto ? 60 : 25);
+    sky.classList.remove('flash'); void sky.offsetWidth; sky.classList.add('flash');
+    bumpUntil = performance.now() + 380;
+    const n = run.throws.length;
+    sinkBase = 900 - n * 105; alt += 30;
+    fuse.className = 'idle'; fuseBar.style.transform = 'scaleX(1)'; fuseFrac = 1;
+    if (n === G.THROWS) { phase = 'twistwait'; if (frozen) toTwist(); else setTimeout(toTwist, 650); return; }
+    phase = 'throw';
+    setMsg((n >= G.GUST_AT ? 'ВЕТЕР! БЫСТРЕЕ!' : 'ВЫКИДЫВАЙ!') + ' <small>за бортом ' + n + ' из 7</small>');
+    if (n === G.GUST_AT) return gust();
+    nextThrow(frozen ? 0 : 280);
+  }
+
+  function nextThrow(delay) {
+    const n = run.throws.length;
+    lock = false;
+    if (frozen) { fuse.className = n >= G.GUST_AT ? 'low' : ''; fuseBar.style.transform = 'scaleX(.55)'; fuseFrac = .55; return; }
+    setTimeout(() => {
+      if (phase !== 'throw' || run.throws.length !== n) return;
+      const total = G.FUSE[n], every = G.TICK[n];
+      let beeps = 0;
+      fuse.className = '';
+      timer = LAB.timer(total, frac => {
+        fuseFrac = frac;
+        fuseBar.style.transform = 'scaleX(' + frac.toFixed(3) + ')';
+        fuse.className = frac < 0.35 ? 'low' : '';
+        const k = Math.floor((1 - frac) * total / every);
+        if (k > beeps) { beeps = k; SND.tick(n + k % 4); }
+      }, () => {
+        timer = null;
+        if (phase !== 'throw' || run.throws.length !== n) return;
+        showBanner('ШАР НЕ ЖДЁТ', true, 800); SND.bad();
+        doThrow(G.autoPick(run, Math.random), null, true);
+      });
+    }, delay);
+  }
+
+  function gust() {
+    lock = true;
+    showBanner('ПОРЫВ ВЕТРА!', false, 1100);
+    gustUntil = performance.now() + 2600;
+    game.classList.remove('shake'); void game.offsetWidth; game.classList.add('shake');
+    for (let k = 0; k < 10; k++) SND.tone(140 + (k % 5) * 70, 0.07, k * 0.05, 'sawtooth', 0.025);
+    buzz([40, 30, 40]);
+    if (frozen) { lock = false; return nextThrow(0); }
+    setTimeout(() => { lock = false; nextThrow(0); }, 900);
+  }
+
+  function toTwist() {
+    phase = 'twist'; lock = false;
+    fuse.className = 'idle';
+    setMsg('ОСТАЛАСЬ ОДНА ВЕЩЬ. ШАР ВСЁ ЕЩЁ ПАДАЕТ.');
+    grid.className = 'twist';
+    const k = G.remaining(run)[0];
+    tiles[k].disabled = true; tiles[k].classList.add('hot');
+    twist.className = 'on';
+    SND.tone(330, 0.3, 0, 'triangle', 0.03);
+  }
+
+  function choose(jump) {
+    if (phase !== 'twist') return;
+    phase = 'end';
+    L.track(jump ? 'jump' : 'drop');
+    const k = G.remaining(run)[0];
+    twist.className = '';
+    if (jump) {
+      const me = document.createElement('div'); me.className = 'fly'; me.innerHTML = '<span class="e">🧍</span>';
+      const r = tiles[k].getBoundingClientRect();
+      me.style.left = (r.left + r.width / 2 - 24) + 'px'; me.style.top = (r.top - 10) + 'px';
+      document.body.appendChild(me); drop(me, 1);
+      SND.tone(600, 0.6, 0, 'triangle', 0.03); SND.tone(300, 0.5, 0.2, 'triangle', 0.03);
+      setMsg('ПРЫЖОК!');
+    } else {
+      fly(tiles[k], -1); tiles[k].classList.add('gone'); SND.fall();
+      setMsg('ВЫКИНУТО ВСЁ.');
+    }
+    buzz(50);
+    res = G.finish(run, jump, friend);
+    if (frozen) showReveal(); else setTimeout(showReveal, 1300);
+  }
+
+  function fly(tile, dir) {
+    const r = tile.getBoundingClientRect();
+    const f = document.createElement('div'); f.className = 'fly';
+    f.innerHTML = tile.innerHTML;
+    f.style.left = r.left + 'px'; f.style.top = r.top + 'px'; f.style.width = r.width + 'px'; f.style.height = r.height + 'px';
+    document.body.appendChild(f); drop(f, dir);
+  }
+  function drop(el, dir) {
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      const rot = (Math.random() * 50 + 20) * (dir || 1) * (Math.random() < .5 ? -1 : 1);
+      el.style.transform = 'translate(' + (Math.random() * 60 - 30) + 'px,' + (innerHeight + 80) + 'px) rotate(' + rot + 'deg)';
+      el.style.opacity = '0.2';
+    }));
+    setTimeout(() => el.remove(), 1100);
+  }
+
+  // ---------- friend guess ----------
+  function onGuess(i) {
+    if (!started) { started = true; L.track('start'); }
+    lock = true;
+    const ok = G.guess(friend, i), f = G.ITEMS[friend.keptIdx];
+    L.track(ok ? 'guess_ok' : 'guess_no');
+    try { sessionStorage.setItem(GKEY, '1'); } catch (e) {}
+    tiles.forEach(b => { b.disabled = true; });
+    tiles[friend.keptIdx].classList.add('ok');
+    if (!ok) tiles[i].classList.add('no');
+    if (ok) SND.good(); else SND.bad();
+    buzz(ok ? 30 : 80);
+    setMsg((ok ? '✓ УГАДАНО: ' : '✗ МИМО. У ДРУГА: ') + f.emoji + ' ' + f.short + (friend.jump ? ' <small>и прыжок за борт ради него</small>' : ''), 'friend');
+    if (friend.jump && (f.g !== 'm')) msg.querySelector('small').textContent = 'и прыжок за борт ради ' + ({ f: 'неё', n: 'него', p: 'них' }[f.g]);
+    if (frozen) return;
+    setTimeout(() => { reset(false); }, 1700);
+  }
+
+  // ---------- reveal ----------
+  function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+  function showReveal() {
+    phase = 'reveal';
+    game.style.display = 'none';
+    document.body.classList.remove('playing');
+    reveal.className = res.auto ? 'on auto' : 'on';
+    ['rvTitle', 'bShare', 'recog', 'cardBox'].forEach(id => { $(id).style.display = res.auto ? 'none' : ''; });
+    $('bAgain').textContent = res.auto ? 'ЕЩЁ РАЗ — БЫСТРЕЕ' : 'ещё раз';
+    const h = res.headline;
+    let head = '<div class="rv-k">' + esc(h[0]) + '</div><div class="rv-big"><span class="e">' + res.kept.emoji + '</span> ' + esc(h[1]) + '</div>';
+    if (h[2]) head += '<div class="rv-jump">' + esc(h[2]) + '</div>';
+    $('rvHead').innerHTML = head;
+    $('rvRc').innerHTML = res.receipts.map(l => '<li>' + esc(l.text) + '</li>').join('');
+    $('rvTitle').innerHTML = res.title ? '<small>ПРОЗВИЩЕ</small>' + esc(res.title) : '';
+    $('rvCmp').textContent = res.compare || '';
+    $('rvCmp').style.display = res.compare ? '' : 'none';
+    $('rvHon').textContent = res.honesty;
+    $('status').textContent = '';
+    SND.reveal();
+    L.track('done');
+    window.scrollTo(0, 0);
+    if (res.auto) { L.track('auto_reveal'); return; }
+    L.recog($('recog'), res.chips);
+    L.track('kept_' + res.code);
+    drawCard(res);
+  }
+
+  function drawCard(r) {
+    const box = $('card'); box.innerHTML = '';
+    const ready = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
+    const loads = document.fonts && document.fonts.load ? Promise.all([document.fonts.load('600 80px Plex', 'ШАРЖЩ'), document.fonts.load('400 40px Plex', 'ШАР')]).catch(() => {}) : Promise.resolve();
+    Promise.all([ready, loads]).then(() => {
+      if (res !== r) return;
+      const W = 1080, H = 1920, c = document.createElement('canvas'); c.width = W; c.height = H;
+      const x = c.getContext('2d');
+      const EMO = "'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif";
+      x.fillStyle = '#000'; x.fillRect(0, 0, W, H);
+      // streaks
+      x.fillStyle = 'rgba(85,255,255,.16)';
+      for (let i = 0; i < 26; i++) { const sy = (i * 311) % H; if (sy > 960 && sy < 1640) continue; x.fillRect((i * 173) % W, sy, 6, 60 + (i % 3) * 30); }
+      x.strokeStyle = '#55ffff'; x.lineWidth = 8; x.strokeRect(60, 60, W - 120, H - 120);
+      x.textAlign = 'center'; x.textBaseline = 'alphabetic';
+      x.fillStyle = '#ff55ff'; x.font = '600 44px Plex, monospace';
+      x.fillText('B O R N   W E I R D', W / 2, 360);
+      // balloon
+      const cx = W / 2, cy = 600, rx = 170, ry = 200;
+      x.save(); x.beginPath(); x.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2); x.clip();
+      for (let i = 0; i < 8; i++) { x.fillStyle = i % 2 ? '#ffff55' : '#ff55ff'; x.fillRect(cx - rx + i * (2 * rx / 7), cy - ry, 2 * rx / 7, 2 * ry); }
+      x.fillStyle = 'rgba(0,0,0,.25)'; x.beginPath(); x.ellipse(cx + 40, cy + 30, rx, ry, 0, 0, Math.PI * 2); x.fill();
+      x.restore();
+      x.strokeStyle = '#aa5500'; x.lineWidth = 5;
+      [[-60, -70], [60, 70], [-20, -30], [20, 30]].forEach(([a, b]) => { x.beginPath(); x.moveTo(cx + a, cy + ry - 14); x.lineTo(cx + b, cy + ry + 110); x.stroke(); });
+      x.fillStyle = '#aa5500'; x.fillRect(cx - 95, cy + ry + 105, 190, 90);
+      x.font = '84px ' + EMO; x.textBaseline = 'middle';
+      if (r.jump) x.fillText(r.kept.emoji, cx, cy + ry + 150);
+      else { x.save(); x.translate(cx - 250, cy + ry + 250); x.rotate(-0.5); x.fillText(r.kept.emoji, 0, 0); x.restore(); }
+      // thrown items falling to the right/left
+      run.throws.forEach((t, k) => {
+        x.globalAlpha = 0.35 + 0.08 * k; x.font = (48 + k * 4) + 'px ' + EMO;
+        x.fillText(G.ITEMS[t.i].emoji, k % 2 ? 860 - k * 6 : 220 + k * 6, 470 + k * 70);
+      });
+      if (!r.jump) { x.globalAlpha = 1; } else { x.globalAlpha = 1; x.font = '64px ' + EMO; x.fillText('🧍', cx + 230, cy + ry + 230); }
+      x.globalAlpha = 1; x.textBaseline = 'alphabetic';
+      // 3 lines
+      x.fillStyle = '#55ffff'; x.font = '600 50px Plex, monospace'; x.fillText(r.card[0], W / 2, 1120);
+      x.fillStyle = '#ffff55';
+      const big = wrap(x, r.card[1], 860, 92);
+      big.lines.forEach((ln, k) => { x.font = '600 ' + big.size + 'px Plex, monospace'; x.fillText(ln, W / 2, 1230 + k * big.size * 1.1); });
+      const y3 = 1230 + big.lines.length * big.size * 1.1 + 70;
+      x.fillStyle = '#ff55ff'; x.font = '600 52px Plex, monospace'; fitText(x, '— ' + r.card[2] + ' —', W / 2, y3, 900, 52);
+      x.fillStyle = '#8fb08f'; x.font = '400 35px Plex, monospace'; x.fillText('dimacloud.github.io/born-weird/lab', W / 2, 1590);
+      // scanlines
+      x.fillStyle = 'rgba(0,0,0,.18)'; for (let y = 0; y < H; y += 6) x.fillRect(0, y, W, 2);
+      box.appendChild(LAB.canvasImg(c, r.card.join(' ')));
+    });
+  }
+  function wrap(x, text, maxW, size) {
+    for (let s = size; s >= 52; s -= 6) {
+      x.font = '600 ' + s + 'px Plex, monospace';
+      const words = text.split(' '), lines = []; let cur = '';
+      words.forEach(w => { const t = cur ? cur + ' ' + w : w; if (x.measureText(t).width <= maxW || !cur) cur = t; else { lines.push(cur); cur = w; } });
+      if (cur) lines.push(cur);
+      if (lines.length <= 2 && lines.every(l => x.measureText(l).width <= maxW)) return { lines, size: s };
+    }
+    return { lines: [text], size: 52 };
+  }
+  function fitText(x, t, cx, y, maxW, size) {
+    let s = size; x.font = '600 ' + s + 'px Plex, monospace';
+    while (x.measureText(t).width > maxW && s > 30) { s -= 2; x.font = '600 ' + s + 'px Plex, monospace'; }
+    x.fillText(t, cx, y);
+  }
+
+  $('bDrop').addEventListener('click', () => choose(false));
+  $('bJump').addEventListener('click', () => choose(true));
+  $('bShare').addEventListener('click', () => {
+    if (!res) return;
+    L.share({ code: res.code, state: res.state, text: res.share, onStatus: s => {
+      $('status').textContent = { ok: 'Отправлено.', copied: 'Ссылка скопирована — вставь в чат.', tg: 'Открываю Telegram…' }[s] || '';
+    } });
+  });
+  $('bAgain').addEventListener('click', () => { friend = null; reset(false); window.scrollTo(0, 0); });
+
+  // ---------- boot ----------
+  L.track('view');
+  reset(!!friend && !guessedBefore());
+
+  // ---------- QA demo states: ?qa=1&demo=mid|gust|twist|reveal|reveal-drop|reveal-auto|guess|guessed|friend-reveal ----------
+  if (DEMO) {
+    const T = (order, times, autos) => order.forEach((i, k) => {
+      if (k === 0) { phase = 'throw'; clock.stop(); }
+      doThrow(i, times[k], !!(autos && autos[k]));
+    });
+    if (DEMO === 'mid') T([3, 0], [2100, 1800]);
+    else if (DEMO === 'gust') T([3, 0, 7], [2100, 1800, 1200]);
+    else if (DEMO === 'twist') T([3, 0, 7, 1, 2, 4, 6], [2100, 3200, 1200, 900, 800, 700, 1000]);
+    else if (DEMO === 'reveal') { T([3, 0, 7, 1, 2, 4, 6], [1100, 3600, 1200, 900, 800, 700, 1000]); choose(true); }
+    else if (DEMO === 'reveal-drop') { T([6, 1, 2, 0, 3, 5, 7], [2400, 1500, 1300, 900, 800, 700, 1000], [0, 0, 0, 0, 1, 0, 0]); choose(false); }
+    else if (DEMO === 'reveal-auto') { T([3, 0, 7, 1, 2, 4, 6], [1100, 0, 0, 0, 0, 900, 0], [0, 1, 1, 1, 1, 0, 1]); choose(true); }
+    else if (DEMO === 'guess') { friend = friend || G.decodeState('5j'); reset(true); }
+    else if (DEMO === 'guessed') { friend = friend || G.decodeState('6j'); reset(true); onGuess(2); }
+    else if (DEMO === 'friend-reveal') { friend = friend || G.decodeState('2d'); reset(false); T([3, 0, 7, 1, 2, 4, 6], [1300, 1600, 1200, 900, 800, 700, 1000]); choose(true); }
+  }
+})();
+</script>
+</body>
+</html>
