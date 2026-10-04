@@ -217,3 +217,12 @@ All decisions below are owned by CEO-001, are reversible unless stated otherwise
   - Posts never use result links (`/r/<code>/#ref=…`).
   - The slugs are listed in `operations/lab-metrics.mjs → SOURCES`.
 - **COST:** $0. **REVERSIBILITY:** high.
+
+## DECISION #023 — Promo: channels where self-promo is invited; English waits for a Russian signal
+- **INPUT:** `reports/growth/research-ru.md`, `research-global.md` → `reports/growth/PROMO_PLAN.md`.
+- **DECISION:**
+  1. The first wave goes only to places that explicitly invite projects: vc.ru «Субботний самопиар», the Product Radar form, the monthly Habr thread. No Pikabu, r/InternetIsBeautiful, Product Hunt, other people's chats or uninvited messages.
+  2. The wave starts after the 24 h check. If the funnel is broken, fix the game first.
+  3. The English version is held until RU shows `done/start` ≥ 60% and ≥ 1 non-Founder `ref_start`. This overrides GROWTH-DIST-GLOBAL-001's "translate now": translating doubles the surface before reproduction is shown.
+  4. The Founder chooses the time level (0 / 1 / 2). It is a resource decision, not an implementation one.
+- **COST:** $0. **REVERSIBILITY:** high.
