@@ -299,7 +299,7 @@ test('og.json: one result page per item code, slugs latin, version bumped', () =
 test('page: kit wiring, variants, events, weight', () => {
   const html = readFileSync(join(DIR, 'index.html'), 'utf8');
   for (const s of ['../lab.css', '../lab.js', 'game.js', "LAB.init('a')", "track('view')", "track('start')", "track('done')", "'kept_'", "'jump'", "'drop'", "'guess_ok'", "'guess_no'",
-    "VP + 'view'", "VP + 'done'", "VP + 'share_ok'", "VP + 'rec_'", "'contra_shown'", "'contra_none'", "params.get('v')", 'bw_lab_a_v',
+    "VP + 'view'", "VP + 'done'", "VP + 'share_ok'", "VP + 'rec_'", "'contra_shown'", "'contra_none'", "params.get('v') === '1' ? 1 : 2",
     'L.recog(', 'L.share(', 'LAB.timer(', 'LAB.canvasImg(', 'document.fonts.ready', 'удерживай картинку, чтобы сохранить', 'ПОКАЗАТЬ ДРУГУ', 'ещё раз',
     'ШАР ПАДАЕТ. ВЫКИДЫВАЙ ЛИШНЕЕ.', 'ПОРЫВ ВЕТРА!', 'ШАР НЕ ЖДЁТ', 'ПРЫГАЮ Я', 'ВЫКИДЫВАЮ', 'ОСТАЛАСЬ ОДНА ВЕЩЬ', 'ЕЩЁ РАЗ — БЫСТРЕЕ', 'bw_lab_a_guessed_', 'sessionStorage',
     'У ДРУГА В ШАРЕ ОСТАЛОСЬ ОДНО. УГАДАЕШЬ?', 'ТЕПЕРЬ ТВОЙ ШАР', 'ТВОЙ КОМПАС', 'ПРОТИВОРЕЧИЕ: '])

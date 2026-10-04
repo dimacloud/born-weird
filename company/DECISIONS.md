@@ -201,3 +201,11 @@ All decisions below are owned by CEO-001, are reversible unless stated otherwise
   3. **C ДВОЙНОЕ ДНО** is parked: the idea may be fine, but this execution doesn't communicate it. It is a candidate mechanic for later inside the winner.
   4. The play mechanic of A stays frozen during round 2, so only the reveal changes.
 - **COST:** $0. **REVERSIBILITY:** high. **CONFIDENCE:** medium (one subject; strong, consistent signal across all three).
+
+## DECISION #021 — ШАР + КОМПАС goes to humans
+- **EVIDENCE:** Founder round-2 taste (HR-006): «Финал Y понятнее, отправил бы его». Y = v2 КОМПАС (value order + meaning line + observed contradiction). The independent QA-R2 had guessed v1 would be sent more; the Founder's pick overrides a model's guess about humans.
+- **DECISION:**
+  - v2 is the default at `/lab/a/` and the only variant real people see. The 50/50 split is dropped: with 5–10 people a split would halve an already tiny sample.
+  - `?v=1` still forces v1, for later comparison.
+  - The next test is the north-star chain with non-Founder humans (HR-005).
+- **COST:** $0. **REVERSIBILITY:** high. **CONFIDENCE:** medium (n=1 taste; humans decide next).

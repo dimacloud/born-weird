@@ -365,7 +365,7 @@
     },
     {
       "id": "W-023",
-      "title": "Founder sends the 1-2 surviving prototypes to 5-10 people; observe START→REFERRED START",
+      "title": "Founder sends ШАР (/lab/a/, v2 КОМПАС) to 5-10 people; observe START→REFERRED START (HR-005)",
       "owner": "Founder (send) / CEO-001 (observe)",
       "why": "Founder reset §18-19",
       "bottleneck": "B-004: we do not know which tiny Born Weird people want to play",
@@ -374,7 +374,7 @@
       "cost": "$0 (inference only)",
       "risk": "low",
       "metric": "START, COMPLETION, RECOGNITION, SHARE INTENT, ACTUAL SHARE, REFERRED START (DECISION #019)",
-      "status": "PROPOSED",
+      "status": "APPROVED",
       "dependencies": [
         "W-022"
       ]
@@ -406,11 +406,11 @@
       "cost": "$0",
       "risk": "low",
       "metric": "v1 vs v2: rec_yes, share_ok per done; Founder taste",
-      "status": "DEPLOYED",
+      "status": "DONE",
       "dependencies": [
         "W-022"
       ],
-      "result": "QA-R2 GO WITH FIXES → fixed; 56/56 tests"
+      "result": "QA-R2 GO WITH FIXES → fixed; 56/56 tests; Founder picked v2 КОМПАС (\"понятнее, отправил бы\") → DECISION #021"
     }
   ],
   "note": "2026-10-04 Product Reset (Genesis §74, DECISION #017): the queue is organized around the prototype tournament. Items W-001..W-015 are history; frozen items keep their content for later."

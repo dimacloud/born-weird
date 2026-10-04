@@ -1,12 +1,12 @@
 {
-  "updated_at": "2026-10-04T10:30:00Z",
+  "updated_at": "2026-10-04T11:00:00Z",
   "phase": "PHASE_0_BECOME_ALIVE",
   "level": 0,
-  "status": "LAB_ROUND2_AWAITING_FOUNDER_PLAY",
+  "status": "LAB_SHAR_KOMPAS_READY_FOR_HUMANS",
   "primary_bottleneck": {
-    "id": "B-004",
-    "statement": "We do not know which tiny Born Weird people actually want to play and pass on. v0.5 is an assessment engine wrapped in a game (Founder reset 2026-10-04).",
-    "next_bottleneck": "B-002: first non-Founder humans play the finalists (Founder sends lab links)"
+    "id": "B-002",
+    "statement": "Zero non-Founder humans have played the candidate (ШАР + КОМПАС). Agents may not send messages; the Founder sends it personally (HR-005).",
+    "next_bottleneck": "B-003: does a player share, and does a referred friend start?"
   },
   "current_experiment": [
     "EXP-004"
@@ -203,7 +203,7 @@
   "autonomy_ratio": 0.84,
   "ocpl": "n/a (0 validated learnings yet)",
   "open_human_requests": [
-    "HR-006 (play ШАР round 2: which final makes you want to send it?)"
+    "HR-005 (send ШАР to 5-10 people)"
   ],
   "alive": false,
   "qa": {
@@ -255,6 +255,10 @@
         "1": "СМЫСЛ: meaning sentence (kept vs first thrown)",
         "2": "КОМПАС: value order + observed contradiction"
       }
+    },
+    "candidate": {
+      "url": "https://dimacloud.github.io/born-weird/lab/a/",
+      "reveal": "v2 КОМПАС (default)"
     }
   },
   "frozen": [

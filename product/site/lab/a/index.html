@@ -181,15 +181,9 @@
   const MSG0 = 'ШАР ПАДАЕТ. ВЫКИДЫВАЙ ЛИШНЕЕ.';
 
   let friend = G.decodeState(L.hash.s);
-  // Round 2: reveal variant, 50/50 per tab; ?v=1|2 forces one.
-  const V = (function () {
-    const q = params.get('v');
-    if (q === '1' || q === '2') return +q;
-    try { const s = sessionStorage.getItem('bw_lab_a_v'); if (s === '1' || s === '2') return +s; } catch (e) {}
-    const v = Math.random() < 0.5 ? 1 : 2;
-    try { sessionStorage.setItem('bw_lab_a_v', String(v)); } catch (e) {}
-    return v;
-  })();
+  // Reveal variant: v2 КОМПАС is the default after the Founder's round-2 pick (DECISION #021);
+  // ?v=1 still forces v1 СМЫСЛ for comparison.
+  const V = params.get('v') === '1' ? 1 : 2;
   const VP = 'v' + V + '_';
   let clock = null, friendMsg = '';
   const GKEY = 'bw_lab_a_guessed_' + (L.hash.s || '');
