@@ -35,6 +35,12 @@
     const refKey = 'bw_lab_ref_' + pid;
     if ('ref' in h) ss.set(refKey, h.ref || '1');
     const ref = ss.get(refKey);
+    // Channel tag for promo links (DECISION #022): /lab/a/#src=vc counts per-channel funnels
+    // without marking the visitor as referred. Only short latin slugs; kept for the tab.
+    const srcKey = 'bw_lab_src_' + pid;
+    const srcIn = String(h.src || qs('src') || '').toLowerCase();
+    if (/^[a-z0-9]{1,12}$/.test(srcIn)) ss.set(srcKey, srcIn);
+    const src = ref ? null : ss.get(srcKey);
     const sent = new Set();
 
     function hit(key) {
@@ -48,6 +54,7 @@
       const pre = (founder ? 'f_' : '') + pid + '_';
       hit(pre + ev);
       if (ref && (ev === 'view' || ev === 'start' || ev === 'done')) hit(pre + 'ref_' + ev);
+      if (src && (ev === 'view' || ev === 'start' || ev === 'done' || ev === 'share_ok')) hit(pre + 'src_' + src + '_' + ev);
     }
 
     /**
@@ -98,7 +105,7 @@
       function thanks() { const t = document.createElement('div'); t.className = 'lab-muted'; t.textContent = 'Принято.'; el.appendChild(t); }
     }
 
-    return { pid, hash: h, qa, founder, ref, track, share, recog };
+    return { pid, hash: h, qa, founder, ref, src, track, share, recog };
   }
 
   // ---------- sound: PC-speaker beeps, unlocked on the first touch (iOS needs a gesture) ----------

@@ -10,9 +10,11 @@ import { fileURLToPath } from 'node:url';
 
 const NS = 'bw-lab-r1';
 const PROTOS = ['a', 'b', 'c'];
+// Promo channel tags (#src=<slug>, DECISION #022). Add a slug here when a new channel opens.
+const SOURCES = ['tg', 'threads', 'vc', 'pr', 'habr', 'dtf', 'reel', 'tgch1', 'tgch2', 'tgch3', 'reddit', 'hn', 'itch', 'ph'];
 const CORE = ['view', 'ref_view', 'start', 'ref_start', 'done', 'ref_done', 'rec_yes', 'rec_kinda', 'rec_no', 'share_click', 'share_ok'];
 const EXTRA = {
-  a: ['guess_ok', 'guess_no', 'jump', 'drop', 'auto_reveal', ...['v1', 'v2'].flatMap(v => [v + '_view', v + '_done', v + '_share_ok', v + '_rec_yes', v + '_rec_kinda', v + '_rec_no']), 'contra_shown', 'contra_none', ...['money', 'phone', 'letter', 'passport', 'keys', 'cat', 'manuscript', 'cup'].map(k => 'kept_' + k)],
+  a: [...SOURCES.flatMap(c => ['view', 'start', 'done', 'share_ok'].map(e => 'src_' + c + '_' + e)), 'guess_ok', 'guess_no', 'jump', 'drop', 'auto_reveal', ...['v1', 'v2'].flatMap(v => [v + '_view', v + '_done', v + '_share_ok', v + '_rec_yes', v + '_rec_kinda', v + '_rec_no']), 'contra_shown', 'contra_none', ...['money', 'phone', 'letter', 'passport', 'keys', 'cat', 'manuscript', 'cup'].map(k => 'kept_' + k)],
   b: [...['book', 'riddle', 'agent', 'cipher'].map(k => 'res_' + k), 'arm_birth', 'arm_none', 'birth_given', 'birth_skip', 'start_birth', 'start_none', 'done_birth', 'done_none'],
   c: [...['monolith', 'crack', 'double', 'chameleon', 'blank'].map(t => 'tier_' + t), ...['free', 'succ', 'truth', 'new'].flatMap(k => ['flip_' + k, 'same_' + k, 'to_' + k])],
 };

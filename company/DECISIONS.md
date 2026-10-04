@@ -209,3 +209,11 @@ All decisions below are owned by CEO-001, are reversible unless stated otherwise
   - `?v=1` still forces v1, for later comparison.
   - The next test is the north-star chain with non-Founder humans (HR-005).
 - **COST:** $0. **REVERSIBILITY:** high. **CONFIDENCE:** medium (n=1 taste; humans decide next).
+
+## DECISION #022 — Channel tags before any promo
+- **TRIGGER:** GROWTH-DIST-RU-001 (`reports/growth/research-ru.md`): our counters only separate organic visits (`view`) from share-link visits (`ref_view`), so we couldn't tell which channel worked.
+- **DECISION:**
+  - Promo links use `/lab/a/#src=<slug>` (for example `#src=vc`). The kit counts `a_src_<slug>_view/start/done/share_ok` per channel. A tagged visitor is NOT referred, so the reproduction metric stays clean.
+  - Posts never use result links (`/r/<code>/#ref=…`).
+  - The slugs are listed in `operations/lab-metrics.mjs → SOURCES`.
+- **COST:** $0. **REVERSIBILITY:** high.
