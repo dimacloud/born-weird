@@ -2,7 +2,7 @@
   "updated_at": "2026-10-04T11:00:00Z",
   "phase": "PHASE_0_BECOME_ALIVE",
   "level": 0,
-  "status": "LAB_SHAR_KOMPAS_READY_FOR_HUMANS",
+  "status": "LAB_SHAR_LIVE_WITH_HUMANS",
   "primary_bottleneck": {
     "id": "B-002",
     "statement": "Zero non-Founder humans have played the candidate (ШАР + КОМПАС). Agents may not send messages; the Founder sends it personally (HR-005).",
@@ -259,6 +259,15 @@
     "candidate": {
       "url": "https://dimacloud.github.io/born-weird/lab/a/",
       "reveal": "v2 КОМПАС (default)"
+    },
+    "exposure": {
+      "date": "2026-10-04",
+      "channels": [
+        "personal messages (5-10)",
+        "Threads https://www.threads.com/share/BAMPD20ogk/",
+        "Telegram https://t.me/dima_cloud/1049"
+      ],
+      "next_check": "2026-10-05 14:00 +03:00 (scheduled task born-weird-lab-check-24h)"
     }
   },
   "frozen": [

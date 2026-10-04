@@ -47,3 +47,4 @@
 - **ONE ACTION:** personally send `https://dimacloud.github.io/born-weird/lab/a/` (no `?f=1`) to 5–10 people, one at a time, with one line: «сделал странную игру, минута». Don't ask them to forward it. Optional: watch 1–2 people play (`reports/tournament/HUMAN_TEST_PROTOCOL.md`).
 - **CEO follows up:** `node operations/lab-metrics.mjs` after 24 h and 72 h; decides per EXP-004's rule.
 - **Update 2026-10-04:** in addition to personal messages, the Founder will post the link publicly on their own Threads and Telegram channel (Founder's own reputational action, Founder's decision; agents only drafted the text). Post visitors count as organic `view`; only player-to-player shares produce `ref_*`. Scheduled check: `born-weird-lab-check-24h` (2026-10-05 14:00 +03:00) → `reports/tournament/CHECK_24H.md`.
+- **Published 2026-10-04 by the Founder:** Threads https://www.threads.com/share/BAMPD20ogk/ · Telegram https://t.me/dima_cloud/1049
