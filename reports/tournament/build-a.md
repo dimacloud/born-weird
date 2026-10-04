@@ -1,6 +1,146 @@
 # Build notes: A — ШАР (BUILDER-A, 2026-10-04)
 
-## What was built
+## Tournament round 2: the reveal that means something (ROUND2_A_REVEAL.md, DECISION #020)
+
+**Unchanged:** the game itself (items, fuse, gust, twist, timeouts), the friend guess and the share plumbing. Only the reveal, card, share text, analytics and friend state changed.
+
+**What was removed:** the 8×8 nickname table («НЯНЬКА БЕЗ ЗАПАСА») and the honesty line «Тут ничего не вычислено…».
+
+**Variant assignment:** 50/50 per tab (`sessionStorage bw_lab_a_v`); `?v=1|2` forces one.
+
+### Phrases (written for both templates: «Ты держишься за …. А легче всего отпускаешь ….»)
+
+| Item | v2 word | держишься за… | легче всего отпускаешь… |
+|---|---|---|---|
+| ДЕНЬГИ НА ГОД | БЕЗОПАСНОСТЬ | запас на чёрный день | запас на чёрный день |
+| ТЕЛЕФОН СО ВСЕМИ ФОТО | ПАМЯТЬ | своё прошлое | прошлое |
+| НЕОТПРАВЛЕННОЕ ПИСЬМО | ЧУВСТВА | то, что так и не сказано | то, что так и не сказано |
+| ЗАГРАНПАСПОРТ | СВОБОДА | возможность в любой момент уехать | возможность уехать |
+| КЛЮЧИ ОТ ДОМА | ДОМ | своё место | привычное место |
+| ЧУЖОЙ КОТ | ДОЛГ | тех, кто на тебя рассчитывает | чужие ожидания |
+| НЕДОПИСАННАЯ РУКОПИСЬ | МЕЧТА | своё большое недоделанное дело | мечту «на потом» |
+| КУБОК С ТВОИМ ИМЕНЕМ | ПРИЗНАНИЕ | то, что тебя замечают | чужую похвалу |
+
+- The sentence is two short sentences, not one with a dash. «первым отпускаешь» would be gendered («первой»), so it reads «легче всего отпускаешь».
+- The card uses a first-person copy: «Держусь за тех, кто на меня рассчитывает. А легче всего отпускаю …».
+
+**Contradiction lines (v2).** The head is shown as «ПРОТИВОРЕЧИЕ: A × B», always in the pair's own order so it matches the line.
+
+| Pair | On the reveal | On the card |
+|---|---|---|
+| СВОБОДА × ДОМ | хочешь уехать — и боишься потерять своё место. | хочу уехать — и боюсь потерять своё место. |
+| ПРИЗНАНИЕ × ДОЛГ | хочешь, чтобы тебя заметили, — и не можешь подвести тех, кто на тебя рассчитывает. | the same in the first person |
+| МЕЧТА × БЕЗОПАСНОСТЬ | тянет к большой мечте — но без запаса страшно. | the same |
+| ПАМЯТЬ × ЧУВСТВА | бережёшь всё, как было, — и носишь в себе то, что так и не сказано. | the same in the first person |
+
+### v1 «СМЫСЛ»
+
+- **Headline:** «ПРЫЖОК РАДИ:» or «ВЫКИНУТО ВСЁ. ПОСЛЕДНИМ/ПОСЛЕДНЕЙ/ПОСЛЕДНИМИ:», then «🐈 ЧУЖОЙ КОТ».
+- Then the meaning sentence, plus «Ради этого не жалко и себя.» (jump) or «Ради себя можно отпустить и это.» (drop).
+- [ПОКАЗАТЬ ДРУГУ] comes next, then the receipts in small type (first thrown, almost stayed, and hesitation if it fired), the recognition check, the card and «ещё раз».
+- **Card:** the headline, the item and the first-person sentence.
+- **Share text:** «В моём шаре остался ЧУЖОЙ КОТ. А что спасёшь ты?» On a drop: «… до последнего держался …».
+
+### v2 «КОМПАС»
+
+- **Headline:** «ТВОЙ КОМПАС», then «ДОЛГ > МЕЧТА > ДОМ > ЧУВСТВА» and a small line with the twist and the item.
+- Then the meaning sentence (built from #1 = the kept item and the first thrown), the contradiction box only when it is observed, and [ПОКАЗАТЬ ДРУГУ].
+- **The order** is the kept item, then the chosen throws in reverse. Auto-throws are skipped because they are unranked, so a timeout never lands on the compass.
+- **Card:** «МОЙ КОМПАС», the order, then the contradiction in the first person if one fired, otherwise the meaning sentence.
+- **Share text:** «Мой компас: ДОЛГ > МЕЧТА > ДОМ. А твой?»
+
+**Both variants:**
+- The share button is on the first 375×812 screen: it ends at y≈261 for v1 and at y≈282–403 for v2.
+- The honest timeout branch («ШАР РЕШИЛ ЗА ТЕБЯ») is kept as is.
+
+### Analytics
+
+- `v1_view` / `v2_view`, `v1_done` / `v2_done`, `v1_share_ok` / `v2_share_ok` (on status ok, copied or tg).
+- `v1_rec_<yes|kinda|no>[_<chip>]` / `v2_rec_…`, added by a capture listener on the kit's recog block, so the kit is untouched.
+- `contra_shown` / `contra_none` for v2.
+- All core events are unchanged (`view`, `start`, `done`, `kept_*`, `jump` / `drop`, `guess_*`, `auto`, `auto_reveal`).
+
+### Friend state
+
+- The state now carries the variant: `5j1` (v1) or `5j2` plus the next two compass items (`5j247`).
+- Round-1 links (`5j`) still decode. Broken states fall back silently, including bad digits and duplicate items.
+- When the sender was on v2, the friend's guess result adds «компас друга: ДОЛГ > ДОМ > ПРИЗНАНИЕ».
+- A friend on v2 whose sender was also on v2 gets «Компас друга: …» as the comparison line. Everyone else gets «У друга остался: КОТ. У тебя: …».
+- The friend's own variant is assigned 50/50 for their tab.
+
+### Simulation (10,000 runs per model; meaning and contradiction rates are of the non-timeout reveals)
+
+| Line / rate | uniform | preference | cat ×3 (stress) |
+|---|---|---|---|
+| v1: most common meaning sentence (gate ≤15%) | 2.2% | 2.7% | 5.6% |
+| v1: distinct sentences seen (of 56) | 56 | 56 | 56 |
+| **v2: contradiction fires (gate 25–60%)** | 41.8% | **43.1%** | 43.3% |
+| v2 pair СВОБОДА × ДОМ | 10.8% | 9.5% | |
+| v2 pair ПРИЗНАНИЕ × ДОЛГ | 10.1% | 12.3% | |
+| v2 pair МЕЧТА × БЕЗОПАСНОСТЬ | 10.5% | 9.5% | |
+| v2 pair ПАМЯТЬ × ЧУВСТВА | 10.5% | 11.8% | |
+| honest «ШАР РЕШИЛ ЗА ТЕБЯ» reveal | 10.1% | 10.8% | 11.4% |
+
+- **The pair definitions are as specified.** No adjustment was needed: under the uniform model the theoretical rate is 24/56 ≈ 42.9%.
+- **The kept-item table below is unchanged**, because the game is frozen.
+- `node --test product/test/lab-a.test.mjs product/test/engine.test.mjs`: 38/38 pass.
+
+**OG:**
+- `og.json` is now `"v": 2`, so the previews are re-rendered as `*-2.png` (chat caches key on the URL).
+- The preview texts never quoted the nickname, so they are unchanged.
+- The page's `og:image` now points to `_default-2.png`.
+
+**Verified:** 375×812 screenshots cover:
+- v1 jump and drop;
+- v2 with and without a contradiction, for jump and drop;
+- 320×568 for both variants;
+- the v2 card with a contradiction;
+- the friend guess from a v2 link;
+- the v2 friend reveal.
+
+The demo hooks are `?qa=1&v=1|2&demo=reveal|reveal-drop|reveal-contra|reveal-nocontra-drop|reveal-auto|friend-reveal`.
+
+**Known issues (tournament round 2):**
+- **Two items share a phrase in both columns.** For «деньги» and «письмо» the hold and drop phrases are identical, by design (the same thing kept or let go).
+- **The v2 compass mixes chosen order with the kept item,** which the player didn't pick directly; it survived 7 throws. Fine as play, but worth one human check.
+- **Nobody has read the sentences yet.** "Does a stranger nod" is unmeasured; read `v1_rec_yes` vs `v2_rec_yes`.
+
+### Tournament round 2 QA fixes (qa-r2.md)
+
+The copy is now exactly as QA proposed. Where this list conflicts with the round-2 tables above, it wins.
+
+**Copy:**
+- Drop line: «Но себя ты бережёшь ещё больше.»
+- Cup: «своё имя».
+- Manuscript: «свою большую мечту».
+- Letter: «несказанное» (both columns).
+- Keys (drop): «насиженное место».
+- The cat's value word is **ЗАБОТА**, replacing ДОЛГ everywhere (the pair is «ПРИЗНАНИЕ × ЗАБОТА»).
+- v2 label: «ТВОЙ КОМПАС — ЧТО ТЕБЕ ВАЖНЕЕ:» (card: «МОЙ КОМПАС — ЧТО МНЕ ВАЖНЕЕ:»).
+- An NBSP after «А», and before each «>».
+
+**Contradiction line.** ПАМЯТЬ × ЧУВСТВА QA flagged as "not an opposition". It is rewritten as «живёшь тем, что было, — а сказать главное так и не решаешься.» (card: «живу… решаюсь»).
+
+**v2 without a contradiction** shows the meaning sentence at v1 weight, plus v1's jump/drop line. With a contradiction, the box replaces that extra line.
+
+**Friend entry:**
+- The sender's result stays in the header after the guess until the friend's first own throw. Only the ✓/✗ tile highlight resets after 1.6 s.
+- A v1 sender gets «друг держится за своё место — и прыгает за борт ради них». This uses a new per-item `they` phrase with no «тебя/него» (the cat's is «чужое доверие»).
+- A v2 sender gets «компас друга: …».
+- The header then adds «ТЕПЕРЬ ТВОЙ ШАР — ВЫКИДЫВАЙ ЛИШНЕЕ».
+- The v2↔v2 comparison keeps the item line and appends the friend's compass.
+
+**Checks:**
+- og.json is now `"v": 3`, and the previews are regenerated as `*-3.png`. The preview texts never contained ДОЛГ.
+- The sim numbers are unchanged: the pairs and the ranking are the same, contradiction fires 43.1% and the top sentence is 2.7%.
+- Tests: 38/38 for lab-a plus engine.
+- Screenshots at 375×812 cover v1 drop and v2 with and without a contradiction; there are friend headers at 375 and 320. No scroll during play.
+
+---
+
+## Round 1 build (history; the reveal parts below are superseded by tournament round 2 above)
+
+### What was built
 
 - `product/site/lab/a/index.html`: the UI, a single static page (27 KB) with CSS art and no images. It uses `../lab.css`, `../lab.js` and `LAB.init('a')`.
 - `product/site/lab/a/game.js`: pure logic (9 KB, UMD `window.SHAR` / `module.exports`). It covers items, the fuse schedule, the throw log, the hesitation rule, the reveal, the share text, the card lines and the friend state.
@@ -102,7 +242,7 @@
 9. **The guess tap counts as `start`**, because it is the first game tap for friends. Their own throw 1 then follows with no button.
 10. **Throw 1's time** is counted from when the tiles appear (for friends, from «ТЕПЕРЬ ТВОЙ ШАР»), and it is quoted only when under 1.5 s. The hesitation rule ignores throw 1, because that time includes reading.
 
-## Round 2: QA-A fixes (qa-a.md, CEO-001)
+## Round 1 QA-A fixes (qa-a.md, CEO-001)
 
 1. **The honest branch for a basket the fuse decided.** It fires if throw 7 was auto or at least 4 of the 6 fused throws were auto (about 10.8% of plays in the model).
    - The reveal reads «ШАР РЕШИЛ ЗА ТЕБЯ:» plus the item, «Первым за борт: …» (if quick) and «Без тебя за борт: N из 7».

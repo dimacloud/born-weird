@@ -183,3 +183,21 @@ All decisions below are owned by CEO-001, are reversible unless stated otherwise
 - **NOT measured by counters:** SURPRISE, hesitation, confusion, "who would you send it to". Those come from the human-test protocol (`reports/tournament/HUMAN_TEST_PROTOCOL.md`).
 - **WHY:** the north star is PLAYER → RESULT → SHARE → NEW PLAYER. These ~10 counters per prototype measure exactly that chain and nothing else.
 - **COST:** $0. **REVERSIBILITY:** high.
+
+## DECISION #020 — Round 1 read: ШАР's play is alive; every reveal failed on meaning
+- **EVIDENCE:** Founder taste test (HR-004, n=1, `reports/tournament/HUMAN_NOTES.md`).
+  - A: "прикольная", the falling balloon and the «прыгаю я» joke work, but the reveal raises "что это значит? зачем?".
+  - B: the birth date looks pointless and the oracle looks random.
+  - C: there is tension, but nobody can tell what is being tested.
+- **DIAGNOSIS:**
+  - We overcorrected. The reset says the toy must not *explain how it computes*. We also removed *what the result means about you*.
+  - All three reveals show receipts ("Первым за борт: …") and opaque labels («НЯНЬКА БЕЗ ЗАПАСА»), but no bridge from the act to the person.
+  - "That's weirdly me" needs one plain sentence that says what the act says about you. A label is not that sentence.
+- **DECISION:**
+  1. **A ШАР** advances: its play is the only one with a positive taste signal. Round 2 iterates only its reveal, with two variants as a 50/50 split (`?v=1|2` forces one):
+     - **v1 «СМЫСЛ»:** a plain meaning sentence built from what you kept vs what you dropped first.
+     - **v2 «КОМПАС»:** the items you kept longest, translated into a visible value order plus one contradiction. This is the Founder's own illustration in the reset §9.
+  2. **B ОРАКУЛ** is retired. The H2 birth-date question gets its answer for this context: an unused birth date costs trust ("зачем?"). Revisit only if a winner needs a seed.
+  3. **C ДВОЙНОЕ ДНО** is parked: the idea may be fine, but this execution doesn't communicate it. It is a candidate mechanic for later inside the winner.
+  4. The play mechanic of A stays frozen during round 2, so only the reveal changes.
+- **COST:** $0. **REVERSIBILITY:** high. **CONFIDENCE:** medium (one subject; strong, consistent signal across all three).

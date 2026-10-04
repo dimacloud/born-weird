@@ -8,7 +8,7 @@
 <meta property="og:title" content="ШАР ПАДАЕТ · BORN WEIRD">
 <meta property="og:description" content="8 вещей. Шар падает. Одна остаётся. А что останется в твоём шаре?">
 <meta property="og:type" content="website">
-<meta property="og:image" content="https://dimacloud.github.io/born-weird/lab/a/og/_default-1.png">
+<meta property="og:image" content="https://dimacloud.github.io/born-weird/lab/a/og/_default-3.png">
 <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="robots" content="noindex">
@@ -26,6 +26,7 @@
   .hud { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; min-height: 26px; }
   #msg { color: var(--hi); font-weight: 600; letter-spacing: .5px; font-size: 18px; line-height: 1.25; }
   #msg.friend { color: var(--cy); }
+  #msg small.you { color: var(--hi); font-weight: 600; margin-top: 4px; }
   #msg small { display: block; color: var(--fg); font-weight: 400; font-size: 13px; letter-spacing: 0; }
   #alt { color: var(--dim); font-size: 12px; white-space: nowrap; padding-top: 2px; font-variant-numeric: tabular-nums; }
   #alt b { color: var(--fg); font-weight: 600; }
@@ -95,8 +96,14 @@
   .rv-jump { color: var(--mg); font-weight: 600; font-size: 22px; margin-top: 6px; }
   .rv-rc { list-style: none; padding: 0; margin: 14px 0 0; font-size: 14px; }
   .rv-rc li { padding: 4px 0; border-top: 1px dashed var(--line); }
-  .rv-title { margin: 14px 0 0; padding: 10px; border: 2px solid var(--mg); color: var(--mg); font-weight: 600; text-align: center; letter-spacing: 1px; font-size: 17px; }
-  .rv-title small { display: block; color: var(--dim); font-weight: 400; font-size: 11px; letter-spacing: 2px; }
+  .rv-mean { margin-top: 14px; font-size: 18px; line-height: 1.4; color: var(--fg); }
+  .rv-extra { margin-top: 8px; color: var(--mg); font-weight: 600; font-size: 15px; }
+  .rv-comp { color: var(--hi); font-weight: 600; font-size: 24px; line-height: 1.25; margin: 4px 0 2px; text-shadow: 3px 3px 0 #6a1a6a; }
+  .rv-comp i { font-style: normal; color: var(--dim); text-shadow: none; }
+  .rv-sub { color: var(--dim); font-size: 13px; margin-top: 6px; }
+  .rv-contra { margin-top: 12px; padding: 10px; border: 2px solid var(--mg); font-size: 15px; line-height: 1.35; }
+  .rv-contra b { display: block; color: var(--mg); letter-spacing: 1px; margin-bottom: 4px; }
+  .rv-rcl { margin-top: 4px; color: var(--dim); font-size: 13px; line-height: 1.5; }
   .rv-cmp { margin-top: 10px; color: var(--cy); font-size: 14px; }
   #reveal.auto .lab-again { min-height: 54px; margin-top: 14px; background: var(--hi); color: #000; font-weight: 600; font-size: 18px; border: 0; }
   #reveal .lab-share { margin-top: 12px; }
@@ -110,7 +117,7 @@
     .tile .e { font-size: 22px; }
     .tile { font-size: 11px; }
     #banner { font-size: 24px; }
-    .rv-big { font-size: 24px; }
+    .rv-big { font-size: 24px; } .rv-comp { font-size: 20px; } .rv-mean { font-size: 16px; }
   }
   @media (max-width: 345px) {
     .tile { gap: 5px; padding: 4px 5px; font-size: 10.5px; letter-spacing: 0; }
@@ -147,12 +154,12 @@
 
   <section id="reveal">
     <div id="rvHead"></div>
-    <ul class="rv-rc" id="rvRc"></ul>
-    <div class="rv-title" id="rvTitle"></div>
+    <div id="rvBody"></div>
     <div class="rv-cmp" id="rvCmp"></div>
     <button type="button" class="lab-share" id="bShare">ПОКАЗАТЬ ДРУГУ</button>
     <div class="lab-muted" id="status"></div>
-    <div class="lab-muted" id="rvHon"></div>
+    <div class="rv-rcl" id="rvRc"></div>
+    <div class="lab-muted" id="rvNote"></div>
     <div id="recog"></div>
     <div id="cardBox"><div id="card"></div>
     <div class="lab-muted" style="text-align:center">удерживай картинку, чтобы сохранить</div></div>
@@ -174,7 +181,17 @@
   const MSG0 = 'ШАР ПАДАЕТ. ВЫКИДЫВАЙ ЛИШНЕЕ.';
 
   let friend = G.decodeState(L.hash.s);
-  let clock = null;
+  // Round 2: reveal variant, 50/50 per tab; ?v=1|2 forces one.
+  const V = (function () {
+    const q = params.get('v');
+    if (q === '1' || q === '2') return +q;
+    try { const s = sessionStorage.getItem('bw_lab_a_v'); if (s === '1' || s === '2') return +s; } catch (e) {}
+    const v = Math.random() < 0.5 ? 1 : 2;
+    try { sessionStorage.setItem('bw_lab_a_v', String(v)); } catch (e) {}
+    return v;
+  })();
+  const VP = 'v' + V + '_';
+  let clock = null, friendMsg = '';
   const GKEY = 'bw_lab_a_guessed_' + (L.hash.s || '');
   const guessedBefore = () => { try { return sessionStorage.getItem(GKEY) === '1'; } catch (e) { return false; } };
   let phase, run, timer, lock, started = false, frozen = !!DEMO, res = null;
@@ -240,6 +257,7 @@
     reveal.className = ''; game.style.display = '';
     banner.className = '';
     if (asFriend) { phase = 'guess'; setMsg('У ДРУГА В ШАРЕ ОСТАЛОСЬ ОДНО. УГАДАЕШЬ?', 'friend'); }
+    else if (friend && friendMsg) { phase = 'idle'; setMsg(friendMsg + '<small class="you">ТЕПЕРЬ ТВОЙ ШАР — ВЫКИДЫВАЙ ЛИШНЕЕ</small>', 'friend'); }
     else { phase = 'idle'; setMsg(friend ? 'ТЕПЕРЬ ТВОЙ ШАР. ВЫКИДЫВАЙ ЛИШНЕЕ.' : MSG0); }
     clock = LAB.timer(600000, null, () => {}); // pause-aware clock: time since the tiles appeared / the last throw
     kick();
@@ -345,7 +363,7 @@
       setMsg('ВЫКИНУТО ВСЁ.');
     }
     buzz(50);
-    res = G.finish(run, jump, friend);
+    res = G.finish(run, jump, friend, V);
     if (frozen) showReveal(); else setTimeout(showReveal, 1300);
   }
 
@@ -377,10 +395,14 @@
     if (!ok) tiles[i].classList.add('no');
     if (ok) SND.good(); else SND.bad();
     buzz(ok ? 30 : 80);
-    setMsg((ok ? '✓ УГАДАНО: ' : '✗ МИМО. У ДРУГА: ') + f.emoji + ' ' + f.short + (friend.jump ? ' <small>и прыжок за борт ради него</small>' : ''), 'friend');
-    if (friend.jump && (f.g !== 'm')) msg.querySelector('small').textContent = 'и прыжок за борт ради ' + ({ f: 'неё', n: 'него', p: 'них' }[f.g]);
+    const ab = { m: 'него', f: 'неё', n: 'него', p: 'них' }[f.g];
+    let html = (ok ? '✓ УГАДАНО: ' : '✗ МИМО. У ДРУГА: ') + f.emoji + ' ' + f.short;
+    if (friend.top3) html += '<small>компас друга: ' + esc(G.compassText(friend.top3, 3)) + '</small>';
+    else html += '<small>друг держится за ' + esc(f.they) + (friend.jump ? ' — и прыгает за борт ради ' + ab : '') + '</small>';
+    friendMsg = html;
+    setMsg(html, 'friend');
     if (frozen) return;
-    setTimeout(() => { reset(false); }, 1700);
+    setTimeout(() => { reset(false); }, 1600);
   }
 
   // ---------- reveal ----------
@@ -390,26 +412,47 @@
     game.style.display = 'none';
     document.body.classList.remove('playing');
     reveal.className = res.auto ? 'on auto' : 'on';
-    ['rvTitle', 'bShare', 'recog', 'cardBox'].forEach(id => { $(id).style.display = res.auto ? 'none' : ''; });
+    ['bShare', 'recog', 'cardBox'].forEach(id => { $(id).style.display = res.auto ? 'none' : ''; });
     $('bAgain').textContent = res.auto ? 'ЕЩЁ РАЗ — БЫСТРЕЕ' : 'ещё раз';
-    const h = res.headline;
-    let head = '<div class="rv-k">' + esc(h[0]) + '</div><div class="rv-big"><span class="e">' + res.kept.emoji + '</span> ' + esc(h[1]) + '</div>';
-    if (h[2]) head += '<div class="rv-jump">' + esc(h[2]) + '</div>';
+    const h = res.headline, item = '<span class="e">' + res.kept.emoji + '</span> ' + esc(h[1]);
+    let head = '', body = '';
+    if (res.auto || res.variant === 1) {
+      head = '<div class="rv-k">' + esc(h[0]) + '</div><div class="rv-big">' + item + '</div>';
+      if (!res.auto) body = '<div class="rv-mean">' + esc(res.sentence) + '</div><div class="rv-extra">' + esc(res.extra) + '</div>';
+    } else {
+      head = '<div class="rv-k">ТВОЙ КОМПАС — ЧТО ТЕБЕ ВАЖНЕЕ:</div><div class="rv-comp">' + res.compass.map(esc).join('&nbsp;<i>&gt;</i> ') + '</div>'
+        + '<div class="rv-sub">' + esc(h[0]) + ' ' + res.kept.emoji + ' ' + esc(h[1].toLowerCase()) + '</div>';
+      body = '<div class="rv-mean">' + esc(res.sentence) + '</div>';
+      if (!res.contra) body += '<div class="rv-extra">' + esc(res.extra) + '</div>';
+      if (res.contra) body += '<div class="rv-contra"><b>ПРОТИВОРЕЧИЕ: ' + esc(res.contra.head) + '</b>' + esc(G.upFirst(res.contra.line)) + '</div>';
+    }
     $('rvHead').innerHTML = head;
-    $('rvRc').innerHTML = res.receipts.map(l => '<li>' + esc(l.text) + '</li>').join('');
-    $('rvTitle').innerHTML = res.title ? '<small>ПРОЗВИЩЕ</small>' + esc(res.title) : '';
+    $('rvBody').innerHTML = body;
+    $('rvRc').innerHTML = res.receipts.map(l => esc(l.text)).join('<br>');
     $('rvCmp').textContent = res.compare || '';
     $('rvCmp').style.display = res.compare ? '' : 'none';
-    $('rvHon').textContent = res.honesty;
+    $('rvNote').textContent = res.auto ? res.note : '';
     $('status').textContent = '';
     SND.reveal();
-    L.track('done');
+    L.track('done'); L.track(VP + 'done');
     window.scrollTo(0, 0);
     if (res.auto) { L.track('auto_reveal'); return; }
+    if (res.variant === 2) L.track(res.contra ? 'contra_shown' : 'contra_none');
     L.recog($('recog'), res.chips);
     L.track('kept_' + res.code);
     drawCard(res);
   }
+  // Variant-prefixed recognition events (the kit counts rec_* itself; this adds v1_rec_* / v2_rec_*).
+  (function () {
+    const K = { 'В ТОЧКУ': 'yes', 'ПОЧТИ': 'kinda', 'МИМО': 'no' };
+    let k1 = null;
+    $('recog').addEventListener('click', e => {
+      const b = e.target.closest('button'); if (!b || b.disabled) return;
+      const row = b.parentElement, rows = [...$('recog').querySelectorAll('.lab-row')];
+      if (rows.indexOf(row) === 0) { k1 = K[b.textContent] || 'x'; L.track(VP + 'rec_' + k1); }
+      else L.track(VP + 'rec_' + k1 + '_' + ([...row.children].indexOf(b) + 1));
+    }, true);
+  })();
 
   function drawCard(r) {
     const box = $('card'); box.innerHTML = '';
@@ -429,7 +472,7 @@
       x.fillStyle = '#ff55ff'; x.font = '600 44px Plex, monospace';
       x.fillText('B O R N   W E I R D', W / 2, 360);
       // balloon
-      const cx = W / 2, cy = 600, rx = 170, ry = 200;
+      const cx = W / 2, cy = 540, rx = 160, ry = 180;
       x.save(); x.beginPath(); x.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2); x.clip();
       for (let i = 0; i < 8; i++) { x.fillStyle = i % 2 ? '#ffff55' : '#ff55ff'; x.fillRect(cx - rx + i * (2 * rx / 7), cy - ry, 2 * rx / 7, 2 * ry); }
       x.fillStyle = 'rgba(0,0,0,.25)'; x.beginPath(); x.ellipse(cx + 40, cy + 30, rx, ry, 0, 0, Math.PI * 2); x.fill();
@@ -443,18 +486,18 @@
       // thrown items falling to the right/left
       run.throws.forEach((t, k) => {
         x.globalAlpha = 0.35 + 0.08 * k; x.font = (48 + k * 4) + 'px ' + EMO;
-        x.fillText(G.ITEMS[t.i].emoji, k % 2 ? 860 - k * 6 : 220 + k * 6, 470 + k * 70);
+        x.fillText(G.ITEMS[t.i].emoji, k % 2 ? 860 - k * 6 : 220 + k * 6, 430 + k * 66);
       });
       if (!r.jump) { x.globalAlpha = 1; } else { x.globalAlpha = 1; x.font = '64px ' + EMO; x.fillText('🧍', cx + 230, cy + ry + 230); }
       x.globalAlpha = 1; x.textBaseline = 'alphabetic';
-      // 3 lines
-      x.fillStyle = '#55ffff'; x.font = '600 50px Plex, monospace'; x.fillText(r.card[0], W / 2, 1120);
+      // 3 lines: label, big (item or compass), the sentence (or the contradiction)
+      x.fillStyle = '#55ffff'; x.font = '600 50px Plex, monospace'; x.fillText(r.card[0], W / 2, 1010);
       x.fillStyle = '#ffff55';
-      const big = wrap(x, r.card[1], 860, 92);
-      big.lines.forEach((ln, k) => { x.font = '600 ' + big.size + 'px Plex, monospace'; x.fillText(ln, W / 2, 1230 + k * big.size * 1.1); });
-      const y3 = 1230 + big.lines.length * big.size * 1.1 + 70;
-      x.fillStyle = '#ff55ff'; x.font = '600 52px Plex, monospace'; fitText(x, '— ' + r.card[2] + ' —', W / 2, y3, 900, 52);
-      x.fillStyle = '#8fb08f'; x.font = '400 35px Plex, monospace'; x.fillText('dimacloud.github.io/born-weird/lab', W / 2, 1590);
+      const big = wrap(x, r.card[1], 880, r.variant === 2 ? 76 : 92);
+      big.lines.forEach((ln, k) => { x.font = '600 ' + big.size + 'px Plex, monospace'; x.fillText(ln, W / 2, 1110 + k * big.size * 1.1); });
+      const y3 = 1110 + (big.lines.length - 1) * big.size * 1.1 + 90;
+      x.fillStyle = '#c8ffc8'; para(x, r.card[2], W / 2, y3, 880, 1540);
+      x.fillStyle = '#8fb08f'; x.font = '400 35px Plex, monospace'; x.fillText('dimacloud.github.io/born-weird/lab', W / 2, 1605);
       // scanlines
       x.fillStyle = 'rgba(0,0,0,.18)'; for (let y = 0; y < H; y += 6) x.fillRect(0, y, W, 2);
       box.appendChild(LAB.canvasImg(c, r.card.join(' ')));
@@ -470,10 +513,16 @@
     }
     return { lines: [text], size: 52 };
   }
-  function fitText(x, t, cx, y, maxW, size) {
-    let s = size; x.font = '600 ' + s + 'px Plex, monospace';
-    while (x.measureText(t).width > maxW && s > 30) { s -= 2; x.font = '600 ' + s + 'px Plex, monospace'; }
-    x.fillText(t, cx, y);
+  /** Wrapped paragraph between y and maxY; shrinks the font until it fits. */
+  function para(x, text, cx, y, maxW, maxY) {
+    for (let s = 50; s >= 30; s -= 2) {
+      x.font = '400 ' + s + 'px Plex, monospace';
+      const lines = []; let cur = '';
+      text.split(' ').forEach(w => { const t = cur ? cur + ' ' + w : w; if (x.measureText(t).width <= maxW || !cur) cur = t; else { lines.push(cur); cur = w; } });
+      if (cur) lines.push(cur);
+      const lh = s * 1.3;
+      if (y + (lines.length - 1) * lh <= maxY || s === 30) { lines.forEach((ln, k) => x.fillText(ln, cx, y + k * lh)); return; }
+    }
   }
 
   $('bDrop').addEventListener('click', () => choose(false));
@@ -482,15 +531,16 @@
     if (!res) return;
     L.share({ code: res.code, state: res.state, text: res.share, onStatus: s => {
       $('status').textContent = { ok: 'Отправлено.', copied: 'Ссылка скопирована — вставь в чат.', tg: 'Открываю Telegram…' }[s] || '';
+      if (s === 'ok' || s === 'copied' || s === 'tg') L.track(VP + 'share_ok');
     } });
   });
   $('bAgain').addEventListener('click', () => { friend = null; reset(false); window.scrollTo(0, 0); });
 
   // ---------- boot ----------
-  L.track('view');
+  L.track('view'); L.track(VP + 'view');
   reset(!!friend && !guessedBefore());
 
-  // ---------- QA demo states: ?qa=1&demo=mid|gust|twist|reveal|reveal-drop|reveal-auto|guess|guessed|friend-reveal ----------
+  // ---------- QA demo states: ?qa=1&demo=mid|gust|twist|reveal|reveal-drop|reveal-contra|reveal-nocontra-drop|reveal-auto|guess|guessed|friend-reveal ----------
   if (DEMO) {
     const T = (order, times, autos) => order.forEach((i, k) => {
       if (k === 0) { phase = 'throw'; clock.stop(); }
@@ -501,6 +551,8 @@
     else if (DEMO === 'twist') T([3, 0, 7, 1, 2, 4, 6], [2100, 3200, 1200, 900, 800, 700, 1000]);
     else if (DEMO === 'reveal') { T([3, 0, 7, 1, 2, 4, 6], [1100, 3600, 1200, 900, 800, 700, 1000]); choose(true); }
     else if (DEMO === 'reveal-drop') { T([6, 1, 2, 0, 3, 5, 7], [2400, 1500, 1300, 900, 800, 700, 1000], [0, 0, 0, 0, 1, 0, 0]); choose(false); }
+    else if (DEMO === 'reveal-contra') { T([6, 1, 2, 0, 3, 7, 5], [2400, 1500, 1300, 900, 800, 700, 1000]); choose(true); }
+    else if (DEMO === 'reveal-nocontra-drop') { T([3, 0, 7, 1, 2, 4, 6], [1300, 1600, 1200, 900, 800, 700, 1000]); choose(false); }
     else if (DEMO === 'reveal-auto') { T([3, 0, 7, 1, 2, 4, 6], [1100, 0, 0, 0, 0, 900, 0], [0, 1, 1, 1, 1, 0, 1]); choose(true); }
     else if (DEMO === 'guess') { friend = friend || G.decodeState('5j'); reset(true); }
     else if (DEMO === 'guessed') { friend = friend || G.decodeState('6j'); reset(true); onGuess(2); }

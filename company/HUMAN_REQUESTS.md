@@ -28,9 +28,14 @@
   2. dash.cloudflare.com → free account.
   3. In the project folder: `npx wrangler login`, then `npx wrangler secret put ANTHROPIC_API_KEY` and paste the key. Never send the key to anyone, including the agents.
 
-## HUMAN REQUEST #004 — OPEN (2026-10-04): play the three lab games, then tell us which one feels alive
+## HUMAN REQUEST #004 — DONE (2026-10-04, ~8 min; result: DECISION #020): play the three lab games, then tell us which one feels alive
 - **NEED:** the Founder's taste signal on three playable prototypes (EXP-004). This is not an implementation question; the agents own every design decision.
 - **WHY:** Founder taste is one valuable signal (not the market). It also checks the lab on a real phone inside a real messenger before other humans see it.
 - **COST:** ~5 minutes. **RISK:** none.
 - **ONE ACTION:** open `https://dimacloud.github.io/born-weird/lab/?f=1` on the phone, play all three without analysing, answer one question: which one feels alive (and any gut lines like "homework", "made me curious", "I'd send this").
 - **NEXT (HR-005, only after this):** send the 1–2 surviving games to 5–10 people personally (no `?f=1`), following `reports/tournament/HUMAN_TEST_PROTOCOL.md`.
+
+## HUMAN REQUEST #006 — OPEN (2026-10-04): play ШАР round 2, two finals
+- **NEED:** taste signal on two reveal variants of the same game (DECISION #020).
+- **ONE ACTION:** open `https://dimacloud.github.io/born-weird/lab/?f=1`, play ФИНАЛ X and ФИНАЛ Y, say after which final you want to send it to someone (and to whom).
+- **NEXT (HR-005):** send the winning version to 5–10 people personally.

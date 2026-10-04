@@ -356,12 +356,12 @@
       "cost": "$0 (inference only)",
       "risk": "low",
       "metric": "START, COMPLETION, RECOGNITION, SHARE INTENT, ACTUAL SHARE, REFERRED START (DECISION #019)",
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "dependencies": [
         "W-020",
         "W-021"
       ],
-      "result": "Lab live 2026-10-04 (commit 2ca37e2). Waiting for the Founder to play (HR-004)."
+      "result": "Founder played round 1 (HR-004): A play alive, all reveals meaningless; B retired, C parked (DECISION #020)"
     },
     {
       "id": "W-023",
@@ -394,6 +394,23 @@
       "dependencies": [
         "W-023"
       ]
+    },
+    {
+      "id": "W-025",
+      "title": "Round 2: ШАР with two meaningful reveals (v1 СМЫСЛ / v2 КОМПАС), 50/50",
+      "owner": "BUILDER-A, QA-EVAL-R2",
+      "why": "DECISION #020",
+      "bottleneck": "B-004b: the reveal does not mean anything",
+      "mission": "MISSION-001",
+      "expected_value": "recognition → share",
+      "cost": "$0",
+      "risk": "low",
+      "metric": "v1 vs v2: rec_yes, share_ok per done; Founder taste",
+      "status": "DEPLOYED",
+      "dependencies": [
+        "W-022"
+      ],
+      "result": "QA-R2 GO WITH FIXES → fixed; 56/56 tests"
     }
   ],
   "note": "2026-10-04 Product Reset (Genesis §74, DECISION #017): the queue is organized around the prototype tournament. Items W-001..W-015 are history; frozen items keep their content for later."

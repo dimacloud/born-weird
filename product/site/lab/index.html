@@ -18,19 +18,20 @@
 <body>
 <main>
   <div class="lab-brand">BORN WEIRD · LAB</div>
-  <h1>ТРИ МАЛЕНЬКИЕ ИГРЫ</h1>
-  <p>Сыграй каждую. Не анализируй. Потом скажи, какая живая.</p>
+  <h1>ШАР · РАУНД 2</h1>
+  <p>Та же игра, два разных финала. Сыграй оба. Скажи, после какого финала хочется кому-то отправить.</p>
   <div id="list"></div>
-  <p class="lab-muted">Каждая — около минуты. Ничего не сохраняется, никаких аккаунтов.</p>
+  <p class="lab-muted">Каждый — около минуты. Ничего не сохраняется, никаких аккаунтов.</p>
 </main>
 <script>
-  // Random order on every load, letters only: no labels that hint at the mechanic (DECISION #018).
-  const games = ['a', 'b', 'c'];
+  // Round 2 (DECISION #020): one game, two reveal variants; random order, numbers only.
+  // B and C stay reachable by direct link but are off the hub (retired / parked).
+  const games = ['1', '2'];
   for (let i = games.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [games[i], games[j]] = [games[j], games[i]]; }
   const keep = new URLSearchParams(location.search);
-  const q = ['f', 'qa'].filter(k => keep.get(k) === '1').map(k => k + '=1').join('&');
-  document.getElementById('list').innerHTML = games.map((g, i) =>
-    `<a class="g" href="${g}/${q ? '?' + q : ''}">ИГРА ${g.toUpperCase()}<small>${i + 1}-я по порядку</small></a>`).join('');
+  const q = ['f', 'qa'].filter(k => keep.get(k) === '1').map(k => '&' + k + '=1').join('');
+  document.getElementById('list').innerHTML = games.map((v, i) =>
+    `<a class="g" href="a/?v=${v}${q}">ФИНАЛ ${v === '1' ? 'X' : 'Y'}<small>${i + 1}-й по порядку</small></a>`).join('');
 </script>
 </body>
 </html>

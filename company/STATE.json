@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-10-04T08:50:00Z",
+  "updated_at": "2026-10-04T10:30:00Z",
   "phase": "PHASE_0_BECOME_ALIVE",
   "level": 0,
-  "status": "LAB_LIVE_AWAITING_FOUNDER_PLAY",
+  "status": "LAB_ROUND2_AWAITING_FOUNDER_PLAY",
   "primary_bottleneck": {
     "id": "B-004",
     "statement": "We do not know which tiny Born Weird people actually want to play and pass on. v0.5 is an assessment engine wrapped in a game (Founder reset 2026-10-04).",
@@ -203,7 +203,7 @@
   "autonomy_ratio": 0.84,
   "ocpl": "n/a (0 validated learnings yet)",
   "open_human_requests": [
-    "HR-004 (play the lab, say which feels alive)"
+    "HR-006 (play ШАР round 2: which final makes you want to send it?)"
   ],
   "alive": false,
   "qa": {
@@ -237,21 +237,25 @@
       },
       {
         "id": "b",
-        "name": "ОРАКУЛ",
-        "hypothesis": "the game bets on you; readability score + why it bet",
-        "birth": "50/50 arm: day+month as oracle persona only (H2)"
+        "status": "RETIRED (DECISION #020)"
       },
       {
         "id": "c",
-        "name": "ДВОЙНОЕ ДНО",
-        "hypothesis": "observed contradiction between quick word and costly choice",
-        "birth": "none"
+        "status": "PARKED (DECISION #020)"
       }
     ],
     "reserve": "C3 ЦЕНА ВОПРОСА",
     "deployed": true,
     "founder_link": "https://dimacloud.github.io/born-weird/lab/?f=1",
-    "baseline": "company/lab-baseline.json (QA hits subtracted)"
+    "baseline": "company/lab-baseline.json (QA hits subtracted)",
+    "round": 2,
+    "round2": {
+      "game": "a",
+      "variants": {
+        "1": "СМЫСЛ: meaning sentence (kept vs first thrown)",
+        "2": "КОМПАС: value order + observed contradiction"
+      }
+    }
   },
   "frozen": [
     "life-in-weeks",

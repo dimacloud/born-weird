@@ -18,3 +18,5 @@
 **Autonomy ratio (material actions):** 16 autonomous / 19 material actions ≈ 0.84
 
 **Lesson (#2):** when several identities are connected, the CEO must pick the Founder's *personal* identity for Founder-owned company assets, or confirm it in the first report.
+| 8 | 2026-10-04 | INTENT | Product Reset handoff (intent, not implementation) | (handoff) | no |
+| 9 | 2026-10-04 | TASTE (HR-004) | Played the 3 lab games. A: gameplay alive, reveal meaningless. B: birth date pointless, oracle feels random. C: some tension, mechanic and reveal not understood | ~8 | no. Exactly the taste signal the reset asks for; zero implementation questions were asked |
