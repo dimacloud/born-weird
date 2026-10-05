@@ -9,3 +9,4 @@ One line per person. No names. Protocol: `HUMAN_TEST_PROTOCOL.md`.
 | 2026-10-04 | Founder | A ШАР | yes | the reveal: "чужой кот… нянька без запаса — что это значит? зачем?" | yes | fun: "прикольная", falling balloon, rescue under time, «прыгаю я» joke | no (meaning missing) | – | – |
 | 2026-10-04 | Founder (taste, n=1) | A round 2: X=v1 СМЫСЛ vs Y=v2 КОМПАС | yes | – | yes | – | Y "понятнее" | "отправил бы его" (Y) | – |
 | 2026-10-04 | Founder (taste, n=1) | A + КОМПАС (default) | yes | – | yes | "что-то неплохое получилось, максимально простое, понятно" | – | – | – |
+| 2026-10-05 | TG subscriber (М.), public comments | A + КОМПАС | ? | – | ? | engaged with the premise: "people save the continuity of their life + one irreplaceable absurd thing" (Heimaey evacuation) | – | – | – |
